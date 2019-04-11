@@ -1,4 +1,4 @@
-# raylib
+# raylib-cr
 
 TODO: Write a description here
 
@@ -28,7 +28,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/raylib-cr/fork>)
+1. Fork it (<https://github.com/AregevDev/raylib-cr/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -36,4 +36,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-name-here](https://github.com/your-github-user) - creator and maintainer
+- [AregevDev](https://github.com/AregevDev) - creator and maintainer
