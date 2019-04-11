@@ -258,20 +258,20 @@ lib LibRaylib
   HMD_VALVE_HTC_VIVE          =                4_u32
   HMD_SONY_PSVR               =                5_u32
 
-  type LogType = UInt32
-  type ShaderLocationIndex = UInt32
-  type TexmapIndex = UInt32
-  type PixelFormat = UInt32
-  type TextureFilterMode = UInt32
-  type TextureWrapMode = UInt32
-  type BlendMode = UInt32
-  type Gestures = UInt32
-  type CameraMode = UInt32
-  type CameraType = UInt32
-  type VrDeviceType = UInt32
-  type Texture = Texture2D
-  type Quaternion = Vector4
-  type Music = MusicData*
+  alias LogType = UInt32
+  alias ShaderLocationIndex = UInt32
+  alias TexmapIndex = UInt32
+  alias PixelFormat = UInt32
+  alias TextureFilterMode = UInt32
+  alias TextureWrapMode = UInt32
+  alias BlendMode = UInt32
+  alias Gestures = UInt32
+  alias CameraMode = UInt32
+  alias CameraType = UInt32
+  alias VrDeviceType = UInt32
+  alias Texture = Texture2D
+  alias Quaternion = Vector4
+  alias Music = MusicData*
 
   struct Vector2
     x : Float32
@@ -476,7 +476,7 @@ lib LibRaylib
   fun InitWindow(
     width : Int32,
     height : Int32,
-    title : Int8*
+    title : UInt8*
   )
   fun CloseWindow
   fun IsWindowReady : Bool
@@ -484,7 +484,7 @@ lib LibRaylib
   fun IsWindowMinimized : Bool
   fun ToggleFullscreen
   fun SetWindowIcon(image : Image)
-  fun SetWindowTitle(title : Int8*)
+  fun SetWindowTitle(title : UInt8*)
 
   fun SetWindowPosition(x : Int32, y : Int32)
 
@@ -556,9 +556,9 @@ lib LibRaylib
 
   fun SetTraceLog(types : UInt8)
 
-  fun TraceLog(logType : Int32, text : Int8*, ...)
+  fun TraceLog(logType : Int32, text : UInt8*, ...)
 
-  fun TakeScreenshot(fileName : Int8*)
+  fun TakeScreenshot(fileName : UInt8*)
 
   fun GetRandomValue(
     min : Int32,
@@ -566,21 +566,21 @@ lib LibRaylib
   ) : Int32
 
   fun IsFileExtension(
-    fileName : Int8*,
-    ext : Int8*
+    fileName : UInt8*,
+    ext : UInt8*
   ) : Bool
 
-  fun GetExtension(fileName : Int8*) : Int8*
+  fun GetExtension(fileName : UInt8*) : UInt8*
 
-  fun GetFileName(filePath : Int8*) : Int8*
+  fun GetFileName(filePath : UInt8*) : UInt8*
 
   fun GetDirectoryPath(
-    fileName : Int8*
-  ) : Int8*
+    fileName : UInt8*
+  ) : UInt8*
 
-  fun GetWorkingDirectory : Int8*
+  fun GetWorkingDirectory : UInt8*
 
-  fun ChangeDirectory(dir : Int8*) : Bool
+  fun ChangeDirectory(dir : UInt8*) : Bool
 
   fun IsFileDropped : Bool
 
@@ -608,10 +608,10 @@ lib LibRaylib
 
   fun IsGamepadName(
     gamepad : Int32,
-    name : Int8*
+    name : UInt8*
   ) : Bool
 
-  fun GetGamepadName(gamepad : Int32) : Int8*
+  fun GetGamepadName(gamepad : Int32) : UInt8*
 
   fun IsGamepadButtonPressed(
     gamepad : Int32,
@@ -834,7 +834,7 @@ lib LibRaylib
     p3 : Vector2
   ) : Bool
 
-  fun LoadImage(fileName : Int8*) : Image
+  fun LoadImage(fileName : UInt8*) : Image
 
   fun LoadImageEx(
     pixels : Color*,
@@ -850,16 +850,16 @@ lib LibRaylib
   ) : Image
 
   fun LoadImageRaw(
-    fileName : Int8*,
+    fileName : UInt8*,
     width : Int32,
     height : Int32,
     format : Int32,
     headerSize : Int32
   ) : Image
 
-  fun ExportImage(fileName : Int8*, image : Image)
+  fun ExportImage(fileName : UInt8*, image : Image)
 
-  fun LoadTexture(fileName : Int8*) : Texture2D
+  fun LoadTexture(fileName : UInt8*) : Texture2D
 
   fun LoadTextureFromImage(image : Image) : Texture2D
 
@@ -936,14 +936,14 @@ lib LibRaylib
   )
 
   fun ImageText(
-    text : Int8*,
+    text : UInt8*,
     fontSize : Int32,
     color : Color
   ) : Image
 
   fun ImageTextEx(
     font : Font,
-    text : Int8*,
+    text : UInt8*,
     fontSize : Float32,
     spacing : Float32,
     tint : Color
@@ -956,7 +956,7 @@ lib LibRaylib
   fun ImageDrawText(
     dst : Image**,
     position : Vector2,
-    text : Int8*,
+    text : UInt8*,
     fontSize : Int32,
     color : Color
   )
@@ -965,7 +965,7 @@ lib LibRaylib
     dst : Image**,
     position : Vector2,
     font : Font,
-    text : Int8*,
+    text : UInt8*,
     fontSize : Float32,
     spacing : Float32,
     color : Color
@@ -1084,17 +1084,17 @@ lib LibRaylib
 
   fun GetFontDefault : Font
 
-  fun LoadFont(fileName : Int8*) : Font
+  fun LoadFont(fileName : UInt8*) : Font
 
   fun LoadFontEx(
-    fileName : Int8*,
+    fileName : UInt8*,
     fontSize : Int32,
     charsCount : Int32,
     fontChars : Int32*
   ) : Font
 
   fun LoadFontData(
-    fileName : Int8*,
+    fileName : UInt8*,
     fontSize : Int32,
     fontChars : Int32*,
     charsCount : Int32,
@@ -1114,7 +1114,7 @@ lib LibRaylib
   fun DrawFPS(posX : Int32, posY : Int32)
 
   fun DrawText(
-    text : Int8*,
+    text : UInt8*,
     posX : Int32,
     posY : Int32,
     fontSize : Int32,
@@ -1123,7 +1123,7 @@ lib LibRaylib
 
   fun DrawTextEx(
     font : Font,
-    text : Int8*,
+    text : UInt8*,
     position : Vector2,
     fontSize : Float32,
     spacing : Float32,
@@ -1131,24 +1131,24 @@ lib LibRaylib
   )
 
   fun MeasureText(
-    text : Int8*,
+    text : UInt8*,
     fontSize : Int32
   ) : Int32
 
   fun MeasureTextEx(
     font : Font,
-    text : Int8*,
+    text : UInt8*,
     fontSize : Float32,
     spacing : Float32
   ) : Vector2
 
-  fun FormatText(text : Int8*, ...) : Int8*
+  fun FormatText(text : UInt8*, ...) : UInt8*
 
   fun SubText(
-    text : Int8*,
+    text : UInt8*,
     position : Int32,
     length : Int32
-  ) : Int8*
+  ) : UInt8*
 
   fun GetGlyphIndex(font : Font, character : Int32) : Int32
 
@@ -1221,17 +1221,17 @@ lib LibRaylib
 
   fun DrawGizmo(position : Vector3)
 
-  fun LoadModel(fileName : Int8*) : Model
+  fun LoadModel(fileName : UInt8*) : Model
 
   fun LoadModelFromMesh(mesh : Mesh) : Model
 
   fun UnloadModel(model : Model)
 
-  fun LoadMesh(fileName : Int8*) : Mesh
+  fun LoadMesh(fileName : UInt8*) : Mesh
 
   fun UnloadMesh(mesh : Mesh*)
 
-  fun ExportMesh(fileName : Int8*, mesh : Mesh)
+  fun ExportMesh(fileName : UInt8*, mesh : Mesh)
 
   fun MeshBoundingBox(mesh : Mesh) : BoundingBox
 
@@ -1280,7 +1280,7 @@ lib LibRaylib
 
   fun GenMeshCubicmap(cubicmap : Image, cubeSize : Vector3) : Mesh
 
-  fun LoadMaterial(fileName : Int8*) : Material
+  fun LoadMaterial(fileName : UInt8*) : Material
 
   fun LoadMaterialDefault : Material
 
@@ -1359,16 +1359,16 @@ lib LibRaylib
 
   fun GetCollisionRayGround(ray : Ray, groundHeight : Float32) : RayHitInfo
 
-  fun LoadText(fileName : Int8*) : Int8*
+  fun LoadText(fileName : UInt8*) : UInt8*
 
   fun LoadShader(
-    vsFileName : Int8*,
-    fsFileName : Int8*
+    vsFileName : UInt8*,
+    fsFileName : UInt8*
   ) : Shader
 
   fun LoadShaderCode(
-    vsCode : Int8*,
-    fsCode : Int8*
+    vsCode : UInt8*,
+    fsCode : UInt8*
   ) : Shader
 
   fun UnloadShader(shader : Shader)
@@ -1379,7 +1379,7 @@ lib LibRaylib
 
   fun GetShaderLocation(
     shader : Shader,
-    uniformName : Int8*
+    uniformName : UInt8*
   ) : Int32
 
   fun SetShaderValue(
@@ -1462,7 +1462,7 @@ lib LibRaylib
 
   fun SetMasterVolume(volume : Float32)
 
-  fun LoadWave(fileName : Int8*) : Wave
+  fun LoadWave(fileName : UInt8*) : Wave
 
   fun LoadWaveEx(
     data : Void*,
@@ -1472,7 +1472,7 @@ lib LibRaylib
     channels : Int32
   ) : Wave
 
-  fun LoadSound(fileName : Int8*) : Sound
+  fun LoadSound(fileName : UInt8*) : Sound
 
   fun LoadSoundFromWave(wave : Wave) : Sound
 
@@ -1517,7 +1517,7 @@ lib LibRaylib
 
   fun GetWaveData(wave : Wave) : Float32*
 
-  fun LoadMusicStream(fileName : Int8*) : Music
+  fun LoadMusicStream(fileName : UInt8*) : Music
 
   fun UnloadMusicStream(music : Music)
 
