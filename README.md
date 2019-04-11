@@ -9,7 +9,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      raylib-cr:
-       github: your-github-user/raylib-cr
+       github: AregevDev/raylib-cr
    ```
 
 2. Run `shards install`
