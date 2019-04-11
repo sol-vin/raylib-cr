@@ -472,4 +472,1104 @@ lib LibRaylib
     lensDistortionValues : StaticArray(Float32, 4)
     chromaAbCorrection : StaticArray(Float32, 4)
   end
+
+  fun InitWindow(
+    width : Int32,
+    height : Int32,
+    title : Int8*
+  )
+  fun CloseWindow
+  fun IsWindowReady : Bool
+  fun WindowShouldClose : Bool
+  fun IsWindowMinimized : Bool
+  fun ToggleFullscreen
+  fun SetWindowIcon(image : Image)
+  fun SetWindowTitle(title : Int8*)
+
+  fun SetWindowPosition(x : Int32, y : Int32)
+
+  fun SetWindowMonitor(monitor : Int32)
+
+  fun SetWindowMinSize(width : Int32, height : Int32)
+
+  fun SetWindowSize(width : Int32, height : Int32)
+
+  fun GetScreenWidth : Int32
+
+  fun GetScreenHeight : Int32
+
+  fun ShowCursor
+
+  fun HideCursor
+
+  fun IsCursorHidden : Bool
+
+  fun EnableCursor
+
+  fun DisableCursor
+
+  fun ClearBackground(color : Color)
+
+  fun BeginDrawing
+
+  fun EndDrawing
+
+  fun BeginMode2D(camera : Camera2D)
+
+  fun EndMode2D
+
+  fun BeginMode3D(camera : Camera3D)
+
+  fun EndMode3D
+
+  fun BeginTextureMode(target : RenderTexture2D)
+
+  fun EndTextureMode
+
+  fun GetMouseRay(mousePosition : Vector2, camera : Camera3D) : Ray
+
+  fun GetWorldToScreen(position : Vector3, camera : Camera3D) : Vector2
+
+  fun GetCameraMatrix(camera : Camera3D) : Matrix
+
+  fun SetTargetFPS(fps : Int32)
+
+  fun GetFPS : Int32
+
+  fun GetFrameTime : Float32
+
+  fun GetTime : Float64
+
+  fun ColorToInt(color : Color) : Int32
+
+  fun ColorNormalize(color : Color) : Vector4
+
+  fun ColorToHSV(color : Color) : Vector3
+
+  fun GetColor(hexValue : Int32) : Color
+
+  fun Fade(color : Color, alpha : Float32) : Color
+
+  fun ShowLogo
+
+  fun SetConfigFlags(flags : UInt8)
+
+  fun SetTraceLog(types : UInt8)
+
+  fun TraceLog(logType : Int32, text : Int8*, ...)
+
+  fun TakeScreenshot(fileName : Int8*)
+
+  fun GetRandomValue(
+    min : Int32,
+    max : Int32
+  ) : Int32
+
+  fun IsFileExtension(
+    fileName : Int8*,
+    ext : Int8*
+  ) : Bool
+
+  fun GetExtension(fileName : Int8*) : Int8*
+
+  fun GetFileName(filePath : Int8*) : Int8*
+
+  fun GetDirectoryPath(
+    fileName : Int8*
+  ) : Int8*
+
+  fun GetWorkingDirectory : Int8*
+
+  fun ChangeDirectory(dir : Int8*) : Bool
+
+  fun IsFileDropped : Bool
+
+  fun GetDroppedFiles(count : Int32*) : UInt8**
+
+  fun ClearDroppedFiles
+
+  fun StorageSaveValue(position : Int32, value : Int32)
+
+  fun StorageLoadValue(position : Int32) : Int32
+
+  fun IsKeyPressed(key : Int32) : Bool
+
+  fun IsKeyDown(key : Int32) : Bool
+
+  fun IsKeyReleased(key : Int32) : Bool
+
+  fun IsKeyUp(key : Int32) : Bool
+
+  fun GetKeyPressed : Int32
+
+  fun SetExitKey(key : Int32)
+
+  fun IsGamepadAvailable(gamepad : Int32) : Bool
+
+  fun IsGamepadName(
+    gamepad : Int32,
+    name : Int8*
+  ) : Bool
+
+  fun GetGamepadName(gamepad : Int32) : Int8*
+
+  fun IsGamepadButtonPressed(
+    gamepad : Int32,
+    button : Int32
+  ) : Bool
+
+  fun IsGamepadButtonDown(
+    gamepad : Int32,
+    button : Int32
+  ) : Bool
+
+  fun IsGamepadButtonReleased(
+    gamepad : Int32,
+    button : Int32
+  ) : Bool
+
+  fun IsGamepadButtonUp(gamepad : Int32, button : Int32) : Bool
+
+  fun GetGamepadButtonPressed : Int32
+
+  fun GetGamepadAxisCount(gamepad : Int32) : Int32
+
+  fun GetGamepadAxisMovement(
+    gamepad : Int32,
+    axis : Int32
+  ) : Float32
+
+  fun IsMouseButtonPressed(button : Int32) : Bool
+
+  fun IsMouseButtonDown(button : Int32) : Bool
+
+  fun IsMouseButtonReleased(button : Int32) : Bool
+
+  fun IsMouseButtonUp(button : Int32) : Bool
+
+  fun GetMouseX : Int32
+
+  fun GetMouseY : Int32
+
+  fun GetMousePosition : Vector2
+
+  fun SetMousePosition(position : Vector2)
+
+  fun SetMouseScale(scale : Float32)
+
+  fun GetMouseWheelMove : Int32
+
+  fun GetTouchX : Int32
+
+  fun GetTouchY : Int32
+
+  fun GetTouchPosition(index : Int32) : Vector2
+
+  fun SetGesturesEnabled(gestureFlags : UInt32)
+
+  fun IsGestureDetected(gesture : Int32) : Bool
+
+  fun GetGestureDetected : Int32
+
+  fun GetTouchPointsCount : Int32
+
+  fun GetGestureHoldDuration : Float32
+
+  fun GetGestureDragVector : Vector2
+
+  fun GetGestureDragAngle : Float32
+
+  fun GetGesturePinchVector : Vector2
+
+  fun GetGesturePinchAngle : Float32
+
+  fun SetCameraMode(camera : Camera3D, mode : Int32)
+
+  fun UpdateCamera(camera : Camera3D*)
+
+  fun SetCameraPanControl(panKey : Int32)
+
+  fun SetCameraAltControl(altKey : Int32)
+
+  fun SetCameraSmoothZoomControl(szKey : Int32)
+
+  fun SetCameraMoveControls(
+    frontKey : Int32,
+    backKey : Int32,
+    rightKey : Int32,
+    leftKey : Int32,
+    upKey : Int32,
+    downKey : Int32
+  )
+
+  fun DrawPixel(posX : Int32, posY : Int32, color : Color)
+
+  fun DrawPixelV(position : Vector2, color : Color)
+
+  fun DrawLine(
+    startPosX : Int32,
+    startPosY : Int32,
+    endPosX : Int32,
+    endPosY : Int32,
+    color : Color
+  )
+
+  fun DrawLineV(startPos : Vector2, endPos : Vector2, color : Color)
+
+  fun DrawLineEx(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
+
+  fun DrawLineBezier(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
+
+  fun DrawCircle(
+    centerX : Int32,
+    centerY : Int32,
+    radius : Float32,
+    color : Color
+  )
+
+  fun DrawCircleGradient(
+    centerX : Int32,
+    centerY : Int32,
+    radius : Float32,
+    color1 : Color,
+    color2 : Color
+  )
+
+  fun DrawCircleV(center : Vector2, radius : Float32, color : Color)
+
+  fun DrawCircleLines(
+    centerX : Int32,
+    centerY : Int32,
+    radius : Float32,
+    color : Color
+  )
+
+  fun DrawRectangle(
+    posX : Int32,
+    posY : Int32,
+    width : Int32,
+    height : Int32,
+    color : Color
+  )
+
+  fun DrawRectangleV(position : Vector2, size : Vector2, color : Color)
+
+  fun DrawRectangleRec(rec : Rectangle, color : Color)
+
+  fun DrawRectanglePro(rec : Rectangle, origin : Vector2, rotation : Float32, color : Color)
+
+  fun DrawRectangleGradientV(
+    posX : Int32,
+    posY : Int32,
+    width : Int32,
+    height : Int32,
+    color1 : Color,
+    color2 : Color
+  )
+
+  fun DrawRectangleGradientH(
+    posX : Int32,
+    posY : Int32,
+    width : Int32,
+    height : Int32,
+    color1 : Color,
+    color2 : Color
+  )
+
+  fun DrawRectangleGradientEx(
+    rec : Rectangle,
+    col1 : Color,
+    col2 : Color,
+    col3 : Color,
+    col4 : Color
+  )
+
+  fun DrawRectangleLines(
+    posX : Int32,
+    posY : Int32,
+    width : Int32,
+    height : Int32,
+    color : Color
+  )
+
+  fun DrawRectangleLinesEx(rec : Rectangle, lineThick : Int32, color : Color)
+
+  fun DrawTriangle(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
+
+  fun DrawTriangleLines(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
+
+  fun DrawPoly(
+    center : Vector2,
+    sides : Int32,
+    radius : Float32,
+    rotation : Float32,
+    color : Color
+  )
+
+  fun DrawPolyEx(points : Vector2*, numPoints : Int32, color : Color)
+
+  fun DrawPolyExLines(points : Vector2*, numPoints : Int32, color : Color)
+
+  fun CheckCollisionRecs(rec1 : Rectangle, rec2 : Rectangle) : Bool
+
+  fun CheckCollisionCircles(
+    center1 : Vector2,
+    radius1 : Float32,
+    center2 : Vector2,
+    radius2 : Float32
+  ) : Bool
+
+  fun CheckCollisionCircleRec(center : Vector2, radius : Float32, rec : Rectangle) : Bool
+
+  fun GetCollisionRec(rec1 : Rectangle, rec2 : Rectangle) : Rectangle
+
+  fun CheckCollisionPointRec(point : Vector2, rec : Rectangle) : Bool
+
+  fun CheckCollisionPointCircle(point : Vector2, center : Vector2, radius : Float32) : Bool
+
+  fun CheckCollisionPointTriangle(
+    point : Vector2,
+    p1 : Vector2,
+    p2 : Vector2,
+    p3 : Vector2
+  ) : Bool
+
+  fun LoadImage(fileName : Int8*) : Image
+
+  fun LoadImageEx(
+    pixels : Color*,
+    width : Int32,
+    height : Int32
+  ) : Image
+
+  fun LoadImagePro(
+    data : Void*,
+    width : Int32,
+    height : Int32,
+    format : Int32
+  ) : Image
+
+  fun LoadImageRaw(
+    fileName : Int8*,
+    width : Int32,
+    height : Int32,
+    format : Int32,
+    headerSize : Int32
+  ) : Image
+
+  fun ExportImage(fileName : Int8*, image : Image)
+
+  fun LoadTexture(fileName : Int8*) : Texture2D
+
+  fun LoadTextureFromImage(image : Image) : Texture2D
+
+  fun LoadRenderTexture(
+    width : Int32,
+    height : Int32
+  ) : RenderTexture2D
+
+  fun UnloadImage(image : Image)
+
+  fun UnloadTexture(texture : Texture2D)
+
+  fun UnloadRenderTexture(target : RenderTexture2D)
+
+  fun GetImageData(image : Image) : Color*
+
+  fun GetImageDataNormalized(image : Image) : Vector4*
+
+  fun GetPixelDataSize(
+    width : Int32,
+    height : Int32,
+    format : Int32
+  ) : Int32
+
+  fun GetTextureData(texture : Texture2D) : Image
+
+  fun UpdateTexture(texture : Texture2D, pixels : Void*)
+
+  fun ImageCopy(image : Image) : Image
+
+  fun ImageToPOT(image : Image**, fillColor : Color)
+
+  fun ImageFormat(image : Image**, newFormat : Int32)
+
+  fun ImageAlphaMask(image : Image**, alphaMask : Image)
+
+  fun ImageAlphaClear(image : Image**, color : Color, threshold : Float32)
+
+  fun ImageAlphaCrop(image : Image**, threshold : Float32)
+
+  fun ImageAlphaPremultiply(image : Image**)
+
+  fun ImageCrop(image : Image**, crop : Rectangle)
+
+  fun ImageResize(
+    image : Image**,
+    newWidth : Int32,
+    newHeight : Int32
+  )
+
+  fun ImageResizeNN(
+    image : Image**,
+    newWidth : Int32,
+    newHeight : Int32
+  )
+
+  fun ImageResizeCanvas(
+    image : Image**,
+    newWidth : Int32,
+    newHeight : Int32,
+    offsetX : Int32,
+    offsetY : Int32,
+    color : Color
+  )
+
+  fun ImageMipmaps(image : Image**)
+
+  fun ImageDither(
+    image : Image**,
+    rBpp : Int32,
+    gBpp : Int32,
+    bBpp : Int32,
+    aBpp : Int32
+  )
+
+  fun ImageText(
+    text : Int8*,
+    fontSize : Int32,
+    color : Color
+  ) : Image
+
+  fun ImageTextEx(
+    font : Font,
+    text : Int8*,
+    fontSize : Float32,
+    spacing : Float32,
+    tint : Color
+  ) : Image
+
+  fun ImageDraw(dst : Image**, src : Image, srcRec : Rectangle, dstRec : Rectangle)
+
+  fun ImageDrawRectangle(dst : Image**, position : Vector2, rec : Rectangle, color : Color)
+
+  fun ImageDrawText(
+    dst : Image**,
+    position : Vector2,
+    text : Int8*,
+    fontSize : Int32,
+    color : Color
+  )
+
+  fun ImageDrawTextEx(
+    dst : Image**,
+    position : Vector2,
+    font : Font,
+    text : Int8*,
+    fontSize : Float32,
+    spacing : Float32,
+    color : Color
+  )
+
+  fun ImageFlipVertical(image : Image**)
+
+  fun ImageFlipHorizontal(image : Image**)
+
+  fun ImageRotateCW(image : Image*)
+
+  fun ImageRotateCCW(image : Image*)
+
+  fun ImageColorTint(image : Image*, color : Color)
+
+  fun ImageColorInvert(image : Image*)
+
+  fun ImageColorGrayscale(image : Image*)
+
+  fun ImageColorContrast(image : Image*, contrast : Float32)
+
+  fun ImageColorBrightness(image : Image*, brightness : Int32)
+
+  fun ImageColorReplace(image : Image*, color : Color, replace : Color)
+
+  fun GenImageColor(
+    width : Int32,
+    height : Int32,
+    color : Color
+  ) : Image
+
+  fun GenImageGradientV(
+    width : Int32,
+    height : Int32,
+    top : Color,
+    bottom : Color
+  ) : Image
+
+  fun GenImageGradientH(
+    width : Int32,
+    height : Int32,
+    left : Color,
+    right : Color
+  ) : Image
+
+  fun GenImageGradientRadial(
+    width : Int32,
+    height : Int32,
+    density : Float32,
+    inner : Color,
+    outer : Color
+  ) : Image
+
+  fun GenImageChecked(
+    width : Int32,
+    height : Int32,
+    checksX : Int32,
+    checksY : Int32,
+    col1 : Color,
+    col2 : Color
+  ) : Image
+
+  fun GenImageWhiteNoise(
+    width : Int32,
+    height : Int32,
+    factor : Float32
+  ) : Image
+
+  fun GenImagePerlinNoise(
+    width : Int32,
+    height : Int32,
+    offsetX : Int32,
+    offsetY : Int32,
+    scale : Float32
+  ) : Image
+
+  fun GenImageCellular(
+    width : Int32,
+    height : Int32,
+    tileSize : Int32
+  ) : Image
+
+  fun GenTextureMipmaps(texture : Texture2D*)
+
+  fun SetTextureFilter(texture : Texture2D, filterMode : Int32)
+
+  fun SetTextureWrap(texture : Texture2D, wrapMode : Int32)
+
+  fun DrawTexture(
+    texture : Texture2D,
+    posX : Int32,
+    posY : Int32,
+    tint : Color
+  )
+
+  fun DrawTextureV(texture : Texture2D, position : Vector2, tint : Color)
+
+  fun DrawTextureEx(
+    texture : Texture2D,
+    position : Vector2,
+    rotation : Float32,
+    scale : Float32,
+    tint : Color
+  )
+
+  fun DrawTextureRec(texture : Texture2D, sourceRec : Rectangle, position : Vector2, tint : Color)
+
+  fun DrawTexturePro(
+    texture : Texture2D,
+    sourceRec : Rectangle,
+    destRec : Rectangle,
+    origin : Vector2,
+    rotation : Float32,
+    tint : Color
+  )
+
+  fun GetFontDefault : Font
+
+  fun LoadFont(fileName : Int8*) : Font
+
+  fun LoadFontEx(
+    fileName : Int8*,
+    fontSize : Int32,
+    charsCount : Int32,
+    fontChars : Int32*
+  ) : Font
+
+  fun LoadFontData(
+    fileName : Int8*,
+    fontSize : Int32,
+    fontChars : Int32*,
+    charsCount : Int32,
+    sdf : Bool
+  ) : CharInfo*
+
+  fun GenImageFontAtlas(
+    chars : CharInfo*,
+    fontSize : Int32,
+    charsCount : Int32,
+    padding : Int32,
+    packMethod : Int32
+  ) : Image
+
+  fun UnloadFont(font : Font)
+
+  fun DrawFPS(posX : Int32, posY : Int32)
+
+  fun DrawText(
+    text : Int8*,
+    posX : Int32,
+    posY : Int32,
+    fontSize : Int32,
+    color : Color
+  )
+
+  fun DrawTextEx(
+    font : Font,
+    text : Int8*,
+    position : Vector2,
+    fontSize : Float32,
+    spacing : Float32,
+    tint : Color
+  )
+
+  fun MeasureText(
+    text : Int8*,
+    fontSize : Int32
+  ) : Int32
+
+  fun MeasureTextEx(
+    font : Font,
+    text : Int8*,
+    fontSize : Float32,
+    spacing : Float32
+  ) : Vector2
+
+  fun FormatText(text : Int8*, ...) : Int8*
+
+  fun SubText(
+    text : Int8*,
+    position : Int32,
+    length : Int32
+  ) : Int8*
+
+  fun GetGlyphIndex(font : Font, character : Int32) : Int32
+
+  fun DrawLine3D(startPos : Vector3, endPos : Vector3, color : Color)
+
+  fun DrawCircle3D(
+    center : Vector3,
+    radius : Float32,
+    rotationAxis : Vector3,
+    rotationAngle : Float32,
+    color : Color
+  )
+
+  fun DrawCube(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
+
+  fun DrawCubeV(position : Vector3, size : Vector3, color : Color)
+
+  fun DrawCubeWires(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
+
+  fun DrawCubeTexture(
+    texture : Texture2D,
+    position : Vector3,
+    width : Float32,
+    height : Float32,
+    length : Float32,
+    color : Color
+  )
+
+  fun DrawSphere(centerPos : Vector3, radius : Float32, color : Color)
+
+  fun DrawSphereEx(
+    centerPos : Vector3,
+    radius : Float32,
+    rings : Int32,
+    slices : Int32,
+    color : Color
+  )
+
+  fun DrawSphereWires(
+    centerPos : Vector3,
+    radius : Float32,
+    rings : Int32,
+    slices : Int32,
+    color : Color
+  )
+
+  fun DrawCylinder(
+    position : Vector3,
+    radiusTop : Float32,
+    radiusBottom : Float32,
+    height : Float32,
+    slices : Int32,
+    color : Color
+  )
+
+  fun DrawCylinderWires(
+    position : Vector3,
+    radiusTop : Float32,
+    radiusBottom : Float32,
+    height : Float32,
+    slices : Int32,
+    color : Color
+  )
+
+  fun DrawPlane(centerPos : Vector3, size : Vector2, color : Color)
+
+  fun DrawRay(ray : Ray, color : Color)
+
+  fun DrawGrid(slices : Int32, spacing : Float32)
+
+  fun DrawGizmo(position : Vector3)
+
+  fun LoadModel(fileName : Int8*) : Model
+
+  fun LoadModelFromMesh(mesh : Mesh) : Model
+
+  fun UnloadModel(model : Model)
+
+  fun LoadMesh(fileName : Int8*) : Mesh
+
+  fun UnloadMesh(mesh : Mesh*)
+
+  fun ExportMesh(fileName : Int8*, mesh : Mesh)
+
+  fun MeshBoundingBox(mesh : Mesh) : BoundingBox
+
+  fun MeshTangents(mesh : Mesh*)
+
+  fun MeshBinormals(mesh : Mesh*)
+
+  fun GenMeshPlane(
+    width : Float32,
+    length : Float32,
+    resX : Int32,
+    resZ : Int32
+  ) : Mesh
+
+  fun GenMeshCube(width : Float32, height : Float32, length : Float32) : Mesh
+
+  fun GenMeshSphere(
+    radius : Float32,
+    rings : Int32,
+    slices : Int32
+  ) : Mesh
+
+  fun GenMeshHemiSphere(
+    radius : Float32,
+    rings : Int32,
+    slices : Int32
+  ) : Mesh
+
+  fun GenMeshCylinder(radius : Float32, height : Float32, slices : Int32) : Mesh
+
+  fun GenMeshTorus(
+    radius : Float32,
+    size : Float32,
+    radSeg : Int32,
+    sides : Int32
+  ) : Mesh
+
+  fun GenMeshKnot(
+    radius : Float32,
+    size : Float32,
+    radSeg : Int32,
+    sides : Int32
+  ) : Mesh
+
+  fun GenMeshHeightmap(heightmap : Image, size : Vector3) : Mesh
+
+  fun GenMeshCubicmap(cubicmap : Image, cubeSize : Vector3) : Mesh
+
+  fun LoadMaterial(fileName : Int8*) : Material
+
+  fun LoadMaterialDefault : Material
+
+  fun UnloadMaterial(material : Material)
+
+  fun DrawModel(model : Model, position : Vector3, scale : Float32, tint : Color)
+
+  fun DrawModelEx(
+    model : Model,
+    position : Vector3,
+    rotationAxis : Vector3,
+    rotationAngle : Float32,
+    scale : Vector3,
+    tint : Color
+  )
+
+  fun DrawModelWires(model : Model, position : Vector3, scale : Float32, tint : Color)
+
+  fun DrawModelWiresEx(
+    model : Model,
+    position : Vector3,
+    rotationAxis : Vector3,
+    rotationAngle : Float32,
+    scale : Vector3,
+    tint : Color
+  )
+
+  fun DrawBoundingBox(box_ : BoundingBox, color : Color)
+
+  fun DrawBillboard(
+    camera : Camera3D,
+    texture : Texture2D,
+    center : Vector3,
+    size : Float32,
+    tint : Color
+  )
+
+  fun DrawBillboardRec(
+    camera : Camera3D,
+    texture : Texture2D,
+    sourceRec : Rectangle,
+    center : Vector3,
+    size : Float32,
+    tint : Color
+  )
+
+  fun CheckCollisionSpheres(
+    centerA : Vector3,
+    radiusA : Float32,
+    centerB : Vector3,
+    radiusB : Float32
+  ) : Bool
+
+  fun CheckCollisionBoxes(box1 : BoundingBox, box2 : BoundingBox) : Bool
+
+  fun CheckCollisionBoxSphere(
+    box_ : BoundingBox,
+    centerSphere : Vector3,
+    radiusSphere : Float32
+  ) : Bool
+
+  fun CheckCollisionRaySphere(ray : Ray, spherePosition : Vector3, sphereRadius : Float32) : Bool
+
+  fun CheckCollisionRaySphereEx(
+    ray : Ray,
+    spherePosition : Vector3,
+    sphereRadius : Float32,
+    collisionPoint : Vector3*
+  ) : Bool
+
+  fun CheckCollisionRayBox(ray : Ray, box_ : BoundingBox) : Bool
+
+  fun GetCollisionRayModel(ray : Ray, model : Model*) : RayHitInfo
+
+  fun GetCollisionRayTriangle(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3) : RayHitInfo
+
+  fun GetCollisionRayGround(ray : Ray, groundHeight : Float32) : RayHitInfo
+
+  fun LoadText(fileName : Int8*) : Int8*
+
+  fun LoadShader(
+    vsFileName : Int8*,
+    fsFileName : Int8*
+  ) : Shader
+
+  fun LoadShaderCode(
+    vsCode : Int8*,
+    fsCode : Int8*
+  ) : Shader
+
+  fun UnloadShader(shader : Shader)
+
+  fun GetShaderDefault : Shader
+
+  fun GetTextureDefault : Texture2D
+
+  fun GetShaderLocation(
+    shader : Shader,
+    uniformName : Int8*
+  ) : Int32
+
+  fun SetShaderValue(
+    shader : Shader,
+    uniformLoc : Int32,
+    value : Float32*,
+    size : Int32
+  )
+
+  fun SetShaderValuei(
+    shader : Shader,
+    uniformLoc : Int32,
+    value : Int32*,
+    size : Int32
+  )
+
+  fun SetShaderValueMatrix(shader : Shader, uniformLoc : Int32, mat : Matrix)
+
+  fun SetMatrixProjection(proj : Matrix)
+
+  fun SetMatrixModelview(view : Matrix)
+
+  fun GetMatrixModelview : Matrix
+
+  fun GenTextureCubemap(
+    shader : Shader,
+    skyHDR : Texture2D,
+    size : Int32
+  ) : Texture2D
+
+  fun GenTextureIrradiance(
+    shader : Shader,
+    cubemap : Texture2D,
+    size : Int32
+  ) : Texture2D
+
+  fun GenTexturePrefilter(
+    shader : Shader,
+    cubemap : Texture2D,
+    size : Int32
+  ) : Texture2D
+
+  fun GenTextureBRDF(
+    shader : Shader,
+    cubemap : Texture2D,
+    size : Int32
+  ) : Texture2D
+
+  fun BeginShaderMode(shader : Shader)
+
+  fun EndShaderMode
+
+  fun BeginBlendMode(mode : Int32)
+
+  fun EndBlendMode
+
+  fun GetVrDeviceInfo(vrDeviceType : Int32) : VrDeviceInfo
+
+  fun InitVrSimulator(info : VrDeviceInfo)
+
+  fun CloseVrSimulator
+
+  fun IsVrSimulatorReady : Bool
+
+  fun SetVrDistortionShader(shader : Shader)
+
+  fun UpdateVrTracking(camera : Camera3D*)
+
+  fun ToggleVrMode
+
+  fun BeginVrDrawing
+
+  fun EndVrDrawing
+
+  fun InitAudioDevice
+
+  fun CloseAudioDevice
+
+  fun IsAudioDeviceReady : Bool
+
+  fun SetMasterVolume(volume : Float32)
+
+  fun LoadWave(fileName : Int8*) : Wave
+
+  fun LoadWaveEx(
+    data : Void*,
+    sampleCount : Int32,
+    sampleRate : Int32,
+    sampleSize : Int32,
+    channels : Int32
+  ) : Wave
+
+  fun LoadSound(fileName : Int8*) : Sound
+
+  fun LoadSoundFromWave(wave : Wave) : Sound
+
+  fun UpdateSound(
+    sound : Sound,
+    data : Void*,
+    samplesCount : Int32
+  )
+
+  fun UnloadWave(wave : Wave)
+
+  fun UnloadSound(sound : Sound)
+
+  fun PlaySound(sound : Sound)
+
+  fun PauseSound(sound : Sound)
+
+  fun ResumeSound(sound : Sound)
+
+  fun StopSound(sound : Sound)
+
+  fun IsSoundPlaying(sound : Sound) : Bool
+
+  fun SetSoundVolume(sound : Sound, volume : Float32)
+
+  fun SetSoundPitch(sound : Sound, pitch : Float32)
+
+  fun WaveFormat(
+    wave : Wave*,
+    sampleRate : Int32,
+    sampleSize : Int32,
+    channels : Int32
+  )
+
+  fun WaveCopy(wave : Wave) : Wave
+
+  fun WaveCrop(
+    wave : Wave*,
+    initSample : Int32,
+    finalSample : Int32
+  )
+
+  fun GetWaveData(wave : Wave) : Float32*
+
+  fun LoadMusicStream(fileName : Int8*) : Music
+
+  fun UnloadMusicStream(music : Music)
+
+  fun PlayMusicStream(music : Music)
+
+  fun UpdateMusicStream(music : Music)
+
+  fun StopMusicStream(music : Music)
+
+  fun PauseMusicStream(music : Music)
+
+  fun ResumeMusicStream(music : Music)
+
+  fun IsMusicPlaying(music : Music) : Bool
+
+  fun SetMusicVolume(music : Music, volume : Float32)
+
+  fun SetMusicPitch(music : Music, pitch : Float32)
+
+  fun SetMusicLoopCount(music : Music, count : Int32)
+
+  fun GetMusicTimeLength(music : Music) : Float32
+
+  fun GetMusicTimePlayed(music : Music) : Float32
+
+  fun InitAudioStream(
+    sampleRate : UInt32,
+    sampleSize : UInt32,
+    channels : UInt32
+  ) : AudioStream
+
+  fun UpdateAudioStream(
+    stream : AudioStream,
+    data : Void*,
+    samplesCount : Int32
+  )
+
+  fun CloseAudioStream(stream : AudioStream)
+
+  fun IsAudioBufferProcessed(stream : AudioStream) : Bool
+
+  fun PlayAudioStream(stream : AudioStream)
+
+  fun PauseAudioStream(stream : AudioStream)
+
+  fun ResumeAudioStream(stream : AudioStream)
+
+  fun IsAudioStreamPlaying(stream : AudioStream) : Bool
+
+  fun StopAudioStream(stream : AudioStream)
+
+  fun SetAudioStreamVolume(stream : AudioStream, volume : Float32)
+
+  fun SetAudioStreamPitch(stream : AudioStream, pitch : Float32)
 end
