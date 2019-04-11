@@ -1,5 +1,5 @@
 {% if flag?(:linux) && flag?(:x86_64) %}
-    @[Link(ldflags: "-L#{__DIR__}/../native/linux -lraylib -lm")]
+    @[Link(ldflags: "-L#{__DIR__}/../native/linux -lraylib -lm -lpthread -ldl -lrt -lX11")]
 {% elsif flag?(:darwin) && flag?(:x86_64) %}
     @[Link(ldflags: "-L#{__DIR__}/../native/darwin -lraylib")]
 {% end %}
@@ -11,6 +11,7 @@ lib LibRaylib
   FLAG_FULLSCREEN_MODE        =                2_u32
   FLAG_WINDOW_RESIZABLE       =                4_u32
   FLAG_WINDOW_UNDECORATED     =                8_u32
+  FLAG_WINDOW_TRANSPARENT     =               16_u32
   FLAG_MSAA_4X_HINT           =               32_u32
   FLAG_VSYNC_HINT             =               64_u32
   KEY_SPACE                   =               32_u32
