@@ -1,7 +1,7 @@
 {% if flag?(:linux) && flag?(:x86_64) %}
-    @[Link(ldflags: "-L#{__DIR__}/native/linux -lraylib -lglfw3 -lX11 -lm")]
+    @[Link(ldflags: "-L#{__DIR__}/../native/linux -lraylib -lm")]
 {% elsif flag?(:darwin) && flag?(:x86_64) %}
-    @[Link(ldflags: "-L#{__DIR__}/native/darwin -lraylib")]
+    @[Link(ldflags: "-L#{__DIR__}/../native/darwin -lraylib")]
 {% end %}
 lib LibRaylib
   PI                          =    3.141592653589793
