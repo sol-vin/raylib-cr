@@ -1,6 +1,7 @@
+![logo](logo/raylib-cr_256x256.png)
 # raylib-cr
 
-Bindings around `raylib`, a small and easy to use game development library.  
+Crystal Bindings for `raylib`, a small and easy to use game development library.  
 As for now the bindings only support the raw function calls from raylib itself, a warpper will be out shortly!
 The native library can be found in th `native` folder of this repository.
 
