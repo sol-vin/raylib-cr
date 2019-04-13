@@ -10,12 +10,11 @@ The native library can be found in th `native` folder of this repository.
 
 ## Installation
 1. Add `raylib-cr` to your `shard.yml`:
-
-   ```yml
-   dependencies:
-     raylib-cr:
-       github: AregevDev/raylib-cr
-   ```
+```yml
+  dependencies:
+    raylib-cr:
+      github: AregevDev/raylib-cr
+```
 2. Run `shards install`
 
 ## Usage Example
