@@ -1,3 +1,8 @@
+
+# Created by https://www.gitignore.io/api/crystal,visualstudiocode
+# Edit at https://www.gitignore.io/?templates=crystal,visualstudiocode
+
+### Crystal ###
 /docs/
 /lib/
 /bin/
@@ -5,5 +10,18 @@
 *.dwarf
 
 # Libraries don't need dependency lock
-# Dependencies will be locked in applications that use them
-/shard.lock
+# Dependencies will be locked in application that uses them
+#/shard.lock
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+# End of https://www.gitignore.io/api/crystal,visualstudiocode
