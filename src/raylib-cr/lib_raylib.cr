@@ -1,8 +1,6 @@
-{% if flag?(:linux) && flag?(:x86_64) %}
-    @[Link(ldflags: "-L#{__DIR__}/../native/linux -lraylib -lm -lpthread -ldl -lrt -lX11")]
-{% elsif flag?(:darwin) && flag?(:x86_64) %}
-    @[Link(ldflags: "-L#{__DIR__}/../native/darwin -lraylib")]
-{% end %}
+require "./link"
+link_flag
+
 lib LibRaylib
   PI                          =    3.141592653589793
   DEG2RAD                     = 0.017453292519943295
@@ -259,6 +257,33 @@ lib LibRaylib
   HMD_VALVE_HTC_VIVE          =                4_u32
   HMD_SONY_PSVR               =                5_u32
 
+  LIGHTGRAY  = Color.new r: 200, g: 200, b: 200, a: 255
+  GRAY       = Color.new r: 130, g: 130, b: 130, a: 255
+  DARKGRAY   = Color.new r: 80, g: 80, b: 80, a: 255
+  YELLOW     = Color.new r: 253, g: 249, b: 0, a: 255
+  GOLD       = Color.new r: 255, g: 203, b: 0, a: 255
+  ORANGE     = Color.new r: 255, g: 161, b: 0, a: 255
+  PINK       = Color.new r: 255, g: 109, b: 194, a: 255
+  RED        = Color.new r: 230, g: 41, b: 55, a: 255
+  MAROON     = Color.new r: 190, g: 33, b: 55, a: 255
+  GREEN      = Color.new r: 0, g: 228, b: 48, a: 255
+  LIME       = Color.new r: 0, g: 158, b: 47, a: 255
+  DARKGREEN  = Color.new r: 0, g: 117, b: 44, a: 255
+  SKYBLUE    = Color.new r: 102, g: 191, b: 255, a: 255
+  BLUE       = Color.new r: 0, g: 121, b: 241, a: 255
+  DARKBLUE   = Color.new r: 0, g: 82, b: 172, a: 255
+  PURPLE     = Color.new r: 200, g: 122, b: 255, a: 255
+  VIOLET     = Color.new r: 135, g: 60, b: 190, a: 255
+  DARKPURPLE = Color.new r: 112, g: 31, b: 126, a: 255
+  BEIGE      = Color.new r: 211, g: 176, b: 131, a: 255
+  BROWN      = Color.new r: 127, g: 106, b: 79, a: 255
+  DARKBROWN  = Color.new r: 76, g: 63, b: 47, a: 255
+  WHITE      = Color.new r: 255, g: 255, b: 255, a: 255
+  BLACK      = Color.new r: 0, g: 0, b: 0, a: 255
+  BLANK      = Color.new r: 0, g: 0, b: 0, a: 0
+  MAGENTA    = Color.new r: 255, g: 0, b: 255, a: 255
+  RAYWHITE   = Color.new r: 245, g: 245, b: 245, a: 255
+
   alias LogType = UInt32
   alias ShaderLocationIndex = UInt32
   alias TexmapIndex = UInt32
@@ -474,227 +499,223 @@ lib LibRaylib
     chromaAbCorrection : StaticArray(Float32, 4)
   end
 
-  fun InitWindow(
-    width : Int32,
-    height : Int32,
-    title : UInt8*
-  )
-  fun CloseWindow
-  fun IsWindowReady : Bool
-  fun WindowShouldClose : Bool
-  fun IsWindowMinimized : Bool
-  fun ToggleFullscreen
-  fun SetWindowIcon(image : Image)
-  fun SetWindowTitle(title : UInt8*)
+  fun init_window = InitWindow(width : Int32, height : Int32, title : UInt8*)
+  fun close_window = CloseWindow
+  fun window_ready? = IsWindowReady : Bool
+  fun window_should_close = WindowShouldClose : Bool
+  fun window_minimized = IsWindowMinimized : Bool
+  fun toggle_fullscreen = ToggleFullscreen
+  fun set_window_icon = SetWindowIcon(image : Image)
+  fun set_window_title = SetWindowTitle(title : UInt8*)
 
-  fun SetWindowPosition(x : Int32, y : Int32)
+  fun set_window_position = SetWindowPosition(x : Int32, y : Int32)
 
-  fun SetWindowMonitor(monitor : Int32)
+  fun set_window_monitor = SetWindowMonitor(monitor : Int32)
 
-  fun SetWindowMinSize(width : Int32, height : Int32)
+  fun set_window_min_size = SetWindowMinSize(width : Int32, height : Int32)
 
-  fun SetWindowSize(width : Int32, height : Int32)
+  fun set_window_size = SetWindowSize(width : Int32, height : Int32)
 
-  fun GetScreenWidth : Int32
+  fun get_screen_width = GetScreenWidth : Int32
 
-  fun GetScreenHeight : Int32
+  fun set_window_height = GetScreenHeight : Int32
 
-  fun ShowCursor
+  fun show_cursor = ShowCursor
 
-  fun HideCursor
+  fun hide_cursor = HideCursor
 
-  fun IsCursorHidden : Bool
+  fun cursor_hidden? = IsCursorHidden : Bool
 
-  fun EnableCursor
+  fun enable_cursor = EnableCursor
 
-  fun DisableCursor
+  fun disable_cursor = DisableCursor
 
-  fun ClearBackground(color : Color)
+  fun clear_background = ClearBackground(color : Color)
 
-  fun BeginDrawing
+  fun begin_drawing = BeginDrawing
 
-  fun EndDrawing
+  fun end_drawing = EndDrawing
 
-  fun BeginMode2D(camera : Camera2D)
+  fun begin_mode_2d = BeginMode2D(camera : Camera2D)
 
-  fun EndMode2D
+  fun end_mode_2d = EndMode2D
 
-  fun BeginMode3D(camera : Camera3D)
+  fun begin_mode_3d = BeginMode3D(camera : Camera3D)
 
-  fun EndMode3D
+  fun end_mode_3d = EndMode3D
 
-  fun BeginTextureMode(target : RenderTexture2D)
+  fun begin_texture_mode = BeginTextureMode(target : RenderTexture2D)
 
-  fun EndTextureMode
+  fun end_texture_mode = EndTextureMode
 
-  fun GetMouseRay(mousePosition : Vector2, camera : Camera3D) : Ray
+  fun get_mouse_ray = GetMouseRay(mousePosition : Vector2, camera : Camera3D) : Ray
 
-  fun GetWorldToScreen(position : Vector3, camera : Camera3D) : Vector2
+  fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera3D) : Vector2
 
-  fun GetCameraMatrix(camera : Camera3D) : Matrix
+  fun get_camera_matrix = GetCameraMatrix(camera : Camera3D) : Matrix
 
-  fun SetTargetFPS(fps : Int32)
+  fun set_target_fps = SetTargetFPS(fps : Int32)
 
-  fun GetFPS : Int32
+  fun get_fps = GetFPS : Int32
 
-  fun GetFrameTime : Float32
+  fun get_frame_time = GetFrameTime : Float32
 
-  fun GetTime : Float64
+  fun get_time = GetTime : Float64
 
-  fun ColorToInt(color : Color) : Int32
+  fun color_to_int = ColorToInt(color : Color) : Int32
 
-  fun ColorNormalize(color : Color) : Vector4
+  fun color_normalize = ColorNormalize(color : Color) : Vector4
 
-  fun ColorToHSV(color : Color) : Vector3
+  fun color_to_HSV = ColorToHSV(color : Color) : Vector3
 
-  fun GetColor(hexValue : Int32) : Color
+  fun get_color = GetColor(hexValue : Int32) : Color
 
-  fun Fade(color : Color, alpha : Float32) : Color
+  fun fade = Fade(color : Color, alpha : Float32) : Color
 
-  fun ShowLogo
+  fun show_logo = ShowLogo
 
-  fun SetConfigFlags(flags : UInt8)
+  fun set_config_flags = SetConfigFlags(flags : UInt8)
 
-  fun SetTraceLog(types : UInt8)
+  fun set_trace_log = SetTraceLog(types : UInt8)
 
-  fun TraceLog(logType : Int32, text : UInt8*, ...)
+  fun trace_log = TraceLog(logType : Int32, text : UInt8*, ...)
 
-  fun TakeScreenshot(fileName : UInt8*)
+  fun take_screenshot = TakeScreenshot(fileName : UInt8*)
 
-  fun GetRandomValue(
+  fun get_random_value = GetRandomValue(
     min : Int32,
     max : Int32
   ) : Int32
 
-  fun IsFileExtension(
+  fun file_extension? = IsFileExtension(
     fileName : UInt8*,
     ext : UInt8*
   ) : Bool
 
-  fun GetExtension(fileName : UInt8*) : UInt8*
+  fun get_extension = GetExtension(fileName : UInt8*) : UInt8*
 
-  fun GetFileName(filePath : UInt8*) : UInt8*
+  fun get_file_name = GetFileName(filePath : UInt8*) : UInt8*
 
-  fun GetDirectoryPath(
+  fun get_directory_path = GetDirectoryPath(
     fileName : UInt8*
   ) : UInt8*
 
-  fun GetWorkingDirectory : UInt8*
+  fun get_working_directory = GetWorkingDirectory : UInt8*
 
-  fun ChangeDirectory(dir : UInt8*) : Bool
+  fun change_directory = ChangeDirectory(dir : UInt8*) : Bool
 
-  fun IsFileDropped : Bool
+  fun file_dropped? = IsFileDropped : Bool
 
-  fun GetDroppedFiles(count : Int32*) : UInt8**
+  fun get_dropped_files = GetDroppedFiles(count : Int32*) : UInt8**
 
-  fun ClearDroppedFiles
+  fun clear_dropped_files = ClearDroppedFiles
 
-  fun StorageSaveValue(position : Int32, value : Int32)
+  fun storage_save_value = StorageSaveValue(position : Int32, value : Int32)
 
-  fun StorageLoadValue(position : Int32) : Int32
+  fun storage_load_value = StorageLoadValue(position : Int32) : Int32
 
-  fun IsKeyPressed(key : Int32) : Bool
+  fun key_pressed? = IsKeyPressed(key : Int32) : Bool
 
-  fun IsKeyDown(key : Int32) : Bool
+  fun key_down? = IsKeyDown(key : Int32) : Bool
 
-  fun IsKeyReleased(key : Int32) : Bool
+  fun key_released? = IsKeyReleased(key : Int32) : Bool
 
-  fun IsKeyUp(key : Int32) : Bool
+  fun key_up? = IsKeyUp(key : Int32) : Bool
 
-  fun GetKeyPressed : Int32
+  fun get_key_pressed = GetKeyPressed : Int32
 
-  fun SetExitKey(key : Int32)
+  fun set_exit_key = SetExitKey(key : Int32)
 
-  fun IsGamepadAvailable(gamepad : Int32) : Bool
+  fun gamepad_available? = IsGamepadAvailable(gamepad : Int32) : Bool
 
-  fun IsGamepadName(
+  fun gamepad_name? = IsGamepadName(
     gamepad : Int32,
     name : UInt8*
   ) : Bool
 
-  fun GetGamepadName(gamepad : Int32) : UInt8*
+  fun get_gamepad_name = GetGamepadName(gamepad : Int32) : UInt8*
 
-  fun IsGamepadButtonPressed(
+  fun gamepad_button_pressed? = IsGamepadButtonPressed(
     gamepad : Int32,
     button : Int32
   ) : Bool
 
-  fun IsGamepadButtonDown(
+  fun gamepad_button_down? = IsGamepadButtonDown(
     gamepad : Int32,
     button : Int32
   ) : Bool
 
-  fun IsGamepadButtonReleased(
+  fun gamepad_button_released? = IsGamepadButtonReleased(
     gamepad : Int32,
     button : Int32
   ) : Bool
 
-  fun IsGamepadButtonUp(gamepad : Int32, button : Int32) : Bool
+  fun gamepad_button_up? = IsGamepadButtonUp(gamepad : Int32, button : Int32) : Bool
 
-  fun GetGamepadButtonPressed : Int32
+  fun get_gamepad_button_pressed = GetGamepadButtonPressed : Int32
 
-  fun GetGamepadAxisCount(gamepad : Int32) : Int32
+  fun get_gamepad_axis_count = GetGamepadAxisCount(gamepad : Int32) : Int32
 
-  fun GetGamepadAxisMovement(
+  fun get_gamepad_axis_movement = GetGamepadAxisMovement(
     gamepad : Int32,
     axis : Int32
   ) : Float32
 
-  fun IsMouseButtonPressed(button : Int32) : Bool
+  fun mouse_button_pressed? = IsMouseButtonPressed(button : Int32) : Bool
 
-  fun IsMouseButtonDown(button : Int32) : Bool
+  fun mouse_button_down? = IsMouseButtonDown(button : Int32) : Bool
 
-  fun IsMouseButtonReleased(button : Int32) : Bool
+  fun mouse_button_released? = IsMouseButtonReleased(button : Int32) : Bool
 
-  fun IsMouseButtonUp(button : Int32) : Bool
+  fun mouse_button_up? = IsMouseButtonUp(button : Int32) : Bool
 
-  fun GetMouseX : Int32
+  fun get_mouse_x = GetMouseX : Int32
 
-  fun GetMouseY : Int32
+  fun get_mouse_y = GetMouseY : Int32
 
-  fun GetMousePosition : Vector2
+  fun get_mouse_position = GetMousePosition : Vector2
 
-  fun SetMousePosition(position : Vector2)
+  fun set_mouse_position = SetMousePosition(position : Vector2)
 
-  fun SetMouseScale(scale : Float32)
+  fun set_mouse_scale = SetMouseScale(scale : Float32)
 
-  fun GetMouseWheelMove : Int32
+  fun get_mouse_wheel_move = GetMouseWheelMove : Int32
 
-  fun GetTouchX : Int32
+  fun get_touch_x = GetTouchX : Int32
 
-  fun GetTouchY : Int32
+  fun get_touch_y = GetTouchY : Int32
 
-  fun GetTouchPosition(index : Int32) : Vector2
+  fun get_touch_position = GetTouchPosition(index : Int32) : Vector2
 
-  fun SetGesturesEnabled(gestureFlags : UInt32)
+  fun set_gestures_enabled = SetGesturesEnabled(gestureFlags : UInt32)
 
-  fun IsGestureDetected(gesture : Int32) : Bool
+  fun gesture_detected? = IsGestureDetected(gesture : Int32) : Bool
 
-  fun GetGestureDetected : Int32
+  fun get_gesture_detected = GetGestureDetected : Int32
 
-  fun GetTouchPointsCount : Int32
+  fun get_touch_points_count = GetTouchPointsCount : Int32
 
-  fun GetGestureHoldDuration : Float32
+  fun get_gesture_hold_duration = GetGestureHoldDuration : Float32
 
-  fun GetGestureDragVector : Vector2
+  fun get_gesture_drag_vector = GetGestureDragVector : Vector2
 
-  fun GetGestureDragAngle : Float32
+  fun get_gesture_drag_angle = GetGestureDragAngle : Float32
 
-  fun GetGesturePinchVector : Vector2
+  fun get_gesture_pinch_angle = GetGesturePinchVector : Vector2
 
-  fun GetGesturePinchAngle : Float32
+  fun get_gesture_pinch_angle = GetGesturePinchAngle : Float32
 
-  fun SetCameraMode(camera : Camera3D, mode : Int32)
+  fun set_camera_mode = SetCameraMode(camera : Camera3D, mode : Int32)
 
-  fun UpdateCamera(camera : Camera3D*)
+  fun update_camera = UpdateCamera(camera : Camera3D*)
 
-  fun SetCameraPanControl(panKey : Int32)
+  fun set_camera_pan_control = SetCameraPanControl(panKey : Int32)
 
-  fun SetCameraAltControl(altKey : Int32)
+  fun set_camera_alt_control = SetCameraAltControl(altKey : Int32)
 
-  fun SetCameraSmoothZoomControl(szKey : Int32)
+  fun set_camera_alt_control = SetCameraSmoothZoomControl(szKey : Int32)
 
-  fun SetCameraMoveControls(
+  fun set_camera_move_controls = SetCameraMoveControls(
     frontKey : Int32,
     backKey : Int32,
     rightKey : Int32,
@@ -703,11 +724,11 @@ lib LibRaylib
     downKey : Int32
   )
 
-  fun DrawPixel(posX : Int32, posY : Int32, color : Color)
+  fun draw_pixel = DrawPixel(posX : Int32, posY : Int32, color : Color)
 
-  fun DrawPixelV(position : Vector2, color : Color)
+  fun draw_pixel_v = DrawPixelV(position : Vector2, color : Color)
 
-  fun DrawLine(
+  fun draw_line = DrawLine(
     startPosX : Int32,
     startPosY : Int32,
     endPosX : Int32,
@@ -715,20 +736,20 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawLineV(startPos : Vector2, endPos : Vector2, color : Color)
+  fun draw_line_v = DrawLineV(startPos : Vector2, endPos : Vector2, color : Color)
 
-  fun DrawLineEx(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
+  fun draw_line_ex = DrawLineEx(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
 
-  fun DrawLineBezier(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
+  fun draw_line_bezier = DrawLineBezier(startPos : Vector2, endPos : Vector2, thick : Float32, color : Color)
 
-  fun DrawCircle(
+  fun draw_circle = DrawCircle(
     centerX : Int32,
     centerY : Int32,
     radius : Float32,
     color : Color
   )
 
-  fun DrawCircleGradient(
+  fun draw_circle_gradient = DrawCircleGradient(
     centerX : Int32,
     centerY : Int32,
     radius : Float32,
@@ -736,16 +757,16 @@ lib LibRaylib
     color2 : Color
   )
 
-  fun DrawCircleV(center : Vector2, radius : Float32, color : Color)
+  fun draw_circle_v = DrawCircleV(center : Vector2, radius : Float32, color : Color)
 
-  fun DrawCircleLines(
+  fun draw_circle_lines = DrawCircleLines(
     centerX : Int32,
     centerY : Int32,
     radius : Float32,
     color : Color
   )
 
-  fun DrawRectangle(
+  fun draw_rectangle = DrawRectangle(
     posX : Int32,
     posY : Int32,
     width : Int32,
@@ -753,22 +774,13 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawRectangleV(position : Vector2, size : Vector2, color : Color)
+  fun draw_rectangle_v = DrawRectangleV(position : Vector2, size : Vector2, color : Color)
 
-  fun DrawRectangleRec(rec : Rectangle, color : Color)
+  fun draw_rectangle_rec = DrawRectangleRec(rec : Rectangle, color : Color)
 
-  fun DrawRectanglePro(rec : Rectangle, origin : Vector2, rotation : Float32, color : Color)
+  fun draw_rectangle_pro = DrawRectanglePro(rec : Rectangle, origin : Vector2, rotation : Float32, color : Color)
 
-  fun DrawRectangleGradientV(
-    posX : Int32,
-    posY : Int32,
-    width : Int32,
-    height : Int32,
-    color1 : Color,
-    color2 : Color
-  )
-
-  fun DrawRectangleGradientH(
+  fun draw_rectangle_gradient_v = DrawRectangleGradientV(
     posX : Int32,
     posY : Int32,
     width : Int32,
@@ -777,7 +789,16 @@ lib LibRaylib
     color2 : Color
   )
 
-  fun DrawRectangleGradientEx(
+  fun draw_rectangle_gradient_h = DrawRectangleGradientH(
+    posX : Int32,
+    posY : Int32,
+    width : Int32,
+    height : Int32,
+    color1 : Color,
+    color2 : Color
+  )
+
+  fun draw_rectangle_gradient_h = DrawRectangleGradientEx(
     rec : Rectangle,
     col1 : Color,
     col2 : Color,
@@ -785,7 +806,7 @@ lib LibRaylib
     col4 : Color
   )
 
-  fun DrawRectangleLines(
+  fun draw_rectangle_lines = DrawRectangleLines(
     posX : Int32,
     posY : Int32,
     width : Int32,
@@ -793,13 +814,13 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawRectangleLinesEx(rec : Rectangle, lineThick : Int32, color : Color)
+  fun draw_rectangle_lines_ex = DrawRectangleLinesEx(rec : Rectangle, lineThick : Int32, color : Color)
 
-  fun DrawTriangle(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
+  fun draw_triangle = DrawTriangle(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
 
-  fun DrawTriangleLines(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
+  fun draw_triangle_lines = DrawTriangleLines(v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
 
-  fun DrawPoly(
+  fun draw_poly = DrawPoly(
     center : Vector2,
     sides : Int32,
     radius : Float32,
@@ -807,50 +828,50 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawPolyEx(points : Vector2*, numPoints : Int32, color : Color)
+  fun draw_poly_ex = DrawPolyEx(points : Vector2*, numPoints : Int32, color : Color)
 
-  fun DrawPolyExLines(points : Vector2*, numPoints : Int32, color : Color)
+  fun draw_poly_ex_lines = DrawPolyExLines(points : Vector2*, numPoints : Int32, color : Color)
 
-  fun CheckCollisionRecs(rec1 : Rectangle, rec2 : Rectangle) : Bool
+  fun check_collision_recs = CheckCollisionRecs(rec1 : Rectangle, rec2 : Rectangle) : Bool
 
-  fun CheckCollisionCircles(
+  fun check_collision_circles = CheckCollisionCircles(
     center1 : Vector2,
     radius1 : Float32,
     center2 : Vector2,
     radius2 : Float32
   ) : Bool
 
-  fun CheckCollisionCircleRec(center : Vector2, radius : Float32, rec : Rectangle) : Bool
+  fun check_collision_circle_rec = CheckCollisionCircleRec(center : Vector2, radius : Float32, rec : Rectangle) : Bool
 
-  fun GetCollisionRec(rec1 : Rectangle, rec2 : Rectangle) : Rectangle
+  fun get_collision_rec = GetCollisionRec(rec1 : Rectangle, rec2 : Rectangle) : Rectangle
 
-  fun CheckCollisionPointRec(point : Vector2, rec : Rectangle) : Bool
+  fun check_collision_point_rec = CheckCollisionPointRec(point : Vector2, rec : Rectangle) : Bool
 
-  fun CheckCollisionPointCircle(point : Vector2, center : Vector2, radius : Float32) : Bool
+  fun check_collision_point_circle = CheckCollisionPointCircle(point : Vector2, center : Vector2, radius : Float32) : Bool
 
-  fun CheckCollisionPointTriangle(
+  fun check_collision_point_triangle = CheckCollisionPointTriangle(
     point : Vector2,
     p1 : Vector2,
     p2 : Vector2,
     p3 : Vector2
   ) : Bool
 
-  fun LoadImage(fileName : UInt8*) : Image
+  fun load_image = LoadImage(fileName : UInt8*) : Image
 
-  fun LoadImageEx(
+  fun load_image_ex = LoadImageEx(
     pixels : Color*,
     width : Int32,
     height : Int32
   ) : Image
 
-  fun LoadImagePro(
+  fun load_image_pro = LoadImagePro(
     data : Void*,
     width : Int32,
     height : Int32,
     format : Int32
   ) : Image
 
-  fun LoadImageRaw(
+  fun load_image_raw = LoadImageRaw(
     fileName : UInt8*,
     width : Int32,
     height : Int32,
@@ -858,66 +879,66 @@ lib LibRaylib
     headerSize : Int32
   ) : Image
 
-  fun ExportImage(fileName : UInt8*, image : Image)
+  fun export_image = ExportImage(fileName : UInt8*, image : Image)
 
-  fun LoadTexture(fileName : UInt8*) : Texture2D
+  fun load_texture = LoadTexture(fileName : UInt8*) : Texture2D
 
-  fun LoadTextureFromImage(image : Image) : Texture2D
+  fun load_texture_from_image = LoadTextureFromImage(image : Image) : Texture2D
 
-  fun LoadRenderTexture(
+  fun load_render_texture = LoadRenderTexture(
     width : Int32,
     height : Int32
   ) : RenderTexture2D
 
-  fun UnloadImage(image : Image)
+  fun unload_image = UnloadImage(image : Image)
 
-  fun UnloadTexture(texture : Texture2D)
+  fun unload_texture = UnloadTexture(texture : Texture2D)
 
-  fun UnloadRenderTexture(target : RenderTexture2D)
+  fun unload_render_texture = UnloadRenderTexture(target : RenderTexture2D)
 
-  fun GetImageData(image : Image) : Color*
+  fun get_image_data = GetImageData(image : Image) : Color*
 
-  fun GetImageDataNormalized(image : Image) : Vector4*
+  fun get_image_data_normalized = GetImageDataNormalized(image : Image) : Vector4*
 
-  fun GetPixelDataSize(
+  fun get_pixel_data_size = GetPixelDataSize(
     width : Int32,
     height : Int32,
     format : Int32
   ) : Int32
 
-  fun GetTextureData(texture : Texture2D) : Image
+  fun get_texture_data = GetTextureData(texture : Texture2D) : Image
 
-  fun UpdateTexture(texture : Texture2D, pixels : Void*)
+  fun update_texture = UpdateTexture(texture : Texture2D, pixels : Void*)
 
-  fun ImageCopy(image : Image) : Image
+  fun image_copy = ImageCopy(image : Image) : Image
 
-  fun ImageToPOT(image : Image**, fillColor : Color)
+  fun imgae_to_POT = ImageToPOT(image : Image**, fillColor : Color)
 
-  fun ImageFormat(image : Image**, newFormat : Int32)
+  fun image_format = ImageFormat(image : Image**, newFormat : Int32)
 
-  fun ImageAlphaMask(image : Image**, alphaMask : Image)
+  fun image_alpha_mask = ImageAlphaMask(image : Image**, alphaMask : Image)
 
-  fun ImageAlphaClear(image : Image**, color : Color, threshold : Float32)
+  fun image_alpha_clear = ImageAlphaClear(image : Image**, color : Color, threshold : Float32)
 
-  fun ImageAlphaCrop(image : Image**, threshold : Float32)
+  fun imgae_alpha_crop = ImageAlphaCrop(image : Image**, threshold : Float32)
 
-  fun ImageAlphaPremultiply(image : Image**)
+  fun image_alpha_premultiply = ImageAlphaPremultiply(image : Image**)
 
-  fun ImageCrop(image : Image**, crop : Rectangle)
+  fun image_crop = ImageCrop(image : Image**, crop : Rectangle)
 
-  fun ImageResize(
+  fun image_resize = ImageResize(
     image : Image**,
     newWidth : Int32,
     newHeight : Int32
   )
 
-  fun ImageResizeNN(
+  fun image_resize_NN = ImageResizeNN(
     image : Image**,
     newWidth : Int32,
     newHeight : Int32
   )
 
-  fun ImageResizeCanvas(
+  fun image_resize_canvas = ImageResizeCanvas(
     image : Image**,
     newWidth : Int32,
     newHeight : Int32,
@@ -926,9 +947,9 @@ lib LibRaylib
     color : Color
   )
 
-  fun ImageMipmaps(image : Image**)
+  fun image_mipmaps = ImageMipmaps(image : Image**)
 
-  fun ImageDither(
+  fun image_dither = ImageDither(
     image : Image**,
     rBpp : Int32,
     gBpp : Int32,
@@ -936,13 +957,13 @@ lib LibRaylib
     aBpp : Int32
   )
 
-  fun ImageText(
+  fun imgae_text = ImageText(
     text : UInt8*,
     fontSize : Int32,
     color : Color
   ) : Image
 
-  fun ImageTextEx(
+  fun imgae_text_ex = ImageTextEx(
     font : Font,
     text : UInt8*,
     fontSize : Float32,
@@ -950,11 +971,11 @@ lib LibRaylib
     tint : Color
   ) : Image
 
-  fun ImageDraw(dst : Image**, src : Image, srcRec : Rectangle, dstRec : Rectangle)
+  fun image_draw = ImageDraw(dst : Image**, src : Image, srcRec : Rectangle, dstRec : Rectangle)
 
-  fun ImageDrawRectangle(dst : Image**, position : Vector2, rec : Rectangle, color : Color)
+  fun image_draw_rectangle = ImageDrawRectangle(dst : Image**, position : Vector2, rec : Rectangle, color : Color)
 
-  fun ImageDrawText(
+  fun image_draw_text = ImageDrawText(
     dst : Image**,
     position : Vector2,
     text : UInt8*,
@@ -962,7 +983,7 @@ lib LibRaylib
     color : Color
   )
 
-  fun ImageDrawTextEx(
+  fun image_draw_text_ex = ImageDrawTextEx(
     dst : Image**,
     position : Vector2,
     font : Font,
@@ -972,47 +993,47 @@ lib LibRaylib
     color : Color
   )
 
-  fun ImageFlipVertical(image : Image**)
+  fun image_flip_vertical = ImageFlipVertical(image : Image**)
 
-  fun ImageFlipHorizontal(image : Image**)
+  fun image_flip_horizontal = ImageFlipHorizontal(image : Image**)
 
-  fun ImageRotateCW(image : Image*)
+  fun image_rotate_CW = ImageRotateCW(image : Image*)
 
-  fun ImageRotateCCW(image : Image*)
+  fun image_rotate_CCW = ImageRotateCCW(image : Image*)
 
-  fun ImageColorTint(image : Image*, color : Color)
+  fun imgae_color_tint = ImageColorTint(image : Image*, color : Color)
 
-  fun ImageColorInvert(image : Image*)
+  fun imgae_color_invert = ImageColorInvert(image : Image*)
 
-  fun ImageColorGrayscale(image : Image*)
+  fun imgae_color_grayscale = ImageColorGrayscale(image : Image*)
 
-  fun ImageColorContrast(image : Image*, contrast : Float32)
+  fun imgae_color_contrast = ImageColorContrast(image : Image*, contrast : Float32)
 
-  fun ImageColorBrightness(image : Image*, brightness : Int32)
+  fun imgae_color_brightness = ImageColorBrightness(image : Image*, brightness : Int32)
 
-  fun ImageColorReplace(image : Image*, color : Color, replace : Color)
+  fun imgae_color_replace = ImageColorReplace(image : Image*, color : Color, replace : Color)
 
-  fun GenImageColor(
+  fun gen_image_color = GenImageColor(
     width : Int32,
     height : Int32,
     color : Color
   ) : Image
 
-  fun GenImageGradientV(
+  fun gen_image_gradient_v = GenImageGradientV(
     width : Int32,
     height : Int32,
     top : Color,
     bottom : Color
   ) : Image
 
-  fun GenImageGradientH(
+  fun gen_image_gradient_h = GenImageGradientH(
     width : Int32,
     height : Int32,
     left : Color,
     right : Color
   ) : Image
 
-  fun GenImageGradientRadial(
+  fun gen_image_gradient_radial = GenImageGradientRadial(
     width : Int32,
     height : Int32,
     density : Float32,
@@ -1020,7 +1041,7 @@ lib LibRaylib
     outer : Color
   ) : Image
 
-  fun GenImageChecked(
+  fun gen_image_checked = GenImageChecked(
     width : Int32,
     height : Int32,
     checksX : Int32,
@@ -1029,13 +1050,13 @@ lib LibRaylib
     col2 : Color
   ) : Image
 
-  fun GenImageWhiteNoise(
+  fun gen_image_white_noise = GenImageWhiteNoise(
     width : Int32,
     height : Int32,
     factor : Float32
   ) : Image
 
-  fun GenImagePerlinNoise(
+  fun gen_image_perlin_noise = GenImagePerlinNoise(
     width : Int32,
     height : Int32,
     offsetX : Int32,
@@ -1043,28 +1064,28 @@ lib LibRaylib
     scale : Float32
   ) : Image
 
-  fun GenImageCellular(
+  fun gen_image_cellular = GenImageCellular(
     width : Int32,
     height : Int32,
     tileSize : Int32
   ) : Image
 
-  fun GenTextureMipmaps(texture : Texture2D*)
+  fun gen_texture_mipmaps = GenTextureMipmaps(texture : Texture2D*)
 
-  fun SetTextureFilter(texture : Texture2D, filterMode : Int32)
+  fun set_texture_filter = SetTextureFilter(texture : Texture2D, filterMode : Int32)
 
-  fun SetTextureWrap(texture : Texture2D, wrapMode : Int32)
+  fun set_texture_wrap = SetTextureWrap(texture : Texture2D, wrapMode : Int32)
 
-  fun DrawTexture(
+  fun draw_texture = DrawTexture(
     texture : Texture2D,
     posX : Int32,
     posY : Int32,
     tint : Color
   )
 
-  fun DrawTextureV(texture : Texture2D, position : Vector2, tint : Color)
+  fun draw_texture_v = DrawTextureV(texture : Texture2D, position : Vector2, tint : Color)
 
-  fun DrawTextureEx(
+  fun draw_texture_ex = DrawTextureEx(
     texture : Texture2D,
     position : Vector2,
     rotation : Float32,
@@ -1072,9 +1093,9 @@ lib LibRaylib
     tint : Color
   )
 
-  fun DrawTextureRec(texture : Texture2D, sourceRec : Rectangle, position : Vector2, tint : Color)
+  fun draw_texture_rec = DrawTextureRec(texture : Texture2D, sourceRec : Rectangle, position : Vector2, tint : Color)
 
-  fun DrawTexturePro(
+  fun draw_texture_pro = DrawTexturePro(
     texture : Texture2D,
     sourceRec : Rectangle,
     destRec : Rectangle,
@@ -1083,18 +1104,18 @@ lib LibRaylib
     tint : Color
   )
 
-  fun GetFontDefault : Font
+  fun get_font_default = GetFontDefault : Font
 
-  fun LoadFont(fileName : UInt8*) : Font
+  fun load_font = LoadFont(fileName : UInt8*) : Font
 
-  fun LoadFontEx(
+  fun load_font_ex = LoadFontEx(
     fileName : UInt8*,
     fontSize : Int32,
     charsCount : Int32,
     fontChars : Int32*
   ) : Font
 
-  fun LoadFontData(
+  fun load_font_data = LoadFontData(
     fileName : UInt8*,
     fontSize : Int32,
     fontChars : Int32*,
@@ -1102,7 +1123,7 @@ lib LibRaylib
     sdf : Bool
   ) : CharInfo*
 
-  fun GenImageFontAtlas(
+  fun gen_font_atlas = GenImageFontAtlas(
     chars : CharInfo*,
     fontSize : Int32,
     charsCount : Int32,
@@ -1110,11 +1131,11 @@ lib LibRaylib
     packMethod : Int32
   ) : Image
 
-  fun UnloadFont(font : Font)
+  fun unload_font = UnloadFont(font : Font)
 
-  fun DrawFPS(posX : Int32, posY : Int32)
+  fun draw_FPS = DrawFPS(posX : Int32, posY : Int32)
 
-  fun DrawText(
+  fun draw_text = DrawText(
     text : UInt8*,
     posX : Int32,
     posY : Int32,
@@ -1122,7 +1143,7 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawTextEx(
+  fun draw_text_ex = DrawTextEx(
     font : Font,
     text : UInt8*,
     position : Vector2,
@@ -1131,31 +1152,31 @@ lib LibRaylib
     tint : Color
   )
 
-  fun MeasureText(
+  fun measure_text = MeasureText(
     text : UInt8*,
     fontSize : Int32
   ) : Int32
 
-  fun MeasureTextEx(
+  fun measure_text_ex = MeasureTextEx(
     font : Font,
     text : UInt8*,
     fontSize : Float32,
     spacing : Float32
   ) : Vector2
 
-  fun FormatText(text : UInt8*, ...) : UInt8*
+  fun format_text = FormatText(text : UInt8*, ...) : UInt8*
 
-  fun SubText(
+  fun sub_text = SubText(
     text : UInt8*,
     position : Int32,
     length : Int32
   ) : UInt8*
 
-  fun GetGlyphIndex(font : Font, character : Int32) : Int32
+  fun get_glyph_index = GetGlyphIndex(font : Font, character : Int32) : Int32
 
-  fun DrawLine3D(startPos : Vector3, endPos : Vector3, color : Color)
+  fun draw_line_3d = DrawLine3D(startPos : Vector3, endPos : Vector3, color : Color)
 
-  fun DrawCircle3D(
+  fun draw_circle_3d = DrawCircle3D(
     center : Vector3,
     radius : Float32,
     rotationAxis : Vector3,
@@ -1163,13 +1184,13 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawCube(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
+  fun draw_cube = DrawCube(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
 
-  fun DrawCubeV(position : Vector3, size : Vector3, color : Color)
+  fun draw_cube_v = DrawCubeV(position : Vector3, size : Vector3, color : Color)
 
-  fun DrawCubeWires(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
+  fun draw_cube_wires = DrawCubeWires(position : Vector3, width : Float32, height : Float32, length : Float32, color : Color)
 
-  fun DrawCubeTexture(
+  fun draw_cube_texture = DrawCubeTexture(
     texture : Texture2D,
     position : Vector3,
     width : Float32,
@@ -1178,9 +1199,9 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawSphere(centerPos : Vector3, radius : Float32, color : Color)
+  fun draw_sphere = DrawSphere(centerPos : Vector3, radius : Float32, color : Color)
 
-  fun DrawSphereEx(
+  fun draw_sphere_ex = DrawSphereEx(
     centerPos : Vector3,
     radius : Float32,
     rings : Int32,
@@ -1188,7 +1209,7 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawSphereWires(
+  fun draw_sphere_wires = DrawSphereWires(
     centerPos : Vector3,
     radius : Float32,
     rings : Int32,
@@ -1196,7 +1217,7 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawCylinder(
+  fun draw_cylinder = DrawCylinder(
     position : Vector3,
     radiusTop : Float32,
     radiusBottom : Float32,
@@ -1205,7 +1226,7 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawCylinderWires(
+  fun draw_cylinder_wires = DrawCylinderWires(
     position : Vector3,
     radiusTop : Float32,
     radiusBottom : Float32,
@@ -1214,82 +1235,82 @@ lib LibRaylib
     color : Color
   )
 
-  fun DrawPlane(centerPos : Vector3, size : Vector2, color : Color)
+  fun draw_plane = DrawPlane(centerPos : Vector3, size : Vector2, color : Color)
 
-  fun DrawRay(ray : Ray, color : Color)
+  fun draw_ray = DrawRay(ray : Ray, color : Color)
 
-  fun DrawGrid(slices : Int32, spacing : Float32)
+  fun draw_grid = DrawGrid(slices : Int32, spacing : Float32)
 
-  fun DrawGizmo(position : Vector3)
+  fun draw_gizmo = DrawGizmo(position : Vector3)
 
-  fun LoadModel(fileName : UInt8*) : Model
+  fun load_model = LoadModel(fileName : UInt8*) : Model
 
-  fun LoadModelFromMesh(mesh : Mesh) : Model
+  fun load_model_from_mesh = LoadModelFromMesh(mesh : Mesh) : Model
 
-  fun UnloadModel(model : Model)
+  fun unload_model = UnloadModel(model : Model)
 
-  fun LoadMesh(fileName : UInt8*) : Mesh
+  fun load_mesh = LoadMesh(fileName : UInt8*) : Mesh
 
-  fun UnloadMesh(mesh : Mesh*)
+  fun unload_mesh = UnloadMesh(mesh : Mesh*)
 
-  fun ExportMesh(fileName : UInt8*, mesh : Mesh)
+  fun export_mesh = ExportMesh(fileName : UInt8*, mesh : Mesh)
 
-  fun MeshBoundingBox(mesh : Mesh) : BoundingBox
+  fun mesh_bounding_box = MeshBoundingBox(mesh : Mesh) : BoundingBox
 
-  fun MeshTangents(mesh : Mesh*)
+  fun mesh_tangents = MeshTangents(mesh : Mesh*)
 
-  fun MeshBinormals(mesh : Mesh*)
+  fun mesh_binormals = MeshBinormals(mesh : Mesh*)
 
-  fun GenMeshPlane(
+  fun gen_mesh_plane = GenMeshPlane(
     width : Float32,
     length : Float32,
     resX : Int32,
     resZ : Int32
   ) : Mesh
 
-  fun GenMeshCube(width : Float32, height : Float32, length : Float32) : Mesh
+  fun gen_mesh_cube = GenMeshCube(width : Float32, height : Float32, length : Float32) : Mesh
 
-  fun GenMeshSphere(
+  fun gen_mesh_sphere = GenMeshSphere(
     radius : Float32,
     rings : Int32,
     slices : Int32
   ) : Mesh
 
-  fun GenMeshHemiSphere(
+  fun gen_mesh_hemi_sphere = GenMeshHemiSphere(
     radius : Float32,
     rings : Int32,
     slices : Int32
   ) : Mesh
 
-  fun GenMeshCylinder(radius : Float32, height : Float32, slices : Int32) : Mesh
+  fun gen_mesh_cylinder = GenMeshCylinder(radius : Float32, height : Float32, slices : Int32) : Mesh
 
-  fun GenMeshTorus(
+  fun gen_mesh_torus = GenMeshTorus(
     radius : Float32,
     size : Float32,
     radSeg : Int32,
     sides : Int32
   ) : Mesh
 
-  fun GenMeshKnot(
+  fun gen_mesh_knot = GenMeshKnot(
     radius : Float32,
     size : Float32,
     radSeg : Int32,
     sides : Int32
   ) : Mesh
 
-  fun GenMeshHeightmap(heightmap : Image, size : Vector3) : Mesh
+  fun gen_mesh_heightmap = GenMeshHeightmap(heightmap : Image, size : Vector3) : Mesh
 
-  fun GenMeshCubicmap(cubicmap : Image, cubeSize : Vector3) : Mesh
+  fun gen_mesh_cubicmap = GenMeshCubicmap(cubicmap : Image, cubeSize : Vector3) : Mesh
 
-  fun LoadMaterial(fileName : UInt8*) : Material
+  fun load_material = LoadMaterial(fileName : UInt8*) : Material
 
-  fun LoadMaterialDefault : Material
+  fun load_material_default = LoadMaterialDefault : Material
 
-  fun UnloadMaterial(material : Material)
+  fun unload_material = UnloadMaterial(material : Material)
 
-  fun DrawModel(model : Model, position : Vector3, scale : Float32, tint : Color)
+  fun draw_model = DrawModel(model : Model, position : Vector3, scale : Float32, tint : Color)
 
-  fun DrawModelEx(
+  fun draw_model_ex = DrawModelEx(
     model : Model,
     position : Vector3,
     rotationAxis : Vector3,
@@ -1298,9 +1319,9 @@ lib LibRaylib
     tint : Color
   )
 
-  fun DrawModelWires(model : Model, position : Vector3, scale : Float32, tint : Color)
+  fun draw_model_wires = DrawModelWires(model : Model, position : Vector3, scale : Float32, tint : Color)
 
-  fun DrawModelWiresEx(
+  fun draw_model_wires_ex = DrawModelWiresEx(
     model : Model,
     position : Vector3,
     rotationAxis : Vector3,
@@ -1309,9 +1330,9 @@ lib LibRaylib
     tint : Color
   )
 
-  fun DrawBoundingBox(box_ : BoundingBox, color : Color)
+  fun draw_bounding_box = DrawBoundingBox(box_ : BoundingBox, color : Color)
 
-  fun DrawBillboard(
+  fun draw_billboard = DrawBillboard(
     camera : Camera3D,
     texture : Texture2D,
     center : Vector3,
@@ -1319,7 +1340,7 @@ lib LibRaylib
     tint : Color
   )
 
-  fun DrawBillboardRec(
+  fun draw_billboard_rec = DrawBillboardRec(
     camera : Camera3D,
     texture : Texture2D,
     sourceRec : Rectangle,
@@ -1328,144 +1349,144 @@ lib LibRaylib
     tint : Color
   )
 
-  fun CheckCollisionSpheres(
+  fun check_collision_spheres = CheckCollisionSpheres(
     centerA : Vector3,
     radiusA : Float32,
     centerB : Vector3,
     radiusB : Float32
   ) : Bool
 
-  fun CheckCollisionBoxes(box1 : BoundingBox, box2 : BoundingBox) : Bool
+  fun check_collision_boxes = CheckCollisionBoxes(box1 : BoundingBox, box2 : BoundingBox) : Bool
 
-  fun CheckCollisionBoxSphere(
+  fun check_collision_box_sphere = CheckCollisionBoxSphere(
     box_ : BoundingBox,
     centerSphere : Vector3,
     radiusSphere : Float32
   ) : Bool
 
-  fun CheckCollisionRaySphere(ray : Ray, spherePosition : Vector3, sphereRadius : Float32) : Bool
+  fun check_collision_ray_sphere = CheckCollisionRaySphere(ray : Ray, spherePosition : Vector3, sphereRadius : Float32) : Bool
 
-  fun CheckCollisionRaySphereEx(
+  fun check_collision_ray_sphere_ex = CheckCollisionRaySphereEx(
     ray : Ray,
     spherePosition : Vector3,
     sphereRadius : Float32,
     collisionPoint : Vector3*
   ) : Bool
 
-  fun CheckCollisionRayBox(ray : Ray, box_ : BoundingBox) : Bool
+  fun check_collision_ray_box = CheckCollisionRayBox(ray : Ray, box_ : BoundingBox) : Bool
 
-  fun GetCollisionRayModel(ray : Ray, model : Model*) : RayHitInfo
+  fun get_collision_ray_model = GetCollisionRayModel(ray : Ray, model : Model*) : RayHitInfo
 
-  fun GetCollisionRayTriangle(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3) : RayHitInfo
+  fun get_collision_ray_triangle = GetCollisionRayTriangle(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3) : RayHitInfo
 
-  fun GetCollisionRayGround(ray : Ray, groundHeight : Float32) : RayHitInfo
+  fun get_collision_ray_ground = GetCollisionRayGround(ray : Ray, groundHeight : Float32) : RayHitInfo
 
-  fun LoadText(fileName : UInt8*) : UInt8*
+  fun load_text = LoadText(fileName : UInt8*) : UInt8*
 
-  fun LoadShader(
+  fun load_shader = LoadShader(
     vsFileName : UInt8*,
     fsFileName : UInt8*
   ) : Shader
 
-  fun LoadShaderCode(
+  fun load_shader_code = LoadShaderCode(
     vsCode : UInt8*,
     fsCode : UInt8*
   ) : Shader
 
-  fun UnloadShader(shader : Shader)
+  fun unload_shader = UnloadShader(shader : Shader)
 
-  fun GetShaderDefault : Shader
+  fun get_shader_default = GetShaderDefault : Shader
 
-  fun GetTextureDefault : Texture2D
+  fun get_texture_default = GetTextureDefault : Texture2D
 
-  fun GetShaderLocation(
+  fun get_shader_location = GetShaderLocation(
     shader : Shader,
     uniformName : UInt8*
   ) : Int32
 
-  fun SetShaderValue(
+  fun set_shader_value = SetShaderValue(
     shader : Shader,
     uniformLoc : Int32,
     value : Float32*,
     size : Int32
   )
 
-  fun SetShaderValuei(
+  fun set_shader_valuei = SetShaderValuei(
     shader : Shader,
     uniformLoc : Int32,
     value : Int32*,
     size : Int32
   )
 
-  fun SetShaderValueMatrix(shader : Shader, uniformLoc : Int32, mat : Matrix)
+  fun set_shader_value_matrix = SetShaderValueMatrix(shader : Shader, uniformLoc : Int32, mat : Matrix)
 
-  fun SetMatrixProjection(proj : Matrix)
+  fun set_matrix_projection = SetMatrixProjection(proj : Matrix)
 
-  fun SetMatrixModelview(view : Matrix)
+  fun set_matrix_modelview = SetMatrixModelview(view : Matrix)
 
-  fun GetMatrixModelview : Matrix
+  fun get_matrix_modelview = GetMatrixModelview : Matrix
 
-  fun GenTextureCubemap(
+  fun gen_texture_cubemap = GenTextureCubemap(
     shader : Shader,
     skyHDR : Texture2D,
     size : Int32
   ) : Texture2D
 
-  fun GenTextureIrradiance(
+  fun get_texture_irradiance = GenTextureIrradiance(
     shader : Shader,
     cubemap : Texture2D,
     size : Int32
   ) : Texture2D
 
-  fun GenTexturePrefilter(
+  fun gen_texture_prefilter = GenTexturePrefilter(
     shader : Shader,
     cubemap : Texture2D,
     size : Int32
   ) : Texture2D
 
-  fun GenTextureBRDF(
+  fun gen_texture_BRDF = GenTextureBRDF(
     shader : Shader,
     cubemap : Texture2D,
     size : Int32
   ) : Texture2D
 
-  fun BeginShaderMode(shader : Shader)
+  fun begin_shader_mode = BeginShaderMode(shader : Shader)
 
-  fun EndShaderMode
+  fun end_shader_mode = EndShaderMode
 
-  fun BeginBlendMode(mode : Int32)
+  fun begin_blend_mode = BeginBlendMode(mode : Int32)
 
-  fun EndBlendMode
+  fun end_blend_mode = EndBlendMode
 
-  fun GetVrDeviceInfo(vrDeviceType : Int32) : VrDeviceInfo
+  fun get_vr_device_info = GetVrDeviceInfo(vrDeviceType : Int32) : VrDeviceInfo
 
-  fun InitVrSimulator(info : VrDeviceInfo)
+  fun init_vr_simulator = InitVrSimulator(info : VrDeviceInfo)
 
-  fun CloseVrSimulator
+  fun close_vr_simulator = CloseVrSimulator
 
-  fun IsVrSimulatorReady : Bool
+  fun vr_simulator_ready? = IsVrSimulatorReady : Bool
 
-  fun SetVrDistortionShader(shader : Shader)
+  fun set_vr_distortion_shader = SetVrDistortionShader(shader : Shader)
 
-  fun UpdateVrTracking(camera : Camera3D*)
+  fun update_vr_tracking = UpdateVrTracking(camera : Camera3D*)
 
-  fun ToggleVrMode
+  fun toggle_vr_mode = ToggleVrMode
 
-  fun BeginVrDrawing
+  fun begin_vr_drawing = BeginVrDrawing
 
-  fun EndVrDrawing
+  fun end_vr_drawing = EndVrDrawing
 
-  fun InitAudioDevice
+  fun init_audio_devide = InitAudioDevice
 
-  fun CloseAudioDevice
+  fun close_audio_device = CloseAudioDevice
 
-  fun IsAudioDeviceReady : Bool
+  fun audio_device_ready? = IsAudioDeviceReady : Bool
 
-  fun SetMasterVolume(volume : Float32)
+  fun set_master_volume = SetMasterVolume(volume : Float32)
 
-  fun LoadWave(fileName : UInt8*) : Wave
+  fun load_wave = LoadWave(fileName : UInt8*) : Wave
 
-  fun LoadWaveEx(
+  fun load_wave_ex = LoadWaveEx(
     data : Void*,
     sampleCount : Int32,
     sampleRate : Int32,
@@ -1473,104 +1494,104 @@ lib LibRaylib
     channels : Int32
   ) : Wave
 
-  fun LoadSound(fileName : UInt8*) : Sound
+  fun load_sound = LoadSound(fileName : UInt8*) : Sound
 
-  fun LoadSoundFromWave(wave : Wave) : Sound
+  fun load_sound_from_wave = LoadSoundFromWave(wave : Wave) : Sound
 
-  fun UpdateSound(
+  fun update_sound = UpdateSound(
     sound : Sound,
     data : Void*,
     samplesCount : Int32
   )
 
-  fun UnloadWave(wave : Wave)
+  fun unload_wave = UnloadWave(wave : Wave)
 
-  fun UnloadSound(sound : Sound)
+  fun unload_sound = UnloadSound(sound : Sound)
 
-  fun PlaySound(sound : Sound)
+  fun play_sound = PlaySound(sound : Sound)
 
-  fun PauseSound(sound : Sound)
+  fun pause_sound = PauseSound(sound : Sound)
 
-  fun ResumeSound(sound : Sound)
+  fun resume_sound = ResumeSound(sound : Sound)
 
-  fun StopSound(sound : Sound)
+  fun stop_sound = StopSound(sound : Sound)
 
-  fun IsSoundPlaying(sound : Sound) : Bool
+  fun sound_playing? = IsSoundPlaying(sound : Sound) : Bool
 
-  fun SetSoundVolume(sound : Sound, volume : Float32)
+  fun set_sound_volume = SetSoundVolume(sound : Sound, volume : Float32)
 
-  fun SetSoundPitch(sound : Sound, pitch : Float32)
+  fun set_sound_pitch = SetSoundPitch(sound : Sound, pitch : Float32)
 
-  fun WaveFormat(
+  fun wave_format = WaveFormat(
     wave : Wave*,
     sampleRate : Int32,
     sampleSize : Int32,
     channels : Int32
   )
 
-  fun WaveCopy(wave : Wave) : Wave
+  fun wave_copy = WaveCopy(wave : Wave) : Wave
 
-  fun WaveCrop(
+  fun wave_crop = WaveCrop(
     wave : Wave*,
     initSample : Int32,
     finalSample : Int32
   )
 
-  fun GetWaveData(wave : Wave) : Float32*
+  fun get_wave_data = GetWaveData(wave : Wave) : Float32*
 
-  fun LoadMusicStream(fileName : UInt8*) : Music
+  fun load_music_stream = LoadMusicStream(fileName : UInt8*) : Music
 
-  fun UnloadMusicStream(music : Music)
+  fun unload_music_stream = UnloadMusicStream(music : Music)
 
-  fun PlayMusicStream(music : Music)
+  fun play_music_stream = PlayMusicStream(music : Music)
 
-  fun UpdateMusicStream(music : Music)
+  fun update_music_stream = UpdateMusicStream(music : Music)
 
-  fun StopMusicStream(music : Music)
+  fun stop_music_stream = StopMusicStream(music : Music)
 
-  fun PauseMusicStream(music : Music)
+  fun pause_music_stream = PauseMusicStream(music : Music)
 
-  fun ResumeMusicStream(music : Music)
+  fun resume_music_stream = ResumeMusicStream(music : Music)
 
-  fun IsMusicPlaying(music : Music) : Bool
+  fun music_playing? = IsMusicPlaying(music : Music) : Bool
 
-  fun SetMusicVolume(music : Music, volume : Float32)
+  fun set_music_volume = SetMusicVolume(music : Music, volume : Float32)
 
-  fun SetMusicPitch(music : Music, pitch : Float32)
+  fun set_music_pitch = SetMusicPitch(music : Music, pitch : Float32)
 
-  fun SetMusicLoopCount(music : Music, count : Int32)
+  fun set_music_loop_count = SetMusicLoopCount(music : Music, count : Int32)
 
-  fun GetMusicTimeLength(music : Music) : Float32
+  fun get_music_time_length = GetMusicTimeLength(music : Music) : Float32
 
-  fun GetMusicTimePlayed(music : Music) : Float32
+  fun get_music_time_played = GetMusicTimePlayed(music : Music) : Float32
 
-  fun InitAudioStream(
+  fun init_audio_stream = InitAudioStream(
     sampleRate : UInt32,
     sampleSize : UInt32,
     channels : UInt32
   ) : AudioStream
 
-  fun UpdateAudioStream(
+  fun update_audio_stream = UpdateAudioStream(
     stream : AudioStream,
     data : Void*,
     samplesCount : Int32
   )
 
-  fun CloseAudioStream(stream : AudioStream)
+  fun close_audio_stream = CloseAudioStream(stream : AudioStream)
 
-  fun IsAudioBufferProcessed(stream : AudioStream) : Bool
+  fun audio_buffer_precessed? = IsAudioBufferProcessed(stream : AudioStream) : Bool
 
-  fun PlayAudioStream(stream : AudioStream)
+  fun play_audio_stream = PlayAudioStream(stream : AudioStream)
 
-  fun PauseAudioStream(stream : AudioStream)
+  fun pause_audio_stream = PauseAudioStream(stream : AudioStream)
 
-  fun ResumeAudioStream(stream : AudioStream)
+  fun resume_audio_stream = ResumeAudioStream(stream : AudioStream)
 
-  fun IsAudioStreamPlaying(stream : AudioStream) : Bool
+  fun audio_stream_playing? = IsAudioStreamPlaying(stream : AudioStream) : Bool
 
-  fun StopAudioStream(stream : AudioStream)
+  fun stop_audio_stream = StopAudioStream(stream : AudioStream)
 
-  fun SetAudioStreamVolume(stream : AudioStream, volume : Float32)
+  fun set_audio_stream_volume = SetAudioStreamVolume(stream : AudioStream, volume : Float32)
 
-  fun SetAudioStreamPitch(stream : AudioStream, pitch : Float32)
+  fun set_audio_stream_pitch = SetAudioStreamPitch(stream : AudioStream, pitch : Float32)
 end
