@@ -1,4 +1,5 @@
 require "./link"
+
 link_flag
 
 lib LibRaylib
