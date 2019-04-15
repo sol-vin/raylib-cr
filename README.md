@@ -24,26 +24,32 @@ require "raylib-cr"
 screen_width = 800
 screen_height = 450
 
-LibRaylib.InitWindow screen_width, screen_height, "raylib-cr"
-LibRaylib.SetTargetFPS 60
+LibRaylib.init_window screen_width, screen_height, "Hello"
 
-c = LibRaylib::Color.new
-c.r = 0
-c.g = 0
-c.b = 0
-c.a = 255
+frames_counter = 0
+rand_value = LibRaylib.get_random_value -8, 5
+LibRaylib.set_target_fps 60
 
-until LibRaylib.WindowShouldClose
-    LibRaylib.BeginDrawing
-    LibRaylib.ClearBackground c
-    LibRaylib.EndDrawing
+until LibRaylib.window_should_close
+  frames_counter += 1
+  
+  if (frames_counter / 120) % 2 == 1
+    rand_value = LibRaylib.get_random_value -8, 5
+    frames_counter = 0
+  end
+
+  LibRaylib.begin_drawing
+  LibRaylib.clear_background LibRaylib::RAYWHITE
+  LibRaylib.draw_text "Every 2 seconds a new random value is generated:", 130, 100, 20, LibRaylib::MAROON
+  LibRaylib.draw_text "#{rand_value}", 360, 180, 80, LibRaylib::LIGHTGRAY
+  LibRaylib.end_drawing
 end
 
-LibRaylib.CloseWindow
+LibRaylib.close_window
 ```
 
 ## Contributing
-1. Fork it (<https://github.com/AregevDev/raylib-cr)
+1. Fork it (https://github.com/AregevDev/raylib-cr)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
