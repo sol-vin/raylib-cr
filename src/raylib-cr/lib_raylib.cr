@@ -567,7 +567,7 @@ lib LibRaylib
 
   fun color_normalize = ColorNormalize(color : Color) : Vector4
 
-  fun color_to_HSV = ColorToHSV(color : Color) : Vector3
+  fun color_to_hsv = ColorToHSV(color : Color) : Vector3
 
   fun get_color = GetColor(hexValue : Int32) : Color
 
@@ -913,7 +913,7 @@ lib LibRaylib
 
   fun image_copy = ImageCopy(image : Image) : Image
 
-  fun imgae_to_POT = ImageToPOT(image : Image**, fillColor : Color)
+  fun imgae_to_pot = ImageToPOT(image : Image**, fillColor : Color)
 
   fun image_format = ImageFormat(image : Image**, newFormat : Int32)
 
@@ -933,7 +933,7 @@ lib LibRaylib
     newHeight : Int32
   )
 
-  fun image_resize_NN = ImageResizeNN(
+  fun image_resize_nn = ImageResizeNN(
     image : Image**,
     newWidth : Int32,
     newHeight : Int32
@@ -998,9 +998,9 @@ lib LibRaylib
 
   fun image_flip_horizontal = ImageFlipHorizontal(image : Image**)
 
-  fun image_rotate_CW = ImageRotateCW(image : Image*)
+  fun image_rotate_cw = ImageRotateCW(image : Image*)
 
-  fun image_rotate_CCW = ImageRotateCCW(image : Image*)
+  fun image_rotate_ccw = ImageRotateCCW(image : Image*)
 
   fun imgae_color_tint = ImageColorTint(image : Image*, color : Color)
 
@@ -1134,7 +1134,7 @@ lib LibRaylib
 
   fun unload_font = UnloadFont(font : Font)
 
-  fun draw_FPS = DrawFPS(posX : Int32, posY : Int32)
+  fun draw_fps = DrawFPS(posX : Int32, posY : Int32)
 
   fun draw_text = DrawText(
     text : UInt8*,
