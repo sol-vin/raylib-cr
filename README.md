@@ -1,14 +1,21 @@
 ![logo](logo/raylib-cr_256x256.png)
+
 # raylib-cr
 
 Crystal Bindings for `raylib`, a small and easy to use game development library.  
-As for now the bindings only support the raw function calls from raylib itself, a warpper will be out shortly!
-The native library can be found in th `native` folder of this repository.
+As for now the bindings only support the raw function calls from raylib itself, a wrapper will be out shortly, 
+I plan on making a more object-oriented wrapper around raylib.  
 
-## Supported platforms
-`x86_64-linux-gnu` = 64-bit Linux
+The native libraries can be found in the `native/<OSNAME>` folder of this repository.
 
-## Installation
+# Supported platforms
+
+These platforms are supported out of the box and are linked statically
+1. `x86_64-linux-gnu` = 64-bit Linux
+2. `x86_64-darwin` = 64-bit OSX
+
+# Installation
+
 1. Add `raylib-cr` to your `shard.yml`:
 ```yml
 dependencies:
@@ -17,7 +24,8 @@ dependencies:
 ```
 2. Run `shards install`
 
-## Usage Example
+# Usage Example
+
 ```crystal
 require "raylib-cr"
 
@@ -48,12 +56,21 @@ end
 LibRaylib.close_window
 ```
 
-## Contributing
+# TODO:
+
+These are my plans for `v1.0.0`
+- [ ] Proper testing with `crystal spec`
+- [ ] Setup Travis CI
+- [ ] OOP Wrapper
+
+# Contributing
+
 1. Fork it (https://github.com/AregevDev/raylib-cr)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-## Contributors
+# Contributors
+
 - [AregevDev](https://github.com/AregevDev) - creator and maintainer
