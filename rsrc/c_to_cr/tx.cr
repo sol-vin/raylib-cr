@@ -15,25 +15,25 @@ end
 
 def c_type_to_cr(c_type : String)
   if c_type == "void"
-    Void
+    "Void"
   elsif c_type == "bool"
-    Bool
+    "Bool"
   elsif c_type == "char"
-    Int8
+    "LibC::Char"
   elsif c_type == "unsigned char"
-    UInt8
+    "LibC::UChar"
   elsif c_type == "int"
-    Int16
+    "LibC::Int"
   elsif c_type == "unsigned int"
-    UInt16
+    "LibC::UInt"
   elsif c_type == "long"
-    Int32
+    "LibC::Long"
   elsif c_type == "unsigned long"
-    UInt32
+    "LibC::ULong"
   elsif c_type == "float"
-    Float32
+    "LibC::Float"
   elsif c_type == "double"
-    Float64
+    "LibC::Double"
   else
     c_type # Return the c type because the structs are named the same
   end
