@@ -1,0 +1,10 @@
+
+C
+
+[type] [function name]([type1][*] [arg1], etc...);
+
+
+crystal
+
+fun [us function name] = [function name]([us arg1] : [type1][*], [us arg2] : [type2][*]) : [return type]
+
