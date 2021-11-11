@@ -1,0 +1,16 @@
+name: collisionarea
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  shapes:
+    main: src/collisionarea.cr
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+
+crystal: 1.2.1
+
+license: MIT
