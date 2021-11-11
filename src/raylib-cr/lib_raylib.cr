@@ -8,143 +8,143 @@ lib LibRaylib
   alias TextureCubemap = Texture2D
 
   enum ConfigFlags
-    FlagVSyncHint         = 0x00000040
-    FlagFullscreenMode    = 0x00000002
-    FlagWindowResizable   = 0x00000004
-    FlagWindowUndecorated = 0x00000008
-    FlagWindowHidden      = 0x00000080
-    FlagWindowMinimized   = 0x00000200
-    FlagWindowMaximized   = 0x00000400
-    FlagWindowUnfocused   = 0x00000800
-    FlagWindowTopmost     = 0x00001000
-    FlagWindowAlwaysRun   = 0x00000100
-    FlagWindowTransparent = 0x00000010
-    FlagWindowHighdpi     = 0x00002000
-    FlagMsaa4xHint        = 0x00000020
-    FlagInterlacedHint    = 0x00010000
+    VSyncHint         = 0x00000040
+    FullscreenMode    = 0x00000002
+    WindowResizable   = 0x00000004
+    WindowUndecorated = 0x00000008
+    WindowHidden      = 0x00000080
+    WindowMinimized   = 0x00000200
+    WindowMaximized   = 0x00000400
+    WindowUnfocused   = 0x00000800
+    WindowTopmost     = 0x00001000
+    WindowAlwaysRun   = 0x00000100
+    WindowTransparent = 0x00000010
+    WindowHighdpi     = 0x00002000
+    Msaa4xHint        = 0x00000020
+    InterlacedHint    = 0x00010000
   end
 
   enum TraceLogLevel
-    LogAll     = 0
-    LogTrace   = 1
-    LogDebug   = 2
-    LogInfo    = 3
-    LogWarning = 4
-    LogError   = 5
-    LogFatal   = 6
+    All     = 0
+    Trace   = 1
+    Debug   = 2
+    Info    = 3
+    Warning = 4
+    Error   = 5
+    Fatal   = 6
   end
 
   enum KeyboardKey
-    KeyNull         =   0
-    KeyApostrophe   =  39
-    KeyComma        =  44
-    KeyMinus        =  45
-    KeyPeriod       =  46
-    KeySlash        =  47
-    KeyZero         =  48
-    KeyOne          =  49
-    KeyTwo          =  50
-    KeyThree        =  51
-    KeyFour         =  52
-    KeyFive         =  53
-    KeySix          =  54
-    KeySeven        =  55
-    KeyEight        =  56
-    KeyNine         =  57
-    KeySemicolon    =  59
-    KeyEqual        =  61
-    KeyA            =  65
-    KeyB            =  66
-    KeyC            =  67
-    KeyD            =  68
-    KeyE            =  69
-    KeyF            =  70
-    KeyG            =  71
-    KeyH            =  72
-    KeyI            =  73
-    KeyJ            =  74
-    KeyK            =  75
-    KeyL            =  76
-    KeyM            =  77
-    KeyN            =  78
-    KeyO            =  79
-    KeyP            =  80
-    KeyQ            =  81
-    KeyR            =  82
-    KeyS            =  83
-    KeyT            =  84
-    KeyU            =  85
-    KeyV            =  86
-    KeyW            =  87
-    KeyX            =  88
-    KeyY            =  89
-    KeyZ            =  90
-    KeyLeftBracket  =  91
-    KeyBackslash    =  92
-    KeyRightBracket =  93
-    KeyGrave        =  96
-    KeySpace        =  32
-    KeyEscape       = 256
-    KeyEnter        = 257
-    KeyTab          = 258
-    KeyBackspace    = 259
-    KeyInsert       = 260
-    KeyDelete       = 261
-    KeyRight        = 262
-    KeyLeft         = 263
-    KeyDown         = 264
-    KeyUp           = 265
-    KeyPageUp       = 266
-    KeyPageDown     = 267
-    KeyHome         = 268
-    KeyEnd          = 269
-    KeyCapsLock     = 280
-    KeyScrollLock   = 281
-    KeyNumLock      = 282
-    KeyPrintScreen  = 283
-    KeyPause        = 284
-    KeyF1           = 290
-    KeyF2           = 291
-    KeyF3           = 292
-    KeyF4           = 293
-    KeyF5           = 294
-    KeyF6           = 295
-    KeyF7           = 296
-    KeyF8           = 297
-    KeyF9           = 298
-    KeyF10          = 299
-    KeyF11          = 300
-    KeyF12          = 301
-    KeyLeftShift    = 340
-    KeyLeftControl  = 341
-    KeyLeftAlt      = 342
-    KeyLeftSuper    = 343
-    KeyRightShift   = 344
-    KeyRightControl = 345
-    KeyRightAlt     = 346
-    KeyRightSuper   = 347
-    KeyKbMenu       = 348
-    KeyKp0          = 320
-    KeyKp1          = 321
-    KeyKp2          = 322
-    KeyKp3          = 323
-    KeyKp4          = 324
-    KeyKp5          = 325
-    KeyKp6          = 326
-    KeyKp7          = 327
-    KeyKp8          = 328
-    KeyKp9          = 329
-    KeyKpDecimal    = 330
-    KeyKpDivide     = 331
-    KeyKpMultiply   = 332
-    KeyKpSubtract   = 333
-    KeyKpAdd        = 334
-    KeyKpEnter      = 335
-    KeyKpEqual      = 336
-    KeyBack         =   4
-    KeyMenu         =  82
-    KeyVolumeUp     =  24
-    KeyVolumeDown   =  25
+    Null         =   0
+    Apostrophe   =  39
+    Comma        =  44
+    Minus        =  45
+    Period       =  46
+    Slash        =  47
+    Zero         =  48
+    One          =  49
+    Two          =  50
+    Three        =  51
+    Four         =  52
+    Five         =  53
+    Six          =  54
+    Seven        =  55
+    Eight        =  56
+    Nine         =  57
+    Semicolon    =  59
+    Equal        =  61
+    A            =  65
+    B            =  66
+    C            =  67
+    D            =  68
+    E            =  69
+    F            =  70
+    G            =  71
+    H            =  72
+    I            =  73
+    J            =  74
+    K            =  75
+    L            =  76
+    M            =  77
+    N            =  78
+    O            =  79
+    P            =  80
+    Q            =  81
+    R            =  82
+    S            =  83
+    T            =  84
+    U            =  85
+    V            =  86
+    W            =  87
+    X            =  88
+    Y            =  89
+    Z            =  90
+    LeftBracket  =  91
+    Backslash    =  92
+    RightBracket =  93
+    Grave        =  96
+    Space        =  32
+    Escape       = 256
+    Enter        = 257
+    Tab          = 258
+    Backspace    = 259
+    Insert       = 260
+    Delete       = 261
+    Right        = 262
+    Left         = 263
+    Down         = 264
+    Up           = 265
+    PageUp       = 266
+    PageDown     = 267
+    Home         = 268
+    End          = 269
+    CapsLock     = 280
+    ScrollLock   = 281
+    NumLock      = 282
+    PrintScreen  = 283
+    Pause        = 284
+    F1           = 290
+    F2           = 291
+    F3           = 292
+    F4           = 293
+    F5           = 294
+    F6           = 295
+    F7           = 296
+    F8           = 297
+    F9           = 298
+    F10          = 299
+    F11          = 300
+    F12          = 301
+    LeftShift    = 340
+    LeftControl  = 341
+    LeftAlt      = 342
+    LeftSuper    = 343
+    RightShift   = 344
+    RightControl = 345
+    RightAlt     = 346
+    RightSuper   = 347
+    KbMenu       = 348
+    Kp0          = 320
+    Kp1          = 321
+    Kp2          = 322
+    Kp3          = 323
+    Kp4          = 324
+    Kp5          = 325
+    Kp6          = 326
+    Kp7          = 327
+    Kp8          = 328
+    Kp9          = 329
+    KpDecimal    = 330
+    KpDivide     = 331
+    KpMultiply   = 332
+    KpSubtract   = 333
+    KpAdd        = 334
+    KpEnter      = 335
+    KpEqual      = 336
+    Back         =   4
+    Menu         =  82
+    VolumeUp     =  24
+    VolumeDown   =  25
   end
 
   enum MouseButton
@@ -158,204 +158,204 @@ lib LibRaylib
   end
 
   enum MouseCursor
-    MouseCursorDefault      =  0
-    MouseCursorArrow        =  1
-    MouseCursorIbeam        =  2
-    MouseCursorCrosshair    =  3
-    MouseCursorPointingHand =  4
-    MouseCursorResizeEw     =  5
-    MouseCursorResizeNs     =  6
-    MouseCursorResizeNwse   =  7
-    MouseCursorResizeNesw   =  8
-    MouseCursorResizeAll    =  9
-    MouseCursorNotAllowed   = 10
+    Default      =  0
+    Arrow        =  1
+    Ibeam        =  2
+    Crosshair    =  3
+    PointingHand =  4
+    ResizeEw     =  5
+    ResizeNs     =  6
+    ResizeNwse   =  7
+    ResizeNesw   =  8
+    ResizeAll    =  9
+    NotAllowed   = 10
   end
 
   enum GamepadButton
-    GamepadButtonUnknown        =  0
-    GamepadButtonLeftFaceUp     =  1
-    GamepadButtonLeftFaceRight  =  2
-    GamepadButtonLeftFaceDown   =  3
-    GamepadButtonLeftFaceLeft   =  4
-    GamepadButtonRightFaceUp    =  5
-    GamepadButtonRightFaceRight =  6
-    GamepadButtonRightFaceDown  =  7
-    GamepadButtonRightFaceLeft  =  8
-    GamepadButtonLeftTrigger1   =  9
-    GamepadButtonLeftTrigger2   = 10
-    GamepadButtonRightTrigger1  = 11
-    GamepadButtonRightTrigger2  = 12
-    GamepadButtonMiddleLeft     = 13
-    GamepadButtonMiddle         = 14
-    GamepadButtonMiddleRight    = 15
-    GamepadButtonLeftThumb      = 16
-    GamepadButtonRightThumb     = 17
+    Unknown        =  0
+    LeftFaceUp     =  1
+    LeftFaceRight  =  2
+    LeftFaceDown   =  3
+    LeftFaceLeft   =  4
+    RightFaceUp    =  5
+    RightFaceRight =  6
+    RightFaceDown  =  7
+    RightFaceLeft  =  8
+    LeftTrigger1   =  9
+    LeftTrigger2   = 10
+    RightTrigger1  = 11
+    RightTrigger2  = 12
+    MiddleLeft     = 13
+    Middle         = 14
+    MiddleRight    = 15
+    LeftThumb      = 16
+    RightThumb     = 17
   end
 
   enum GamepadAxis
-    GamepadAxisLeftX        = 0
-    GamepadAxisLeftY        = 1
-    GamepadAxisRightX       = 2
-    GamepadAxisRightY       = 3
-    GamepadAxisLeftTrigger  = 4
-    GamepadAxisRightTrigger = 5
+    LeftX        = 0
+    LeftY        = 1
+    RightX       = 2
+    RightY       = 3
+    LeftTrigger  = 4
+    RightTrigger = 5
   end
 
   enum MaterialMapIndex
-    MaterialMapAlbedo     =  0
-    MaterialMapMetalness  =  1
-    MaterialMapNormal     =  2
-    MaterialMapRoughness  =  3
-    MaterialMapOcclusion  =  4
-    MaterialMapEmission   =  5
-    MaterialMapHeight     =  6
-    MaterialMapCubemap    =  7
-    MaterialMapIrradiance =  8
-    MaterialMapPrefilter  =  9
-    MaterialMapBrdf       = 10
+    Albedo     =  0
+    Metalness  =  1
+    Normal     =  2
+    Roughness  =  3
+    Occlusion  =  4
+    Emission   =  5
+    Height     =  6
+    Cubemap    =  7
+    Irradiance =  8
+    Prefilter  =  9
+    Brdf       = 10
   end
 
   enum ShaderLocationIndex
-    ShaderLocVertexPosition   =  0
-    ShaderLocVertexTexcoord01 =  1
-    ShaderLocVertexTexcoord02 =  2
-    ShaderLocVertexNormal     =  3
-    ShaderLocVertexTangent    =  4
-    ShaderLocVertexColor      =  5
-    ShaderLocMatrixMvp        =  6
-    ShaderLocMatrixView       =  7
-    ShaderLocMatrixProjection =  8
-    ShaderLocMatrixModel      =  9
-    ShaderLocMatrixNormal     = 10
-    ShaderLocVectorView       = 11
-    ShaderLocColorDiffuse     = 12
-    ShaderLocColorSpecular    = 13
-    ShaderLocColorAmbient     = 14
-    ShaderLocMapAlbedo        = 15
-    ShaderLocMapMetalness     = 16
-    ShaderLocMapNormal        = 17
-    ShaderLocMapRoughness     = 18
-    ShaderLocMapOcclusion     = 19
-    ShaderLocMapEmission      = 20
-    ShaderLocMapHeight        = 21
-    ShaderLocMapCubemap       = 22
-    ShaderLocMapIrradiance    = 23
-    ShaderLocMapPrefilter     = 24
-    ShaderLocMapBrdf          = 25
+    VertexPosition   =  0
+    VertexTexcoord01 =  1
+    VertexTexcoord02 =  2
+    VertexNormal     =  3
+    VertexTangent    =  4
+    VertexColor      =  5
+    MatrixMvp        =  6
+    MatrixView       =  7
+    MatrixProjection =  8
+    MatrixModel      =  9
+    MatrixNormal     = 10
+    VectorView       = 11
+    ColorDiffuse     = 12
+    ColorSpecular    = 13
+    ColorAmbient     = 14
+    MapAlbedo        = 15
+    MapMetalness     = 16
+    MapNormal        = 17
+    MapRoughness     = 18
+    MapOcclusion     = 19
+    MapEmission      = 20
+    MapHeight        = 21
+    MapCubemap       = 22
+    MapIrradiance    = 23
+    MapPrefilter     = 24
+    MapBrdf          = 25
   end
 
   enum ShaderUniformDataType
-    ShaderUniformFloat     = 0
-    ShaderUniformVec2      = 1
-    ShaderUniformVec3      = 2
-    ShaderUniformVec4      = 3
-    ShaderUniformInt       = 4
-    ShaderUniformIvec2     = 5
-    ShaderUniformIvec3     = 6
-    ShaderUniformIvec4     = 7
-    ShaderUniformSampler2d = 8
+    Float     = 0
+    Vec2      = 1
+    Vec3      = 2
+    Vec4      = 3
+    Int       = 4
+    Ivec2     = 5
+    Ivec3     = 6
+    Ivec4     = 7
+    Sampler2d = 8
   end
 
   enum ShaderAttributeDataType
-    ShaderAttribFloat = 0
-    ShaderAttribVec2  = 1
-    ShaderAttribVec3  = 2
-    ShaderAttribVec4  = 3
+    Float = 0
+    Vec2  = 1
+    Vec3  = 2
+    Vec4  = 3
   end
 
   enum PixelFormat
-    PixelFormatUncompressedGrayscale    =  1
-    PixelFormatUncompressedGrayAlpha    =  2
-    PixelFormatUncompressedR5g6b5       =  3
-    PixelFormatUncompressedR8g8b8       =  4
-    PixelFormatUncompressedR5g5b5a1     =  5
-    PixelFormatUncompressedR4g4b4a4     =  6
-    PixelFormatUncompressedR8g8b8a8     =  7
-    PixelFormatUncompressedR32          =  8
-    PixelFormatUncompressedR32g32b32    =  9
-    PixelFormatUncompressedR32g32b32a32 = 10
-    PixelFormatCompressedDxt1Rgb        = 11
-    PixelFormatCompressedDxt1Rgba       = 12
-    PixelFormatCompressedDxt3Rgba       = 13
-    PixelFormatCompressedDxt5Rgba       = 14
-    PixelFormatCompressedEtc1Rgb        = 15
-    PixelFormatCompressedEtc2Rgb        = 16
-    PixelFormatCompressedEtc2EacRgba    = 17
-    PixelFormatCompressedPvrtRgb        = 18
-    PixelFormatCompressedPvrtRgba       = 19
-    PixelFormatCompressedAstc4x4Rgba    = 20
+    UncompressedGrayscale    =  1
+    UncompressedGrayAlpha    =  2
+    UncompressedR5g6b5       =  3
+    UncompressedR8g8b8       =  4
+    UncompressedR5g5b5a1     =  5
+    UncompressedR4g4b4a4     =  6
+    UncompressedR8g8b8a8     =  7
+    UncompressedR32          =  8
+    UncompressedR32g32b32    =  9
+    UncompressedR32g32b32a32 = 10
+    CompressedDxt1Rgb        = 11
+    CompressedDxt1Rgba       = 12
+    CompressedDxt3Rgba       = 13
+    CompressedDxt5Rgba       = 14
+    CompressedEtc1Rgb        = 15
+    CompressedEtc2Rgb        = 16
+    CompressedEtc2EacRgba    = 17
+    CompressedPvrtRgb        = 18
+    CompressedPvrtRgba       = 19
+    CompressedAstc4x4Rgba    = 20
   end
 
   enum TextureFilter
-    TextureFilterPoint          = 0
-    TextureFilterBilinear       = 1
-    TextureFilterTrilinear      = 2
-    TextureFilterAnisotropic4x  = 3
-    TextureFilterAnisotropic8x  = 4
-    TextureFilterAnisotropic16x = 5
+    Point          = 0
+    Bilinear       = 1
+    Trilinear      = 2
+    Anisotropic4x  = 3
+    Anisotropic8x  = 4
+    Anisotropic16x = 5
   end
 
   enum TextureWrap
-    TextureWrapRepeat       = 0
-    TextureWrapClamp        = 1
-    TextureWrapMirrorRepeat = 2
-    TextureWrapMirrorClamp  = 3
+    Repeat       = 0
+    Clamp        = 1
+    MirrorRepeat = 2
+    MirrorClamp  = 3
   end
 
   enum CubemapLayout
-    CubemapLayoutAutoDetect       = 0
-    CubemapLayoutLineVertical     = 1
-    CubemapLayoutLineHorizontal   = 2
-    CubemapLayoutCrossThreeByFour = 3
-    CubemapLayoutCrossFourByThree = 4
+    AutoDetect       = 0
+    LineVertical     = 1
+    LineHorizontal   = 2
+    CrossThreeByFour = 3
+    CrossFourByThree = 4
   end
 
   enum FontType
-    FontDefault = 0
-    FontBitmap  = 1
-    FontSdf     = 2
+    Default = 0
+    Bitmap  = 1
+    Sdf     = 2
   end
 
   enum BlendMode
-    BlendAlpha          = 0
-    BlendAdditive       = 1
-    BlendMultiplied     = 2
-    BlendAddColors      = 3
-    BlendSubtractColors = 4
-    BlendCustom         = 5
+    Alpha          = 0
+    Additive       = 1
+    Multiplied     = 2
+    AddColors      = 3
+    SubtractColors = 4
+    Custom         = 5
   end
 
   enum Gesture
-    GestureNone       =   0
-    GestureTap        =   1
-    GestureDoubletap  =   2
-    GestureHold       =   4
-    GestureDrag       =   8
-    GestureSwipeRight =  16
-    GestureSwipeLeft  =  32
-    GestureSwipeUp    =  64
-    GestureSwipeDown  = 128
-    GesturePinchIn    = 256
-    GesturePinchOut   = 512
+    None       =   0
+    Tap        =   1
+    Doubletap  =   2
+    Hold       =   4
+    Drag       =   8
+    SwipeRight =  16
+    SwipeLeft  =  32
+    SwipeUp    =  64
+    SwipeDown  = 128
+    PinchIn    = 256
+    PinchOut   = 512
   end
 
   enum CameraMode
-    CameraCustom      = 0
-    CameraFree        = 1
-    CameraOrbital     = 2
-    CameraFirstPerson = 3
-    CameraThirdPerson = 4
+    Custom      = 0
+    Free        = 1
+    Orbital     = 2
+    FirstPerson = 3
+    ThirdPerson = 4
   end
 
   enum CameraProjection
-    CameraPerspective  = 0
-    CameraOrthographic = 1
+    Perspective  = 0
+    Orthographic = 1
   end
 
   enum NPatchLayout
-    NpatchNinePatch            = 0
-    NpatchThreePatchVertical   = 1
-    NpatchThreePatchHorizontal = 2
+    NinePatch            = 0
+    ThreePatchVertical   = 1
+    ThreePatchHorizontal = 2
   end
 
   LIGHTGRAY  = Color.new r: 200, g: 200, b: 200, a: 255

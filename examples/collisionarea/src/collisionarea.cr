@@ -48,7 +48,7 @@ until LibRaylib.close_window?
   collision = LibRaylib.check_collision_recs?(box_a, box_b)
   box_collision = LibRaylib.get_collision_rec(box_a, box_b)
 
-  pause = !pause if LibRaylib.key_pressed?(LibRaylib::KeyboardKey::KeySpace)
+  pause = !pause if LibRaylib.key_pressed?(LibRaylib::KeyboardKey::Space)
 
   LibRaylib.begin_drawing
   LibRaylib.clear_background LibRaylib::WHITE

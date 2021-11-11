@@ -10,6 +10,6 @@ targets:
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
-crystal: 1.2.1
+crystal: 1.2.2
 
 license: MIT

@@ -2,9 +2,8 @@ name: raylib-cr
 version: 0.1.0
 
 authors:
-  - AregevDev <aregevdev@gmail.com>
   - sol-vin <ian@sol.vin>
 
-crystal: 1.0.0
+crystal: 1.2.2
 
 license: MIT

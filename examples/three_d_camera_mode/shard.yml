@@ -1,0 +1,16 @@
+name: three_d_camera_mode
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  shapes:
+    main: src/three_d_camera_mode.cr
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+
+crystal: 1.2.2
+
+license: MIT
