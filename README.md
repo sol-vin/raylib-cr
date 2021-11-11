@@ -12,7 +12,6 @@ The native libraries can be found in the `native/<OSNAME>` folder of this reposi
 
 These platforms are supported out of the box and are linked statically
 1. `x86_64-linux-gnu` = 64-bit Linux
-2. `x86_64-darwin` = 64-bit OSX
 
 # Installation
 
@@ -29,27 +28,14 @@ dependencies:
 ```crystal
 require "raylib-cr"
 
-screen_width = 800
-screen_height = 450
+LibRaylib.init_window(800, 450, "Hello World")
+LibRaylib.set_target_fps(60)
 
-LibRaylib.init_window screen_width, screen_height, "Hello"
-
-frames_counter = 0
-rand_value = LibRaylib.get_random_value -8, 5
-LibRaylib.set_target_fps 60
-
-until LibRaylib.window_should_close
-  frames_counter += 1
-  
-  if (frames_counter / 120) % 2 == 1
-    rand_value = LibRaylib.get_random_value -8, 5
-    frames_counter = 0
-  end
-
+until LibRaylib.close_window?
   LibRaylib.begin_drawing
-  LibRaylib.clear_background LibRaylib::RAYWHITE
-  LibRaylib.draw_text "Every 2 seconds a new random value is generated:", 130, 100, 20, LibRaylib::MAROON
-  LibRaylib.draw_text "#{rand_value}", 360, 180, 80, LibRaylib::LIGHTGRAY
+  LibRaylib.clear_background(LibRaylib::RAYWHITE)
+  
+  LibRaylib.draw_text("Hello World!", 190, 200, 20, LibRaylib::BLACK)
   LibRaylib.end_drawing
 end
 
@@ -74,3 +60,4 @@ These are my plans for `v1.0.0`
 # Contributors
 
 - [AregevDev](https://github.com/AregevDev) - creator and maintainer
+- [sol-vin](https://github.com/sol-vin) - maintainer

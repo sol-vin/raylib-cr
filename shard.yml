@@ -3,7 +3,8 @@ version: 0.1.0
 
 authors:
   - AregevDev <aregevdev@gmail.com>
+  - sol-vin <ian@sol.vin>
 
-crystal: 0.27.2
+crystal: 1.0.0
 
 license: MIT
