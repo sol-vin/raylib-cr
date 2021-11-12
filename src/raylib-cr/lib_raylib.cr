@@ -718,11 +718,11 @@ lib LibRaylib
   fun unload_shader = UnloadShader(shader : Shader)
   fun get_mouse_ray = GetMouseRay(mouse_position : Vector2, camera : Camera) : Ray
   fun get_camera_matrix = GetCameraMatrix(camera : Camera) : Matrix
-  fun get_camera_matrix2_d = GetCameraMatrix2D(camera : Camera2D) : Matrix
+  fun get_camera_matrix_2d = GetCameraMatrix2D(camera : Camera2D) : Matrix
   fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera) : Vector2
   fun get_world_to_screen_ex = GetWorldToScreenEx(position : Vector3, camera : Camera, width : LibC::Int, height : LibC::Int) : Vector2
-  fun get_world_to_screen2_d = GetWorldToScreen2D(position : Vector2, camera : Camera2D) : Vector2
-  fun get_screen_to_world2_d = GetScreenToWorld2D(position : Vector2, camera : Camera2D) : Vector2
+  fun get_world_to_screen_2d = GetWorldToScreen2D(position : Vector2, camera : Camera2D) : Vector2
+  fun get_screen_to_world_2d = GetScreenToWorld2D(position : Vector2, camera : Camera2D) : Vector2
   fun set_target_fps = SetTargetFPS(fps : LibC::Int)
   fun get_fps = GetFPS : LibC::Int
   fun get_frame_time = GetFrameTime : LibC::Float
