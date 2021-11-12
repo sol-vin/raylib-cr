@@ -535,7 +535,7 @@ lib LibRaylib
 
   struct Material
     shader : Shader
-    maps : MaterialMap                   # StaticArray(MaterialMap, 12)
+    maps : MaterialMap*                   # StaticArray(MaterialMap, 12)
     params : StaticArray(LibC::Float, 4) # LibC::Float*
   end
 
@@ -995,11 +995,11 @@ lib LibRaylib
   fun text_to_lower = TextToLower(text : LibC::Char*) : LibC::Char*
   fun text_to_pascal = TextToPascal(text : LibC::Char*) : LibC::Char*
   fun text_to_integer = TextToInteger(text : LibC::Char*) : LibC::Int
-  fun draw_line3_d = DrawLine3D(start_pos : Vector3, end_pos : Vector3, color : Color)
-  fun draw_point3_d = DrawPoint3D(position : Vector3, color : Color)
-  fun draw_circle3_d = DrawCircle3D(center : Vector3, radius : LibC::Float, rotation_axis : Vector3, rotation_angle : LibC::Float, color : Color)
-  fun draw_triangle3_d = DrawTriangle3D(v1 : Vector3, v2 : Vector3, v3 : Vector3, color : Color)
-  fun draw_triangle_strip3_d = DrawTriangleStrip3D(points : Vector3*, point_count : LibC::Int, color : Color)
+  fun draw_line_3d = DrawLine3D(start_pos : Vector3, end_pos : Vector3, color : Color)
+  fun draw_point_3d = DrawPoint3D(position : Vector3, color : Color)
+  fun draw_circle_3d = DrawCircle3D(center : Vector3, radius : LibC::Float, rotation_axis : Vector3, rotation_angle : LibC::Float, color : Color)
+  fun draw_triangle_3d = DrawTriangle3D(v1 : Vector3, v2 : Vector3, v3 : Vector3, color : Color)
+  fun draw_triangle_strip_3d = DrawTriangleStrip3D(points : Vector3*, point_count : LibC::Int, color : Color)
   fun draw_cube = DrawCube(position : Vector3, width : LibC::Float, height : LibC::Float, length : LibC::Float, color : Color)
   fun draw_cube_v = DrawCubeV(position : Vector3, size : Vector3, color : Color)
   fun draw_cube_wires = DrawCubeWires(position : Vector3, width : LibC::Float, height : LibC::Float, length : LibC::Float, color : Color)
