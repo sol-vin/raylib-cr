@@ -1,0 +1,15 @@
+name: smooth_pixel_perfect_camera
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  helloworld:
+    main: src/smooth_pixel_perfect_camera.cr
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+crystal: 1.2.2
+
+license: MIT

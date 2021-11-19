@@ -1,4 +1,5 @@
 require "raylib-cr"
+
 screen_width = 800
 screen_height = 450
 
@@ -16,6 +17,7 @@ cube_position = LibRaylib::Vector3.new(x: 0, y: 0, z: 0)
 LibRaylib.set_target_fps(60)
 
 until LibRaylib.close_window?
+
   LibRaylib.begin_drawing
   LibRaylib.clear_background(LibRaylib::RAYWHITE)
   LibRaylib.begin_mode_3d(camera)
