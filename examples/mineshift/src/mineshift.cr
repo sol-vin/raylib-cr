@@ -26,30 +26,30 @@ module Mineshift
 
     DATA = {
       0 => {
-        max_distance: ((Mineshift.screen_width/2)*SIZES[0]).to_i * 10,
+        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i * 10,
         max_blocks:   4,
-        block_size:   ((Mineshift.screen_width/2)*SIZES[0]).to_i,
+        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i,
         deviation:    4,
       },
 
       1 => {
-        max_distance: ((Mineshift.screen_width/2)*SIZES[1]).to_i * 12,
+        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i * 12,
         max_blocks:   3,
-        block_size:   ((Mineshift.screen_width/2)*SIZES[1]).to_i,
+        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i,
         deviation:    2,
       },
 
       2 => {
-        max_distance: ((Mineshift.screen_width/2)*SIZES[2]).to_i * 16,
+        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i * 16,
         max_blocks:   3,
-        block_size:   ((Mineshift.screen_width/2)*SIZES[2]).to_i,
+        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i,
         deviation:    3,
       },
 
       3 => {
-        max_distance: ((Mineshift.screen_width/2)*SIZES[3]).to_i * 20,
+        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i * 20,
         max_blocks:   7,
-        block_size:   ((Mineshift.screen_width/2)*SIZES[3]).to_i,
+        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i,
         deviation:    2,
       },
     }
@@ -71,17 +71,31 @@ module Mineshift
     BEAM_THICKNESS  =  0.612617_f32
   end
 
+  module Windows
+    ALL = [
+      # Square window
+      ->(x, y, w, h) { 
+        padding = 
+        Rl.draw_rectangle(x, y, w, h, Rl::BLACK)
+      },
+
+    ] of Proc(Float32, Float32, Float32, Float32, Nil)
+  end
+
   class_getter textures = StaticArray(Rl::Texture2D, Layer::MAX).new { Rl::Texture2D.new }
 
   class_getter camera = Rl::Camera2D.new
 
-  class_property screen_width = 1000
-  class_property screen_height = 600
+  class_property upscale_ratio = 1.0
+  class_property virtual_screen_width : Int32 = (1000/upscale_ratio).to_i
+  class_property virtual_screen_height : Int32 = (500/upscale_ratio).to_i
   class_property screen_ratio = 1.0_f32
   class_property height_multiplier = 4
 
   @@perlin = PerlinNoise.new(1_000_000)
   @@color_palette : Array(Rl::Color) = colors[0]
+
+
 
   def self.setup(seed = 1_000_000)
     destroy
@@ -97,6 +111,26 @@ module Mineshift
     render_layers
   end
 
+  private def self.virtual_screen_ratio
+    virtual_screen_width/virtual_screen_height
+  end
+
+  private def self.screen_width
+    virtual_screen_width * upscale_ratio
+  end
+
+  private def self.screen_height
+    virtual_screen_height * upscale_ratio
+  end
+
+  private def self.layer_height_blocks(layer)
+    ((@@virtual_screen_height * @@height_multiplier)/Layer::DATA[layer][:block_size]).floor
+  end
+
+  private def self.layer_height(layer)
+    (layer_height_blocks(layer) * Layer::DATA[layer][:block_size]).floor - 1
+  end
+
   private def self.rotate_point(x, y, ox, oy, deg) : Rl::Vector2
     angle = deg * (::Math::PI/180)
     rx = ::Math.cos(angle) * (x - ox) - ::Math.sin(angle) * (y - oy) + ox
@@ -110,12 +144,12 @@ module Mineshift
 
     # zero out layer
     output = [] of Rl::Rectangle
-    center = (@@screen_width/2).to_i
+    center = (@@virtual_screen_width/2).to_i
     current_height = 0
     # Perlin counter (provides random values by increasing seed)
     p_counter = 1
 
-    until current_height > (@@screen_height * @@height_multiplier)
+    until current_height > layer_height(layer)
       mask_rect = Rl::Rectangle.new
 
       additional_block_spacing = @@perlin.prng_int(
@@ -169,8 +203,8 @@ module Mineshift
         bridge_ray = rotate_point(bridge_collision_seg_size, 0, 0, 0, bridge_angle)
         left_top_point = bridge_center_top_point
 
-        while left_top_point.x > 0 && left_top_point.x < @@screen_width &&
-              left_top_point.y > 0 && left_top_point.y < (@@screen_height * @@height_multiplier) &&
+        while left_top_point.x > 0 && left_top_point.x < @@virtual_screen_width &&
+              left_top_point.y > 0 && left_top_point.y < layer_height(layer) &&
               chasm_rects.any? { |cr| Rl.check_collision_point_rec?(left_top_point, cr) }
           left_top_point = Rl::Vector2.new(
             x: (left_top_point.x - bridge_ray.x),
@@ -185,8 +219,8 @@ module Mineshift
 
             if !chasm_rects.any? { |cr| Rl.check_collision_point_rec?(left_bot_point, cr) }
               right_top_point = bridge_center_top_point
-              while right_top_point.x > 0 && right_top_point.x < @@screen_width &&
-                    right_top_point.y > 0 && right_top_point.y < (@@screen_height * @@height_multiplier) &&
+              while right_top_point.x > 0 && right_top_point.x < @@virtual_screen_width &&
+                    right_top_point.y > 0 && right_top_point.y < (layer_height(layer)) &&
                     chasm_rects.any? { |cr| Rl.check_collision_point_rec?(right_top_point, cr) }
                 right_top_point = Rl::Vector2.new(
                   x: (right_top_point.x + bridge_ray.x),
@@ -290,7 +324,7 @@ module Mineshift
             end
           end
 
-          min_thickness = 3
+          min_thickness = (3/upscale_ratio).ceil.to_i - (layer == 2 ? 1 : 0)
           beam_height_ratio = beam_height / max_beam_height
 
           thickness = @@perlin.prng_int(layer, rect_index, min_thickness, min_thickness + 1 + (min_thickness * beam_height_ratio).to_i, Seeds::BEAM_THICKNESS)
@@ -378,6 +412,9 @@ module Mineshift
     beam_bounding_boxes
   end
 
+  private def self.make_windows(layer, chasm_rects)
+  end
+
   def self.render_layers
     Layer::MAX.to_u8.times { |x| render_layer x }
   end
@@ -386,7 +423,7 @@ module Mineshift
     raise "Invalid layer #{layer}" unless layer < Layer::MAX
 
     # We will render to this texture for the layer
-    render_texture = Rl.load_render_texture(@@screen_width, @@screen_height * @@height_multiplier)
+    render_texture = Rl.load_render_texture(@@virtual_screen_width, layer_height(layer))
 
     Rl.begin_texture_mode(render_texture)
     Rl.clear_background(Rl::WHITE)
@@ -402,10 +439,12 @@ module Mineshift
     bridge_rects = make_bridges(layer, chasm_rects)
     beam_rects = make_beams(layer, chasm_rects)
 
+    window_rects = make_windows(layer, chasm_rects)
+
     Rl.end_mode_2d
     Rl.end_texture_mode
 
-    # Make an image
+    # Make an image out of our render texture
     image = Rl.load_image_from_texture(render_texture.texture)
 
     # Replace the color black with transparency
@@ -426,11 +465,11 @@ module Mineshift
     Rl.begin_mode_2d(@@camera)
 
     Layer::MAX.times do |x|
-      layer_offset = 20 + (10.0 * (x**x) * Rl.get_time)
+      layer_offset = 20/upscale_ratio + ((10.0 / upscale_ratio) * (x**x) * Rl.get_time)
       Rl.draw_texture_pro(
         @@textures[x],
-          Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset + @@textures[x].height - @@screen_height, width: @@screen_width, height: -@@screen_height),
-          Rl::Rectangle.new(x: 0, y: 0, width: @@screen_width, height: @@screen_height),
+          Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset, width: @@virtual_screen_width, height: -@@virtual_screen_height),
+          Rl::Rectangle.new(x: 0, y: 0, width: screen_width, height: screen_height),
           Rl::Vector2.new,
           0.0_f32,
           Rl::WHITE
@@ -445,7 +484,7 @@ module Mineshift
   end
 
   def self.run(seed = 1_000_000)
-    Rl.init_window(@@screen_width, @@screen_height, "Mineshift(#{seed})")
+    Rl.init_window(screen_width, screen_height, "Mineshift(#{seed})")
     Rl.set_target_fps(60)
 
     Mineshift.setup(seed)
