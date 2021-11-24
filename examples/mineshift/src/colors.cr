@@ -7,6 +7,7 @@ module Mineshift
       Rl::Color.new(r: 50_u8, g: 50_u8, b: 50_u8, a: 255_u8),
       Rl::Color.new(r: 0_u8, g: 0_u8, b: 0_u8, a: 255_u8),
     ],
+
     [
       Rl::Color.new(r: 0xe2_u8, g: 0xf1_u8, b: 0xaf_u8, a: 255_u8),
       Rl::Color.new(r: 0xe3_u8, g: 0xd8_u8, b: 0x88_u8, a: 255_u8),

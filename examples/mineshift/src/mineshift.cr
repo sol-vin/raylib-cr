@@ -8,6 +8,9 @@ alias Rl = LibRaylib
 module Mineshift
   DEBUG = true
 
+  MIN_BEAM_RATIO = 0.1
+  MAX_BEAM_RATIO = 0.5
+
   module Layer
     MAX   = 4
     SIZES = {
@@ -54,6 +57,14 @@ module Mineshift
     CENTER_MASK_DEVIATION = 0.834728_f32
     BRIDGE_HEIGHT         =  0.83772_f32
     BRIDGE_ANGLE          =  0.34134_f32
+
+    BEAM            =   0.66262_f32
+    BEAM_SIDE       =   0.76792_f32
+    BEAM_HEIGHT     =  0.111728_f32
+    BEAM_LENGTH     =  0.872653_f32
+    BEAM_SEGMENTS   =  0.225632_f32
+    BEAM_SHORT_SIDE = 0.5727312_f32
+    BEAM_THICKNESS  =  0.612617_f32
   end
 
   class_getter textures = StaticArray(Rl::Texture2D, Layer::MAX).new { Rl::Texture2D.new }
@@ -61,7 +72,7 @@ module Mineshift
   class_getter camera = Rl::Camera2D.new
 
   class_property screen_width = 1000
-  class_property screen_height = 500
+  class_property screen_height = 600
   class_property screen_ratio = 1.0_f32
   class_property height_multiplier = 4
 
@@ -177,7 +188,6 @@ module Mineshift
                   x: (right_top_point.x + bridge_ray.x),
                   y: (right_top_point.y + bridge_ray.y),
                 )
-
               end
               if !chasm_rects.any? { |cr| Rl.check_collision_point_rec?(right_top_point, cr) }
                 right_bot_point = Rl::Vector2.new(
@@ -202,23 +212,142 @@ module Mineshift
                   if bridge_bounding_boxes.empty? || !bridge_bounding_boxes.any? { |b_bb| Rl.check_collision_recs?(bb, b_bb) }
                     bridge_bounding_boxes << bb
 
-                    # draw triangles
-                    puts "#{bridge_bounding_boxes.size} LEFT Bridge @ #{left_top_point.x},#{left_top_point.y} #{left_bot_point.x},#{left_bot_point.y}"
-                    puts "#{bridge_bounding_boxes.size} RIGHT Bridge @ #{right_top_point.x},#{right_top_point.y} #{right_bot_point.x},#{right_bot_point.y}"
-
-                    # Rl.draw_circle(left_top_point.x, left_top_point.y, 3, Rl::RED)
-                    # Rl.draw_circle(left_bot_point.x, left_bot_point.y, 3, Rl::ORANGE)
-                    # Rl.draw_circle(right_top_point.x, right_top_point.y, 3, Rl::YELLOW)
-                    # Rl.draw_circle(right_bot_point.x, right_bot_point.y, 3, Rl::GREEN)
-
-
-
                     Rl.draw_triangle(left_top_point, left_bot_point, right_bot_point, Rl::WHITE)
                     Rl.draw_triangle(left_top_point, right_bot_point, right_top_point, Rl::WHITE)
-
                   end
                 end
               end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  private def self.make_beams(layer, chasm_rects)
+    bridge_bounding_boxes = [] of Rl::Rectangle
+    bridge_paths = [] of Array(Rl::Vector2)
+    if layer > 1
+      chasm_rects.each_with_index do |rect, rect_index|
+        if @@perlin.prng_int(layer, rect_index, 0, 5, Seeds::BEAM) == 0
+          beam_side = @@perlin.prng_item(layer, rect_index, [true, false], Seeds::BEAM_SIDE) ? :left : :right
+          beam_point = Rl::Vector2.new
+          if beam_side == :left
+            beam_point.x = rect.x
+            beam_point.y = rect.y + rect.height/2.0
+          elsif beam_side == :right
+            beam_point.x = rect.x + rect.width
+            beam_point.y = rect.y + rect.height/2.0
+          end
+
+          min_beam_height = (Layer::DATA[layer][:block_size]*0.20).to_i
+          max_beam_height = (Layer::DATA[layer][:block_size]*0.70).to_i
+          beam_height = @@perlin.prng_int(layer, rect_index, min_beam_height, max_beam_height, Seeds::BEAM_HEIGHT)
+
+          min_segments = ((rect.width*MIN_BEAM_RATIO/beam_height)).to_i
+          max_segments = ((rect.width*MAX_BEAM_RATIO/beam_height)).to_i
+          segments = @@perlin.prng_int(layer.to_i, rect_index, min_beam_height, max_beam_height, Seeds::BEAM_SEGMENTS)
+
+          beam_short_side = @@perlin.prng_item(layer, rect_index, [true, false], Seeds::BEAM_SHORT_SIDE) ? :top : :bottom
+
+          beam_point.y -= beam_height/2.0
+
+          left_top = Rl::Vector2.new
+          right_top = Rl::Vector2.new
+          left_bot = Rl::Vector2.new
+          right_bot = Rl::Vector2.new
+
+          # beam_side = :right
+          # beam_short_side = :bottom
+
+          if beam_short_side == :top
+            if beam_side == :left
+              left_top = beam_point
+              right_top = Rl::Vector2.new(x: beam_point.x + (beam_height * segments), y: beam_point.y)
+              left_bot = Rl::Vector2.new(x: beam_point.x, y: beam_point.y + beam_height)
+              right_bot = Rl::Vector2.new(x: beam_point.x + (beam_height * (segments - 1)), y: beam_point.y + beam_height)
+            elsif beam_side == :right
+              left_top = Rl::Vector2.new(x: beam_point.x - (beam_height * segments), y: beam_point.y)
+              right_top = beam_point
+              left_bot = Rl::Vector2.new(x: beam_point.x - (beam_height * (segments - 1)), y: beam_point.y + beam_height)
+              right_bot = Rl::Vector2.new(x: beam_point.x, y: beam_point.y + beam_height)
+            end
+          elsif beam_short_side == :bottom
+            if beam_side == :left
+              left_top = beam_point
+              right_top = Rl::Vector2.new(x: beam_point.x + (beam_height * (segments - 1)), y: beam_point.y)
+              left_bot = Rl::Vector2.new(x: beam_point.x, y: beam_point.y + beam_height)
+              right_bot = Rl::Vector2.new(x: beam_point.x + (beam_height * segments), y: beam_point.y + beam_height)
+            elsif beam_side == :right
+              left_top = Rl::Vector2.new(x: beam_point.x - (beam_height * (segments - 1)), y: beam_point.y)
+              right_top = beam_point
+              left_bot = Rl::Vector2.new(x: beam_point.x - (beam_height * segments), y: beam_point.y + beam_height)
+              right_bot = Rl::Vector2.new(x: beam_point.x, y: beam_point.y + beam_height)
+            end
+          end
+
+          min_thickness = 3
+          beam_height_ratio = beam_height / max_beam_height
+
+          thickness = @@perlin.prng_int(layer, rect_index, min_thickness, min_thickness + 1 + (min_thickness * beam_height_ratio).to_i, Seeds::BEAM_THICKNESS)
+
+          # TODO: Figure out this bug with beam length, theoretically this should never happen.
+          # Bug: Sometimes the beam clips out of the rectangle, even though it should be limited by min/max segment rules.
+          # don't draw if the beam is clipping out of the rectangle or if it's more than 50% of the width of the rectangle
+          if [left_top, right_top, left_bot, right_bot].all? { |v| Rl.check_collision_point_rec?(v, rect) } && ((right_bot.x - left_bot.x)/rect.width < 0.5)
+            Rl.draw_line_ex(left_top, right_top, thickness, Rl::WHITE)
+            Rl.draw_line_ex(right_bot, right_top, thickness, Rl::WHITE)
+            Rl.draw_line_ex(left_bot, right_bot, thickness, Rl::WHITE)
+            Rl.draw_line_ex(left_top, left_bot, thickness, Rl::WHITE)
+
+            Rl.draw_circle_v(left_top, thickness/2, Rl::WHITE)
+            Rl.draw_circle_v(right_top, thickness/2, Rl::WHITE)
+            Rl.draw_circle_v(right_bot, thickness/2, Rl::WHITE)
+            Rl.draw_circle_v(left_bot, thickness/2, Rl::WHITE)
+
+            # true: draw stroke from top to bottom, false: draw stroke from bottom to top
+            mirror = true
+            current_point = Rl::Vector2.new
+
+            if beam_short_side == :top
+              if beam_side == :left
+                current_point = right_top
+              elsif beam_side == :right
+                current_point = left_top
+              end
+            elsif beam_short_side == :bottom
+              mirror = false # draw bottom to top
+              if beam_side == :left
+                current_point = right_bot
+              elsif beam_side == :right
+                current_point = left_bot
+              end
+            end
+
+            segments.times do 
+              if mirror
+                if beam_side == :left
+                  new_point = Rl::Vector2.new(x: current_point.x - beam_height, y: current_point.y + beam_height)
+                  Rl.draw_line_ex(current_point, new_point, thickness, Rl::WHITE)
+                  current_point = new_point
+                elsif beam_side == :right
+                  new_point = Rl::Vector2.new(x: current_point.x + beam_height, y: current_point.y + beam_height)
+                  Rl.draw_line_ex(current_point, new_point, thickness, Rl::WHITE)
+                  current_point = new_point
+                end
+              else
+                if beam_side == :left
+                  new_point = Rl::Vector2.new(x: current_point.x - beam_height, y: current_point.y - beam_height)
+                  Rl.draw_line_ex(current_point, new_point, thickness, Rl::WHITE)
+                  current_point = new_point
+                elsif beam_side == :right
+                  new_point = Rl::Vector2.new(x: current_point.x + beam_height, y: current_point.y - beam_height)
+                  Rl.draw_line_ex(current_point, new_point, thickness, Rl::WHITE)
+                  current_point = new_point
+                end
+              end
+
+              mirror = !mirror
             end
           end
         end
@@ -248,6 +377,7 @@ module Mineshift
     end
 
     make_bridges(layer, chasm_rects)
+    make_beams(layer, chasm_rects)
 
     Rl.end_mode_2d
     Rl.end_texture_mode
@@ -272,20 +402,18 @@ module Mineshift
     Rl.clear_background(@@color_palette[0])
     Rl.begin_mode_2d(@@camera)
 
-    offset = 0
-    offset -= 20 * Rl.get_time
-
-    Layer::MAX.times do |x|
-      layer_offset = offset * (x + 1)
-      Rl.draw_texture_pro(
-        @@textures[x],
-        Rl::Rectangle.new(x: 0.0_f32, y: layer_offset + @@textures[x].height - @@screen_height, width: @@screen_width, height: -@@screen_height),
-        Rl::Rectangle.new(x: 0, y: 0, width: @@screen_width, height: @@screen_height),
-        Rl::Vector2.new,
-        0.0_f32,
-        Rl::WHITE
-      )
-    end
+    offset =
+      Layer::MAX.times do |x|
+        layer_offset = -20 * (x + 1) * Rl.get_time
+        Rl.draw_texture_pro(
+          @@textures[x],
+          Rl::Rectangle.new(x: 0.0_f32, y: layer_offset + @@textures[x].height - @@screen_height, width: @@screen_width, height: -@@screen_height),
+          Rl::Rectangle.new(x: 0, y: 0, width: @@screen_width, height: @@screen_height),
+          Rl::Vector2.new,
+          0.0_f32,
+          Rl::WHITE
+        )
+      end
     Rl.end_mode_2d
     Rl.end_drawing
   end
@@ -302,8 +430,10 @@ module Mineshift
 
     until Rl.close_window?
       Mineshift.draw
-      if Rl.key_pressed?(Rl::KeyboardKey::Space)
-        Mineshift.setup(rand(1_000_000))
+      if Rl.key_pressed?(Rl::KeyboardKey::Space) || Rl.gamepad_button_pressed?(0, 7)
+        seed = rand(1_000_000)
+        Mineshift.setup(seed)
+        Rl.set_window_title("Mineshift(#{seed})")
       end
     end
 
