@@ -5,6 +5,10 @@ require "./colors"
 
 alias Rl = LibRaylib
 
+# BUG: Reason for the height limit "seam" bug
+#  - The texture is a certain size that does not divide evenly with the block size, as a result, blocks will draw with a potential gap
+#  - We need to limit texture size to the 
+
 module Mineshift
   DEBUG = true
 
@@ -222,11 +226,11 @@ module Mineshift
         end
       end
     end
+    bridge_bounding_boxes
   end
 
   private def self.make_beams(layer, chasm_rects)
-    bridge_bounding_boxes = [] of Rl::Rectangle
-    bridge_paths = [] of Array(Rl::Vector2)
+    beam_bounding_boxes = [] of Rl::Rectangle
     if layer > 1
       chasm_rects.each_with_index do |rect, rect_index|
         if @@perlin.prng_int(layer, rect_index, 0, 5, Seeds::BEAM) == 0
@@ -291,24 +295,41 @@ module Mineshift
 
           thickness = @@perlin.prng_int(layer, rect_index, min_thickness, min_thickness + 1 + (min_thickness * beam_height_ratio).to_i, Seeds::BEAM_THICKNESS)
 
-          # TODO: Figure out this bug with beam length, theoretically this should never happen.
-          # Bug: Sometimes the beam clips out of the rectangle, even though it should be limited by min/max segment rules.
-          # don't draw if the beam is clipping out of the rectangle or if it's more than 50% of the width of the rectangle
-          if [left_top, right_top, left_bot, right_bot].all? { |v| Rl.check_collision_point_rec?(v, rect) } && ((right_bot.x - left_bot.x)/rect.width < 0.5)
+          # Check if the beam properly intersects all points of the chasm rectangle, and ensure the beam isn't too long.
+          if [left_top, right_top, left_bot, right_bot].all? { |v| Rl.check_collision_point_rec?(v, rect) } && ((right_bot.x - left_bot.x)/rect.width < MAX_BEAM_RATIO)
+          if beam_short_side == :top
+            if beam_side == :left
+              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y )
+            elsif beam_side == :right
+              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y )
+            end
+          elsif beam_short_side == :bottom
+            if beam_side == :left
+              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_bot.x - left_top.x, height: left_bot.y - left_top.y )
+            elsif beam_side == :right
+              beam_bounding_boxes << Rl::Rectangle.new(x: left_bot.x, y: left_top.y, width: right_bot.x - left_bot.x, height: left_bot.y - left_top.y )
+            end
+          end
+            # Draw the outline
             Rl.draw_line_ex(left_top, right_top, thickness, Rl::WHITE)
             Rl.draw_line_ex(right_bot, right_top, thickness, Rl::WHITE)
             Rl.draw_line_ex(left_bot, right_bot, thickness, Rl::WHITE)
             Rl.draw_line_ex(left_top, left_bot, thickness, Rl::WHITE)
 
+            # Fix the line caps (they are straight, we need circles)
             Rl.draw_circle_v(left_top, thickness/2, Rl::WHITE)
             Rl.draw_circle_v(right_top, thickness/2, Rl::WHITE)
             Rl.draw_circle_v(right_bot, thickness/2, Rl::WHITE)
             Rl.draw_circle_v(left_bot, thickness/2, Rl::WHITE)
 
+            #Rl.draw_rectangle_lines_ex(beam_bounding_boxes.last, 1, Rl::MAGENTA)
+
+            # Draw the struts
             # true: draw stroke from top to bottom, false: draw stroke from bottom to top
             mirror = true
             current_point = Rl::Vector2.new
 
+            # Set up the point and mirroring where it needs to be.
             if beam_short_side == :top
               if beam_side == :left
                 current_point = right_top
@@ -324,7 +345,8 @@ module Mineshift
               end
             end
 
-            segments.times do 
+            # Walk the struct lines
+            segments.times do
               if mirror
                 if beam_side == :left
                   new_point = Rl::Vector2.new(x: current_point.x - beam_height, y: current_point.y + beam_height)
@@ -353,6 +375,7 @@ module Mineshift
         end
       end
     end
+    beam_bounding_boxes
   end
 
   def self.render_layers
@@ -376,8 +399,8 @@ module Mineshift
       Rl.draw_rectangle_rec(rect, Rl::BLACK)
     end
 
-    make_bridges(layer, chasm_rects)
-    make_beams(layer, chasm_rects)
+    bridge_rects = make_bridges(layer, chasm_rects)
+    beam_rects = make_beams(layer, chasm_rects)
 
     Rl.end_mode_2d
     Rl.end_texture_mode
@@ -402,12 +425,11 @@ module Mineshift
     Rl.clear_background(@@color_palette[0])
     Rl.begin_mode_2d(@@camera)
 
-    offset =
-      Layer::MAX.times do |x|
-        layer_offset = -20 * (x + 1) * Rl.get_time
-        Rl.draw_texture_pro(
-          @@textures[x],
-          Rl::Rectangle.new(x: 0.0_f32, y: layer_offset + @@textures[x].height - @@screen_height, width: @@screen_width, height: -@@screen_height),
+    Layer::MAX.times do |x|
+      layer_offset = 20 + (10.0 * (x**x) * Rl.get_time)
+      Rl.draw_texture_pro(
+        @@textures[x],
+          Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset + @@textures[x].height - @@screen_height, width: @@screen_width, height: -@@screen_height),
           Rl::Rectangle.new(x: 0, y: 0, width: @@screen_width, height: @@screen_height),
           Rl::Vector2.new,
           0.0_f32,
