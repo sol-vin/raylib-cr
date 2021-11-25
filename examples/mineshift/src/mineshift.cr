@@ -7,7 +7,7 @@ alias Rl = LibRaylib
 
 # BUG: Reason for the height limit "seam" bug
 #  - The texture is a certain size that does not divide evenly with the block size, as a result, blocks will draw with a potential gap
-#  - We need to limit texture size to the 
+#  - We need to limit texture size to the
 
 module Mineshift
   DEBUG = true
@@ -26,31 +26,35 @@ module Mineshift
 
     DATA = {
       0 => {
-        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i * 10,
-        max_blocks:   4,
-        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i,
-        deviation:    4,
+        max_distance:   ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i * 10,
+        max_blocks:     4,
+        block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i,
+        deviation:      4,
+        window_padding: 0.1,
       },
 
       1 => {
-        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i * 12,
-        max_blocks:   3,
-        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i,
-        deviation:    2,
+        max_distance:   ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i * 12,
+        max_blocks:     3,
+        block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i,
+        deviation:      2,
+        window_padding: 0.15,
       },
 
       2 => {
-        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i * 16,
-        max_blocks:   3,
-        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i,
-        deviation:    3,
+        max_distance:   ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i * 16,
+        max_blocks:     3,
+        block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i,
+        deviation:      3,
+        window_padding: 0.2,
       },
 
       3 => {
-        max_distance: ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i * 20,
-        max_blocks:   7,
-        block_size:   ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i,
-        deviation:    2,
+        max_distance:   ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i * 20,
+        max_blocks:     7,
+        block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i,
+        deviation:      2,
+        window_padding: 0.25,
       },
     }
   end
@@ -69,17 +73,35 @@ module Mineshift
     BEAM_SEGMENTS   =  0.225632_f32
     BEAM_SHORT_SIDE = 0.5727312_f32
     BEAM_THICKNESS  =  0.612617_f32
+
+    WINDOW           =    0.2673_f32
+    WINDOW_TYPE      = 0.3652563_f32
+    WINDOW_SUBDIVIDE =  0.381922_f32
   end
 
   module Windows
     ALL = [
       # Square window
-      ->(x, y, w, h) { 
-        padding = 
-        Rl.draw_rectangle(x, y, w, h, Rl::BLACK)
+      ->(layer : UInt8, x : Float32, y : Float32, w : Float32, h : Float32) {
+        padding = w * Layer::DATA[layer][:window_padding]
+
+        Rl.draw_rectangle(x + padding, y + padding, w - (padding * 2), h - (padding * 2), Rl::BLACK)
+
+        # Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
+
       },
 
-    ] of Proc(Float32, Float32, Float32, Float32, Nil)
+      # Circle window
+      ->(layer : UInt8, x : Float32, y : Float32, w : Float32, h : Float32) {
+        padding = w * Layer::DATA[layer][:window_padding]
+
+        Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/2.0) - padding, Rl::BLACK)
+
+        #Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
+
+      },
+
+    ] of Proc(UInt8, Float32, Float32, Float32, Float32, Nil)
   end
 
   class_getter textures = StaticArray(Rl::Texture2D, Layer::MAX).new { Rl::Texture2D.new }
@@ -94,8 +116,7 @@ module Mineshift
 
   @@perlin = PerlinNoise.new(1_000_000)
   @@color_palette : Array(Rl::Color) = colors[0]
-
-
+  @@axis_movement = 0.0_f32
 
   def self.setup(seed = 1_000_000)
     destroy
@@ -104,6 +125,7 @@ module Mineshift
     @@textures = StaticArray(Rl::Texture2D, Layer::MAX).new { Rl::Texture2D.new }
     @@camera = Rl::Camera2D.new
     @@camera.zoom = 1.0_f32
+    @@axis_movement = 0.0_f32
 
     @@perlin = PerlinNoise.new(seed)
 
@@ -331,19 +353,19 @@ module Mineshift
 
           # Check if the beam properly intersects all points of the chasm rectangle, and ensure the beam isn't too long.
           if [left_top, right_top, left_bot, right_bot].all? { |v| Rl.check_collision_point_rec?(v, rect) } && ((right_bot.x - left_bot.x)/rect.width < MAX_BEAM_RATIO)
-          if beam_short_side == :top
-            if beam_side == :left
-              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y )
-            elsif beam_side == :right
-              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y )
+            if beam_short_side == :top
+              if beam_side == :left
+                beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y)
+              elsif beam_side == :right
+                beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_top.x - left_top.x, height: left_bot.y - left_top.y)
+              end
+            elsif beam_short_side == :bottom
+              if beam_side == :left
+                beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_bot.x - left_top.x, height: left_bot.y - left_top.y)
+              elsif beam_side == :right
+                beam_bounding_boxes << Rl::Rectangle.new(x: left_bot.x, y: left_top.y, width: right_bot.x - left_bot.x, height: left_bot.y - left_top.y)
+              end
             end
-          elsif beam_short_side == :bottom
-            if beam_side == :left
-              beam_bounding_boxes << Rl::Rectangle.new(x: left_top.x, y: left_top.y, width: right_bot.x - left_top.x, height: left_bot.y - left_top.y )
-            elsif beam_side == :right
-              beam_bounding_boxes << Rl::Rectangle.new(x: left_bot.x, y: left_top.y, width: right_bot.x - left_bot.x, height: left_bot.y - left_top.y )
-            end
-          end
             # Draw the outline
             Rl.draw_line_ex(left_top, right_top, thickness, Rl::WHITE)
             Rl.draw_line_ex(right_bot, right_top, thickness, Rl::WHITE)
@@ -356,7 +378,7 @@ module Mineshift
             Rl.draw_circle_v(right_bot, thickness/2, Rl::WHITE)
             Rl.draw_circle_v(left_bot, thickness/2, Rl::WHITE)
 
-            #Rl.draw_rectangle_lines_ex(beam_bounding_boxes.last, 1, Rl::MAGENTA)
+            # Rl.draw_rectangle_lines_ex(beam_bounding_boxes.last, 1, Rl::MAGENTA)
 
             # Draw the struts
             # true: draw stroke from top to bottom, false: draw stroke from bottom to top
@@ -413,6 +435,97 @@ module Mineshift
   end
 
   private def self.make_windows(layer, chasm_rects)
+    window_bounding_boxes = [] of Rl::Rectangle
+
+    if layer > 0
+      chasm_rects.each_with_index do |rect, rect_index|
+        left_rect = Rl::Rectangle.new(
+          x: 0,
+          y: rect.y,
+          width: rect.x, # 0 => x
+          height: rect.height
+        )
+
+        right_rect = Rl::Rectangle.new(
+          x: rect.x + rect.width,
+          y: rect.y,
+          width: virtual_screen_width - (rect.x + rect.width),
+          height: rect.height
+        )
+
+        subdivided_squares = [] of Rl::Rectangle
+
+        current_x = 0
+        while (current_x + left_rect.height) < left_rect.width
+          subdivided_squares << Rl::Rectangle.new(
+            x: current_x,
+            y: left_rect.y,
+            width: left_rect.height,
+            height: left_rect.height
+          )
+
+          current_x += left_rect.height
+        end
+
+        current_x = virtual_screen_width
+        until (current_x - right_rect.height) < right_rect.x
+          subdivided_squares << Rl::Rectangle.new(
+            x: current_x - right_rect.height,
+            y: right_rect.y,
+            width: right_rect.height,
+            height: right_rect.height
+          )
+
+          current_x -= right_rect.height
+        end
+
+        subdivided_squares = subdivided_squares.map do |square|
+          if @@perlin.prng_int(square.x.to_i, square.y.to_i, rect_index, 0, 2, Seeds::WINDOW_SUBDIVIDE).zero?
+            width = square.width/2.0
+
+            [
+              Rl::Rectangle.new(
+                x: square.x,
+                y: square.y,
+                width: width,
+                height: width
+              ),
+
+              Rl::Rectangle.new(
+                x: square.x + width,
+                y: square.y,
+                width: width,
+                height: width
+              ),
+
+              Rl::Rectangle.new(
+                x: square.x + width,
+                y: square.y + width,
+                width: width,
+                height: width
+              ),
+
+              Rl::Rectangle.new(
+                x: square.x,
+                y: square.y + width,
+                width: width,
+                height: width
+              ),
+            ]
+          else
+            square
+          end
+        end.flatten
+
+        subdivided_squares.each_with_index do |rect, rect_index|
+          if @@perlin.prng_int(rect.x.to_i, rect.y.to_i, rect_index, 0, 30, Seeds::WINDOW).zero?
+            @@perlin.prng_item(rect.x.to_i, rect.y.to_i, rect_index, Windows::ALL, Seeds::WINDOW_TYPE).call layer, rect.x, rect.y, rect.width, rect.height
+          end
+        end
+      end
+    end
+
+    window_bounding_boxes
   end
 
   def self.render_layers
@@ -464,17 +577,19 @@ module Mineshift
     Rl.clear_background(@@color_palette[0])
     Rl.begin_mode_2d(@@camera)
 
+    @@axis_movement += Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftY)
+
     Layer::MAX.times do |x|
-      layer_offset = 20/upscale_ratio + ((10.0 / upscale_ratio) * (x**x) * Rl.get_time)
+      layer_offset = 20/upscale_ratio + ((10.0 / upscale_ratio) * (x**x) * (@@axis_movement * 0.05))
       Rl.draw_texture_pro(
         @@textures[x],
-          Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset, width: @@virtual_screen_width, height: -@@virtual_screen_height),
-          Rl::Rectangle.new(x: 0, y: 0, width: screen_width, height: screen_height),
-          Rl::Vector2.new,
-          0.0_f32,
-          Rl::WHITE
-        )
-      end
+        Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset, width: @@virtual_screen_width, height: -@@virtual_screen_height),
+        Rl::Rectangle.new(x: 0, y: 0, width: screen_width, height: screen_height),
+        Rl::Vector2.new,
+        0.0_f32,
+        Rl::WHITE
+      )
+    end
     Rl.end_mode_2d
     Rl.end_drawing
   end
