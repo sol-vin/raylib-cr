@@ -5,10 +5,6 @@ require "./colors"
 
 alias Rl = LibRaylib
 
-# BUG: Reason for the height limit "seam" bug
-#  - The texture is a certain size that does not divide evenly with the block size, as a result, blocks will draw with a potential gap
-#  - We need to limit texture size to the
-
 module Mineshift
   DEBUG = true
 
@@ -30,7 +26,7 @@ module Mineshift
         max_blocks:     4,
         block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[0]).to_i,
         deviation:      4,
-        window_padding: 0.1,
+        window_padding: 0.4,
       },
 
       1 => {
@@ -38,7 +34,7 @@ module Mineshift
         max_blocks:     3,
         block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[1]).to_i,
         deviation:      2,
-        window_padding: 0.15,
+        window_padding: 0.3,
       },
 
       2 => {
@@ -46,7 +42,7 @@ module Mineshift
         max_blocks:     3,
         block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[2]).to_i,
         deviation:      3,
-        window_padding: 0.2,
+        window_padding: 0.25,
       },
 
       3 => {
@@ -54,7 +50,7 @@ module Mineshift
         max_blocks:     7,
         block_size:     ((Mineshift.virtual_screen_width/2)*SIZES[3]).to_i,
         deviation:      2,
-        window_padding: 0.25,
+        window_padding: 0.2,
       },
     }
   end
@@ -74,18 +70,31 @@ module Mineshift
     BEAM_SHORT_SIDE = 0.5727312_f32
     BEAM_THICKNESS  =  0.612617_f32
 
-    WINDOW           =    0.2673_f32
+    WINDOW           =  0.224673_f32
     WINDOW_TYPE      = 0.3652563_f32
     WINDOW_SUBDIVIDE =  0.381922_f32
+
+    CIRCLE_WINDOW_TYPE = 0.002372_f32
+    SQUARE_WINDOW_TYPE =  0.26261_f32
   end
 
   module Windows
-    ALL = [
+    CHANCE = 1
+    OUT_OF = 3
+    ALL    = [
       # Square window
       ->(layer : UInt8, x : Float32, y : Float32, w : Float32, h : Float32) {
         padding = w * Layer::DATA[layer][:window_padding]
 
         Rl.draw_rectangle(x + padding, y + padding, w - (padding * 2), h - (padding * 2), Rl::BLACK)
+
+        if Mineshift.perlin.prng_int(x.to_i, y.to_i, 0, 3, Seeds::SQUARE_WINDOW_TYPE).zero?
+          center_square_w = w / 4.0
+
+          center_square_x = x + w / 2.0 - (center_square_w) / 2.0
+          center_square_y = y + h / 2.0 - (center_square_w) / 2.0
+          Rl.draw_rectangle(center_square_x, center_square_y, center_square_w, center_square_w, Rl::WHITE)
+        end
 
         # Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
 
@@ -97,7 +106,11 @@ module Mineshift
 
         Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/2.0) - padding, Rl::BLACK)
 
-        #Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
+        if Mineshift.perlin.prng_int(x.to_i, y.to_i, 0, 3, Seeds::CIRCLE_WINDOW_TYPE).zero?
+          Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/3.0) - padding, Rl::WHITE)
+        end
+
+        # Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
 
       },
 
@@ -109,12 +122,12 @@ module Mineshift
   class_getter camera = Rl::Camera2D.new
 
   class_property upscale_ratio = 1.0
-  class_property virtual_screen_width : Int32 = (1000/upscale_ratio).to_i
-  class_property virtual_screen_height : Int32 = (500/upscale_ratio).to_i
+  class_property virtual_screen_width : Int32 = (1280/upscale_ratio).to_i
+  class_property virtual_screen_height : Int32 = (1024/upscale_ratio).to_i
   class_property screen_ratio = 1.0_f32
-  class_property height_multiplier = 4
+  class_property height_multiplier = 8
 
-  @@perlin = PerlinNoise.new(1_000_000)
+  class_getter perlin = PerlinNoise.new(1_000_000)
   @@color_palette : Array(Rl::Color) = colors[0]
   @@axis_movement = 0.0_f32
 
@@ -518,8 +531,9 @@ module Mineshift
         end.flatten
 
         subdivided_squares.each_with_index do |rect, rect_index|
-          if @@perlin.prng_int(rect.x.to_i, rect.y.to_i, rect_index, 0, 30, Seeds::WINDOW).zero?
-            @@perlin.prng_item(rect.x.to_i, rect.y.to_i, rect_index, Windows::ALL, Seeds::WINDOW_TYPE).call layer, rect.x, rect.y, rect.width, rect.height
+          if @@perlin.int(rect.x.to_i + (layer * 10), rect.y.to_i, Windows::CHANCE - 1, Windows::OUT_OF, Seeds::WINDOW) <= (Windows::CHANCE - 1)
+            @@perlin.prng_item(rect.x.to_i + (layer * 10), rect.y.to_i, rect_index, Windows::ALL, Seeds::WINDOW_TYPE).call layer, rect.x, rect.y, rect.width, rect.height
+            window_bounding_boxes << rect
           end
         end
       end
@@ -580,7 +594,7 @@ module Mineshift
     @@axis_movement += Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftY)
 
     Layer::MAX.times do |x|
-      layer_offset = 20/upscale_ratio + ((10.0 / upscale_ratio) * (x**x) * (@@axis_movement * 0.05))
+      layer_offset = (666 * x) + 10.0/upscale_ratio + ((5.0 / upscale_ratio) * ((x + 1) ** x) * (@@axis_movement * 0.05))
       Rl.draw_texture_pro(
         @@textures[x],
         Rl::Rectangle.new(x: 0.0_f32, y: -layer_offset, width: @@virtual_screen_width, height: -@@virtual_screen_height),
