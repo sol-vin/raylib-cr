@@ -75,12 +75,20 @@ module Mineshift
     WINDOW_SUBDIVIDE =  0.381922_f32
 
     CIRCLE_WINDOW_TYPE = 0.002372_f32
+    CIRCLE_WINDOW_STRUT_PARTS_NUMBER = 0.20302_f32
+    CIRCLE_WINDOW_STRUT_PARTS = 0.20302_f32
     SQUARE_WINDOW_TYPE =  0.26261_f32
   end
 
   module Windows
-    CHANCE = 1
+    CHANCE = 1 
     OUT_OF = 3
+
+    CIRCLE_TYPES = [:plain, :center, :strut]
+    CIRCLE_MIN_PARTS = 4
+    CIRCLE_MAX_PARTS = 5
+
+
     ALL    = [
       # Square window
       ->(layer : UInt8, x : Float32, y : Float32, w : Float32, h : Float32) {
@@ -89,7 +97,7 @@ module Mineshift
         Rl.draw_rectangle(x + padding, y + padding, w - (padding * 2), h - (padding * 2), Rl::BLACK)
 
         if Mineshift.perlin.prng_int(x.to_i, y.to_i, 0, 3, Seeds::SQUARE_WINDOW_TYPE).zero?
-          center_square_w = w / 4.0
+          center_square_w = w / (4.0 + (1.0 - (layer/Layer::MAX)))
 
           center_square_x = x + w / 2.0 - (center_square_w) / 2.0
           center_square_y = y + h / 2.0 - (center_square_w) / 2.0
@@ -106,8 +114,44 @@ module Mineshift
 
         Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/2.0) - padding, Rl::BLACK)
 
-        if Mineshift.perlin.prng_int(x.to_i, y.to_i, 0, 3, Seeds::CIRCLE_WINDOW_TYPE).zero?
-          Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/3.0) - padding, Rl::WHITE)
+        type = Mineshift.perlin.prng_item(x.to_i, y.to_i, CIRCLE_TYPES, Seeds::CIRCLE_WINDOW_TYPE)
+        window_color = Rl::WHITE
+        thickness = layer * 2
+
+        if type == :center
+          Rl.draw_circle(x + w / 2.0, y + h / 2.0, (w/3.0) - padding, window_color)
+        elsif type == :strut
+          parts = [
+            ->(x : Float32, y : Float32, r : Float32) {
+              Rl.draw_line_ex(Rl::Vector2.new(x: x, y: y), Rl::Vector2.new(x: x + r, y: y), thickness, window_color)
+            },
+
+            ->(x : Float32, y : Float32, r : Float32) {
+              Rl.draw_line_ex(Rl::Vector2.new(x: x, y: y), Rl::Vector2.new(x: x - r, y: y), thickness, window_color)
+            },
+
+            ->(x : Float32, y : Float32, r : Float32) {
+              Rl.draw_line_ex(Rl::Vector2.new(x: x, y: y), Rl::Vector2.new(x: x, y: y + r), thickness, window_color)
+            },
+            
+            ->(x : Float32, y : Float32, r : Float32) {
+              Rl.draw_line_ex(Rl::Vector2.new(x: x, y: y), Rl::Vector2.new(x: x, y: y - r), thickness, window_color)
+            },
+
+            ->(x : Float32, y : Float32, r : Float32) {
+              Rl.draw_circle(x, y, r*0.4*((layer+1) / (Layer::MAX+1)), window_color)
+            },
+          ] of Proc(Float32, Float32, Float32, Nil)
+
+          number_of_parts = Mineshift.perlin.prng_int(x.to_i, y.to_i, Windows::CIRCLE_MIN_PARTS.to_i, Windows::CIRCLE_MAX_PARTS.to_i + 1, Seeds::CIRCLE_WINDOW_STRUT_PARTS_NUMBER)
+
+          number_of_parts.times do |z|
+            part_index = Mineshift.perlin.prng_int(x.to_i, y.to_i, z, 0, parts.size, Seeds::CIRCLE_WINDOW_STRUT_PARTS)
+
+            parts[part_index].call(x + w / 2.0, y + h / 2.0, (w / 2.0).to_f32)
+            parts.delete_at(part_index)
+
+          end
         end
 
         # Rl.draw_rectangle_lines(x, y, w, h, Rl::MAGENTA)
@@ -126,6 +170,8 @@ module Mineshift
   class_property virtual_screen_height : Int32 = (1024/upscale_ratio).to_i
   class_property screen_ratio = 1.0_f32
   class_property height_multiplier = 8
+
+  class_property? show_seed = false
 
   class_getter perlin = PerlinNoise.new(1_000_000)
   @@color_palette : Array(Rl::Color) = colors[0]
@@ -449,6 +495,13 @@ module Mineshift
 
   private def self.make_windows(layer, chasm_rects)
     window_bounding_boxes = [] of Rl::Rectangle
+    window_ratio = 2.0
+    max_windpw_frame = Rl::Rectangle.new(
+      x: 0,
+      y: 0,
+      width: Layer::DATA[layer][:block_size] * window_ratio,
+      height: Layer::DATA[layer][:block_size] * window_ratio
+    )
 
     if layer > 0
       chasm_rects.each_with_index do |rect, rect_index|
@@ -493,7 +546,7 @@ module Mineshift
         end
 
         subdivided_squares = subdivided_squares.map do |square|
-          if @@perlin.prng_int(square.x.to_i, square.y.to_i, rect_index, 0, 2, Seeds::WINDOW_SUBDIVIDE).zero?
+          if @@perlin.prng_int(square.x.to_i, square.y.to_i, rect_index, 2, 3, Seeds::WINDOW_SUBDIVIDE).zero?
             width = square.width/2.0
 
             [
@@ -604,6 +657,35 @@ module Mineshift
         Rl::WHITE
       )
     end
+
+    if show_seed?
+      text_size = 20
+      text_length = Rl.measure_text(perlin.seed.to_s, text_size)
+
+      x = (screen_width / 2.0) - (text_length/2.0)
+      y = (screen_height * 0.9)
+      w = text_length + (text_size)
+      h = text_size + (text_size)
+
+      Rl.draw_rectangle(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::WHITE)
+      Rl.draw_rectangle_lines(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::BLACK)
+      Rl.draw_text(perlin.seed.to_s, x, y, text_size, Rl::BLACK)
+    end
+    Rl.end_mode_2d
+    Rl.end_drawing
+  end
+
+  def self.draw_loading
+    Rl.begin_drawing
+    Rl.clear_background(Rl::RAYWHITE)
+    Rl.begin_mode_2d(@@camera)
+
+    loading_text = "Loading..."
+    text_size = 20
+    text_measure = Rl.measure_text(loading_text, text_size)
+
+    Rl.draw_text(loading_text, (screen_width/2.0) - (text_measure/2.0), (screen_height/2.0) - (text_measure/2.0), text_size, Rl::BLACK)
+
     Rl.end_mode_2d
     Rl.end_drawing
   end
@@ -616,14 +698,39 @@ module Mineshift
     Rl.init_window(screen_width, screen_height, "Mineshift(#{seed})")
     Rl.set_target_fps(60)
 
+    Mineshift.draw_loading
     Mineshift.setup(seed)
 
     until Rl.close_window?
       Mineshift.draw
       if Rl.key_pressed?(Rl::KeyboardKey::Space) || Rl.gamepad_button_pressed?(0, 7)
         seed = rand(1_000_000)
+        Mineshift.draw_loading
+
         Mineshift.setup(seed)
         Rl.set_window_title("Mineshift(#{seed})")
+      end
+
+      if Rl.key_pressed?(Rl::KeyboardKey::Right) || Rl.gamepad_button_pressed?(0, 11)
+        seed &+= 1
+        Mineshift.draw_loading
+
+        Mineshift.setup(seed)
+        Rl.set_window_title("Mineshift(#{seed})")
+      end
+
+      if Rl.key_pressed?(Rl::KeyboardKey::Left) || Rl.gamepad_button_pressed?(0, 9)
+        seed &-= 1
+        Mineshift.draw_loading
+
+        Mineshift.setup(seed)
+        Rl.set_window_title("Mineshift(#{seed})")
+      end
+
+      if Rl.key_pressed?(Rl::KeyboardKey::Q) || (Rl.get_gamepad_axis_movement(0, 5) > 0.5)
+        Mineshift.show_seed = true
+      else
+        Mineshift.show_seed = false
       end
     end
 
