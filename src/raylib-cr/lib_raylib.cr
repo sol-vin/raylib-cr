@@ -661,7 +661,7 @@ lib LibRaylib
   fun set_window_size = SetWindowSize(width : LibC::Int, height : LibC::Int)
   fun get_window_handle = GetWindowHandle : Void*
   fun get_screen_width = GetScreenWidth : LibC::Int
-  fun set_window_height = GetScreenHeight : LibC::Int
+  fun get_screen_height = GetScreenHeight : LibC::Int
   fun get_monitor_count = GetMonitorCount : LibC::Int
   fun get_current_monitor = GetCurrentMonitor : LibC::Int
   fun get_monitor_position = GetMonitorPosition(monitor : LibC::Int) : Vector2
