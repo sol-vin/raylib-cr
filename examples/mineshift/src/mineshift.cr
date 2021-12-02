@@ -193,6 +193,8 @@ module Mineshift
   class_property height_multiplier = 8
   # Should we show the seed number in a tasteful little white box?
   class_property? show_seed = false
+  # Should we show the help in a white box?
+  class_property? show_help = false
 
   # Our RNGesus
   class_getter perlin = PerlinNoise.new(1_000_000)
@@ -712,23 +714,57 @@ module Mineshift
 
     # Show the seed if the variable is true
     if show_seed?
-      text_size = 20
-      text_length = Rl.measure_text(perlin.seed.to_s, text_size)
+      draw_seed
+    end
 
-      x = (screen_width / 2.0) - (text_length/2.0)
-      y = (screen_height * 0.9)
-      w = text_length + (text_size)
-      h = text_size + (text_size)
-
-      Rl.draw_rectangle(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::WHITE)
-      Rl.draw_rectangle_lines(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::BLACK)
-      Rl.draw_text(perlin.seed.to_s, x, y, text_size, Rl::BLACK)
+    if show_help?
+      draw_help
     end
     Rl.end_mode_2d
     Rl.end_drawing
   end
 
-  # TODO: Find out why this doesn't work after init window.....
+  def self.draw_help
+    text_size = 20
+    y_spacing = 5
+    title = "#{" " * 10}HELP#{" " * 10}"
+    text_length = Rl.measure_text(title, text_size)
+
+    x = (screen_width / 2.0) - (text_length/2.0)
+    y = (screen_height * 0.3)
+    w = text_length + (text_size)
+    h = (text_size + y_spacing) * 16
+
+    Rl.draw_rectangle(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::WHITE)
+    Rl.draw_rectangle_lines(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::BLACK)
+    Rl.draw_text(title, x, y, text_size, Rl::BLACK)
+
+    Rl.draw_text("Left : Next Seed", x, y + (text_size + y_spacing), text_size, Rl::BLACK)
+    Rl.draw_text("Right : Prev Seed", x, y + (text_size + y_spacing) * 2, text_size, Rl::BLACK)
+    Rl.draw_text("Space : Random Seed", x, y + (text_size + y_spacing) * 3, text_size, Rl::BLACK)
+
+    Rl.draw_text("Mouse Wheel Up", x, y + (text_size + y_spacing) * 6, text_size, Rl::BLACK)
+    Rl.draw_text("Up : Scroll Up", x, y + (text_size + y_spacing) * 7, text_size, Rl::BLACK)
+    Rl.draw_text("Mouse Wheel Down", x, y + (text_size + y_spacing) * 9, text_size, Rl::BLACK)
+    Rl.draw_text("Down : Scroll Down", x, y + (text_size + y_spacing) * 10, text_size, Rl::BLACK)
+    Rl.draw_text("Shift : Go Faster", x, y + (text_size + y_spacing) * 12, text_size, Rl::BLACK)
+    Rl.draw_text("Q : Show Seed #", x, y + (text_size + y_spacing) * 14, text_size, Rl::BLACK)
+  end
+
+  def self.draw_seed
+    text_size = 20
+    text_length = Rl.measure_text(perlin.seed.to_s, text_size)
+
+    x = (screen_width / 2.0) - (text_length/2.0)
+    y = (screen_height * 0.9)
+    w = text_length + (text_size)
+    h = text_size + (text_size)
+
+    Rl.draw_rectangle(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::WHITE)
+    Rl.draw_rectangle_lines(x - (text_size/2.0), y - (text_size/2.0), w, h, Rl::BLACK)
+    Rl.draw_text(perlin.seed.to_s, x, y, text_size, Rl::BLACK)
+  end
+
   # Draw a loading screen.
   def self.draw_loading(percent_done : Float32, text_displayed : String)
     Rl.begin_drawing
@@ -763,9 +799,12 @@ module Mineshift
 
     until Rl.close_window?
       # Change the speed modifier for scrolling when holding the LeftTrigger
-      raw_speed_mod = Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftTrigger)
+      raw_speed_mod = Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftTrigger) + (Rl.key_down?(Rl::KeyboardKey::LeftShift) ? 2 : 0)
       speed_mod = (raw_speed_mod > 0 ? (raw_speed_mod + 1) * 2.0 : 1)
-      @@axis_movement += (Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftY) * speed_mod)
+      up_arrow_movement = Rl.key_down?(Rl::KeyboardKey::Up) ? -1 : 0
+      down_arrow_movement = Rl.key_down?(Rl::KeyboardKey::Down) ? 1 : 0
+
+      @@axis_movement += ((Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::LeftY) + up_arrow_movement + down_arrow_movement + (Rl.get_mouse_wheel_move * -2)) * speed_mod)
 
       Mineshift.draw
 
@@ -794,10 +833,16 @@ module Mineshift
       end
 
       # Show the seed on the middle of the screen when Q or the RT trigger is held.
-      if Rl.key_pressed?(Rl::KeyboardKey::Q) || (Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::RightTrigger) > 0.5)
+      if Rl.key_down?(Rl::KeyboardKey::Q) || (Rl.get_gamepad_axis_movement(0, Rl::GamepadAxis::RightTrigger) > 0.5)
         Mineshift.show_seed = true
       else
         Mineshift.show_seed = false
+      end
+
+      if Rl.key_down?(Rl::KeyboardKey::Tab) || Rl.gamepad_button_down?(0, 6)
+        Mineshift.show_help = true
+      else
+        Mineshift.show_help = false
       end
     end
 
