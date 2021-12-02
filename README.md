@@ -27,7 +27,7 @@ dependencies:
 
 ### Windows
 1. Install crystal with `scoop install crystal`
-2. Copy `./rsrc/native/windows/raylib` to `C:\raylib` then add this to your env in powershell
+2. Copy `./rsrc/native/windows/raylib` to `C:\raylib`
 3. Run in powershell
 ```powershell
 $env:LIB="${env:LIB};C:\raylib\lib"
