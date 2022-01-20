@@ -535,8 +535,8 @@ lib LibRaylib
 
   struct Material
     shader : Shader
-    maps : MaterialMap*                   # StaticArray(MaterialMap, 12)
-    params : StaticArray(LibC::Float, 4) # LibC::Float*
+    maps : MaterialMap*                   
+    params : StaticArray(LibC::Float, 4)
   end
 
   struct Transform
@@ -555,6 +555,7 @@ lib LibRaylib
     mesh_count : LibC::Int
     material_count : LibC::Int
     meshes : Mesh*
+    materials : Material*
     mesh_material : LibC::Int
     bone_count : LibC::Int
     bones : BoneInfo*
