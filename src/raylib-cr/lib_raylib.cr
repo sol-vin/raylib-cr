@@ -1125,12 +1125,11 @@ lib LibRaylib
   fun set_audio_stream_buffer_size_default = SetAudioStreamBufferSizeDefault(size : LibC::Int)
 
   fun clamp = Clamp(value : LibC::Float, min : LibC::Float, max : LibC::Float) : LibC::Float
-  fun lerp = Lerp(start : LibC::Float, finish : LibC::Float, amount : LibC::Float) : LibC::Float
+  fun lerp = Lerp(start : LibC::Float, finsh : LibC::Float, amount : LibC::Float) : LibC::Float
   fun normalize = Normalize(value : LibC::Float, start : LibC::Float, finish : LibC::Float) : LibC::Float
   fun remap = Remap(value : LibC::Float, input_start : LibC::Float, input_end : LibC::Float, output_start : LibC::Float, output_end : LibC::Float) : LibC::Float
-
-  fun vector2_zero = Vector2Zero : Vector2
-  fun vector2_one = Vector2One : Vector2
+  fun vector2_zero = Vector2Zero() : Vector2
+  fun vector2_one = Vector2One() : Vector2
   fun vector2_add = Vector2Add(v1 : Vector2, v2 : Vector2) : Vector2
   fun vector2_add_value = Vector2AddValue(v : Vector2, add : LibC::Float) : Vector2
   fun vector2_subtract = Vector2Subtract(v1 : Vector2, v2 : Vector2) : Vector2
@@ -1150,9 +1149,8 @@ lib LibRaylib
   fun vector2_reflect = Vector2Reflect(v : Vector2, normal : Vector2) : Vector2
   fun vector2_rotate = Vector2Rotate(v : Vector2, angle : LibC::Float) : Vector2
   fun vector2_move_towards = Vector2MoveTowards(v : Vector2, target : Vector2, max_distance : LibC::Float) : Vector2
-
-  fun vector3_zero = Vector3Zero : Vector3
-  fun vector3_one = Vector3One : Vector3
+  fun vector3_zero = Vector3Zero() : Vector3
+  fun vector3_one = Vector3One() : Vector3
   fun vector3_add = Vector3Add(v1 : Vector3, v2 : Vector3) : Vector3
   fun vector3_add_value = Vector3AddValue(v : Vector3, add : LibC::Float) : Vector3
   fun vector3_subtract = Vector3Subtract(v1 : Vector3, v2 : Vector3) : Vector3
@@ -1169,7 +1167,6 @@ lib LibRaylib
   fun vector3_negate = Vector3Negate(v : Vector3) : Vector3
   fun vector3_divide = Vector3Divide(v1 : Vector3, v2 : Vector3) : Vector3
   fun vector3_normalize = Vector3Normalize(v : Vector3) : Vector3
-  fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
   fun vector3_transform = Vector3Transform(v : Vector3, mat : Matrix) : Vector3
   fun vector3_rotate_by_quaternion = Vector3RotateByQuaternion(v : Vector3, q : Quaternion) : Vector3
   fun vector3_lerp = Vector3Lerp(v1 : Vector3, v2 : Vector3, amount : LibC::Float) : Vector3
@@ -1178,14 +1175,12 @@ lib LibRaylib
   fun vector3_max = Vector3Max(v1 : Vector3, v2 : Vector3) : Vector3
   fun vector3_barycenter = Vector3Barycenter(p : Vector3, a : Vector3, b : Vector3, c : Vector3) : Vector3
   fun vector3_unproject = Vector3Unproject(source : Vector3, projection : Matrix, view : Matrix) : Vector3
-  # float3 Vector3ToFloatV(Vector3 v)
-
   fun matrix_determinant = MatrixDeterminant(mat : Matrix) : LibC::Float
   fun matrix_trace = MatrixTrace(mat : Matrix) : LibC::Float
   fun matrix_transpose = MatrixTranspose(mat : Matrix) : Matrix
   fun matrix_invert = MatrixInvert(mat : Matrix) : Matrix
   fun matrix_normalize = MatrixNormalize(mat : Matrix) : Matrix
-  fun matrix_identity = MatrixIdentity : Matrix
+  fun matrix_identity = MatrixIdentity() : Matrix
   fun matrix_add = MatrixAdd(left : Matrix, right : Matrix) : Matrix
   fun matrix_subtract = MatrixSubtract(left : Matrix, right : Matrix) : Matrix
   fun matrix_multiply = MatrixMultiply(left : Matrix, right : Matrix) : Matrix
@@ -1201,13 +1196,11 @@ lib LibRaylib
   fun matrix_perspective = MatrixPerspective(fovy : LibC::Double, aspect : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
   fun matrix_ortho = MatrixOrtho(left : LibC::Double, right : LibC::Double, bottom : LibC::Double, top : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
   fun matrix_look_at = MatrixLookAt(eye : Vector3, target : Vector3, up : Vector3) : Matrix
-  fun matrix_to_float_v = MatrixToFloatV(mat : Matrix) : LibC::Float
-  
   fun quaternion_add = QuaternionAdd(q1 : Quaternion, q2 : Quaternion) : Quaternion
   fun quaternion_add_value = QuaternionAddValue(q : Quaternion, add : LibC::Float) : Quaternion
   fun quaternion_subtract = QuaternionSubtract(q1 : Quaternion, q2 : Quaternion) : Quaternion
   fun quaternion_subtract_value = QuaternionSubtractValue(q : Quaternion, sub : LibC::Float) : Quaternion
-  fun quaternion_identity = QuaternionIdentity : Quaternion
+  fun quaternion_identity = QuaternionIdentity() : Quaternion
   fun quaternion_length = QuaternionLength(q : Quaternion) : LibC::Float
   fun quaternion_normalize = QuaternionNormalize(q : Quaternion) : Quaternion
   fun quaternion_invert = QuaternionInvert(q : Quaternion) : Quaternion
@@ -1221,50 +1214,20 @@ lib LibRaylib
   fun quaternion_from_matrix = QuaternionFromMatrix(mat : Matrix) : Quaternion
   fun quaternion_to_matrix = QuaternionToMatrix(q : Quaternion) : Matrix
   fun quaternion_from_axis_angle = QuaternionFromAxisAngle(axis : Vector3, angle : LibC::Float) : Quaternion
-  fun quaternion_to_axis_angle = QuaternionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : Vector3*)
   fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Quaternion
   fun quaternion_to_euler = QuaternionToEuler(q : Quaternion) : Vector3
   fun quaternion_transform = QuaternionTransform(q : Quaternion, mat : Matrix) : Quaternion
+  
+  # TODO: unbound functions, resolve manually
+  # {'name': 'Vector3ToFloatV', 'description': '', 'returnType': 'float3', 'params': [{'type': 'Vector3', 'name': 'v'}]}
+  # {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
+
+  fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
+  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)
 
  end
 
-struct LibRaylib::Vector2
-
-  def self.zero : Vector2
-    LibRaylib.vector2_zero
-  end
-
-  def self.one : Vector2
-    LibRaylib.vector2_one
-  end
-
-  def +(other : Vector2) : Vector2
-    LibRaylib.vector2_add(self, other)
-  end
-
-  def +(other : LibC::Float) : Vector2
-    LibRaylib.vector2_add_value(self, other)
-  end
-  
-  def -(other : Vector2) : Vector2
-    LibRaylib.vector2_subtract(self, other)
-  end
-
-  def -(other : LibC::Float) : Vector2
-    LibRaylib.vector2_subtract_value(self, other)
-  end
-
-  def *(other : LibC::Float) : Vector2
-    LibRaylib.vector2_scale(other)
-  end
-
-  def *(other : Vector2) : Vector2
-    LibRaylib.vector2_multiply(other)
-  end
-
-  def /(other : Vector2) : Vector2
-    LibRaylib.vector2_divide(other)
-  end
+ struct LibRaylib::Vector2
 
   def add(v2 : Vector2) : Vector2
     LibRaylib.vector2_add(self, v2)
@@ -1282,24 +1245,24 @@ struct LibRaylib::Vector2
     LibRaylib.vector2_subtract_value(self, sub)
   end
 
-  def length : LibC::Float
+  def length() : LibC::Float
     LibRaylib.vector2_length(self)
   end
 
-  def length_sqr : LibC::Float
-    LibRaylib.vector2_length(_sqrself)
+  def length_sqr() : LibC::Float
+    LibRaylib.vector2_length_sqr(self)
   end
 
-  def dot_product(other : Vector2) : LibC::Float
-    LibRaylib.vector2_dot_product(self, other)
+  def dot_product(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_dot_product(self, v2)
   end
 
-  def distance(other : Vector2) : LibC::Float
-    LibRaylib.vector2_distance(self, other)
+  def distance(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_distance(self, v2)
   end
 
-  def angle(other : Vector2) : LibC::Float
-    LibRaylib.vector2_angle(self, other)
+  def angle(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_angle(self, v2)
   end
 
   def scale(scale : LibC::Float) : Vector2
@@ -1310,7 +1273,7 @@ struct LibRaylib::Vector2
     LibRaylib.vector2_multiply(self, v2)
   end
 
-  def negate : Vector2
+  def negate() : Vector2
     LibRaylib.vector2_negate(self)
   end
 
@@ -1318,7 +1281,7 @@ struct LibRaylib::Vector2
     LibRaylib.vector2_divide(self, v2)
   end
 
-  def normalize : Vector2
+  def normalize() : Vector2
     LibRaylib.vector2_normalize(self)
   end
 
@@ -1342,47 +1305,39 @@ struct LibRaylib::Vector2
     LibRaylib.vector2_move_towards(self, target, max_distance)
   end
 
+  # Operators for convenience
+
+  def +(other : self) : Vector2
+    self.add(other)
+  end
+
+  def +(other : LibC::Float) : Vector2
+    self.add_value(other)
+  end
+
+  def -(other : self) : Vector2
+    self.subtract(other)
+  end
+
+  def -(other : LibC::Float) : Vector2
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Vector2
+    self.multiply(other)
+  end
+
+  def *(other : LibC::Float) : Vector2
+    self.scale(other)
+  end
+
+  def /(other : self) : Vector2
+    self.divide(other)
+  end
+
 end
 
 struct LibRaylib::Vector3
-  # Vector3 Vector3Zero(void)
-  # Vector3 Vector3One(void)
-
-  def self.zero : Vector3
-    LibRaylib.vector3_zero
-  end
-
-  def self.one : Vector3
-    LibRaylib.vector3_one
-  end
-
-  def +(other : Vector3) : Vector3
-    LibRaylib.vector3_add(self, other)
-  end
-
-  def +(other : LibC::Float) : Vector3
-    LibRaylib.vector3_add_value(self, other)
-  end
-  
-  def -(other : Vector3) : Vector3
-    LibRaylib.vector3_subtract(self, other)
-  end
-
-  def -(other : LibC::Float) : Vector3
-    LibRaylib.vector3_subtract_value(self, other)
-  end
-
-  def *(other : LibC::Float) : Vector3
-    LibRaylib.vector3_scale(other)
-  end
-
-  def *(other : Vector3) : Vector3
-    LibRaylib.vector3_multiply(other)
-  end
-
-  def /(other : Vector3) : Vector3
-    LibRaylib.vector3_divide(other)
-  end
 
   def add(v2 : Vector3) : Vector3
     LibRaylib.vector3_add(self, v2)
@@ -1400,26 +1355,6 @@ struct LibRaylib::Vector3
     LibRaylib.vector3_subtract_value(self, sub)
   end
 
-  def length : LibC::Float
-    LibRaylib.vector3_length(self)
-  end
-
-  def length_sqr : LibC::Float
-    LibRaylib.vector3_length(_sqrself)
-  end
-
-  def dot_product(other : Vector3) : LibC::Float
-    LibRaylib.vector3_dot_product(self, other)
-  end
-
-  def distance(other : Vector3) : LibC::Float
-    LibRaylib.vector3_distance(self, other)
-  end
-
-  def angle(other : Vector3) : LibC::Float
-    LibRaylib.vector3_angle(self, other)
-  end
-
   def scale(scalar : LibC::Float) : Vector3
     LibRaylib.vector3_scale(self, scalar)
   end
@@ -1432,11 +1367,23 @@ struct LibRaylib::Vector3
     LibRaylib.vector3_cross_product(self, v2)
   end
 
-  def perpendicular : Vector3
+  def perpendicular() : Vector3
     LibRaylib.vector3_perpendicular(self)
   end
 
-  def negate : Vector3
+  def dot_product(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_dot_product(self, v2)
+  end
+
+  def distance(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_distance(self, v2)
+  end
+
+  def angle(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_angle(self, v2)
+  end
+
+  def negate() : Vector3
     LibRaylib.vector3_negate(self)
   end
 
@@ -1444,12 +1391,8 @@ struct LibRaylib::Vector3
     LibRaylib.vector3_divide(self, v2)
   end
 
-  def normalize : Vector3
+  def normalize() : Vector3
     LibRaylib.vector3_normalize(self)
-  end
-   
-  def self.ortho_normalize(v1 : Vector3*, v2 : Vector3*)
-    LibRaylib.vector3_ortho_normalize(v1, v2)
   end
 
   def transform(mat : Matrix) : Vector3
@@ -1484,49 +1427,84 @@ struct LibRaylib::Vector3
     LibRaylib.vector3_unproject(self, projection, view)
   end
 
-  def to_euler : Vector3
-    LibRaylib.quaternion_to_euler(self)
+  def self.rotate(axis : Vector3, angle : LibC::Float) : Matrix
+    LibRaylib.matrix_rotate(axis, angle)
   end
+
+  def self.rotate_xyz(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_xyz(ang)
+  end
+
+  def self.rotate_zyx(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_zyx(ang)
+  end
+
+  def self.look_at(eye : Vector3, target : Vector3, up : Vector3) : Matrix
+    LibRaylib.matrix_look_at(eye, target, up)
+  end
+
+  def self.from_vector3_to_vector3(from : Vector3, to : Vector3) : Quaternion
+    LibRaylib.quaternion_from_vector3_to_vector3(from, to)
+  end
+
+  def self.from_axis_angle(axis : Vector3, angle : LibC::Float) : Quaternion
+    LibRaylib.quaternion_from_axis_angle(axis, angle)
+  end
+
+  # Operators for convenience
+
+  def +(other : self) : Vector3
+    self.add(other)
+  end
+
+  def +(other : LibC::Float) : Vector3
+    self.add_value(other)
+  end
+
+  def -(other : self) : Vector3
+    self.subtract(other)
+  end
+
+  def -(other : LibC::Float) : Vector3
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Vector3
+    self.multiply(other)
+  end
+
+  def *(other : LibC::Float) : Vector3
+    self.scale(other)
+  end
+
+  def /(other : self) : Vector3
+    self.divide(other)
+  end
+
 end
 
 struct LibRaylib::Matrix
 
-  def self.identity : Matrix
-    LibRaylib.matrix_identity
-  end
-
-  def +(other : self) : Matrix
-    LibRaylib.matrix_add(self, other)
-  end
-
-  def -(other : self) : Matrix
-    LibRaylib.matrix_subtract(self, other)
-  end
-
-  def *(other : self) : Matrix
-    LibRaylib.matrix_multiply(self, other)
-  end
-
-  def determinant : LibC::Float
+  def determinant() : LibC::Float
     LibRaylib.matrix_determinant(self)
   end
 
-  def trace : LibC::Float
+  def trace() : LibC::Float
     LibRaylib.matrix_trace(self)
   end
 
-  def transpose : Matrix
+  def transpose() : Matrix
     LibRaylib.matrix_transpose(self)
   end
 
-  def invert : Matrix
+  def invert() : Matrix
     LibRaylib.matrix_invert(self)
   end
 
-  def normalize : Matrix
+  def normalize() : Matrix
     LibRaylib.matrix_normalize(self)
   end
- 
+
   def add(right : Matrix) : Matrix
     LibRaylib.matrix_add(self, right)
   end
@@ -1539,89 +1517,27 @@ struct LibRaylib::Matrix
     LibRaylib.matrix_multiply(self, right)
   end
 
-  def self.translate(x : LibC::Float, y : LibC::Float, z : LibC::Float) : Matrix
-    LibRaylib.matrix_translate(x, y, z)
+  def self.from_matrix(mat : Matrix) : Quaternion
+    LibRaylib.quaternion_from_matrix(mat)
   end
 
-  def self.rotate(axis : Vector3, angle : LibC::Float) : Matrix
-    LibRaylib.matrix_rotate(axis, angle)
+  # Operators for convenience
+
+  def +(other : self) : Matrix
+    self.add(other)
   end
 
-  def self.rotate_x(angle : LibC::Float) : Matrix
-    LibRaylib.matrix_rotate_x
+  def -(other : self) : Matrix
+    self.subtract(other)
   end
-  
-  def self.rotate_z(angle : LibC::Float) : Matrix
-    LibRaylib.matrix_rotate_z(angle)
-  end
-  
-  def self.rotate_y(angle : LibC::Float) : Matrix
-    LibRaylib.matrix_rotate_y(angle)
-  end
-  
-  def self.rotate_xyz(ang : Vector3) : Matrix
-    LibRaylib.matrix_rotate_xyz(ang)
-  end
-  
-  def self.rotate_zxy(ang : Vector3) : Matrix
-    LibRaylib.matrix_zxy(ang)
-  end
-  
-  def self.scale(x : LibC::Float, y : LibC::Float, z : LibC::Float) : Matrix
-    LibRaylib.matrix_scale(x, y, z)
-  end
-  
-  def self.frustum(left : LibC::Double, right : LibC::Double, bottom : LibC::Double, top : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
-    LibRaylib.matrix_frustrum(left, right, bottom, top, near, far)
-  end
-  
-  def self.perspective(fovy : LibC::Double, aspect : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
-    LibRaylib.matrix_perspective(fov, aspect, near, far)
-  end
-  
-  def self.ortho(left : LibC::Double, right : LibC::Double, bottom : LibC::Double, top : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
-    LibRaylib.matrix_ortho(left, right, bottom, top, near, far)
-  end
-  
-  def self.look_at(eye : Vector3, target : Vector3, up : Vector3) : Matrix
-    LibRaylib.matrix_look_at(eye, target, up)
-  end
-  
-  def self.quaternion_to_matrix(q : Quaternion) : Matrix
-    LibRaylib.matrix_quaternion_to_matrix(q)
+
+  def *(other : self) : Matrix
+    self.multiply(other)
   end
 
 end
 
 struct LibRaylib::Quaternion
-
-  def +(other : Quaternion) : Quaternion
-    LibRaylib.quaternion_add(self, other)
-  end
-
-  def +(other : LibC::Float) : Quaternion
-    LibRaylib.quaternion_add_value(self, other)
-  end
-
-  def -(other : Quaternion) : Quaternion
-    LibRaylib.quaternion_subtract(self, other)
-  end
-
-  def -(other : LibC::Float) : Quaternion
-    LibRaylib.quaternion_subtract_value(self, other)
-  end
-
-  def *(other : Quaternion) : Quaternion
-    LibRaylib.quaternion_multiply(self, other)
-  end
-
-  def *(other : LibC::Float) : Quaternion
-    LibRaylib.quaternion_scale(self, other)
-  end
-
-  def /(other : Quaternion) : Quaternion
-    LibRaylib.quaternion_divide(self, other)
-  end
 
   def add(q2 : Quaternion) : Quaternion
     LibRaylib.quaternion_add(self, q2)
@@ -1639,19 +1555,15 @@ struct LibRaylib::Quaternion
     LibRaylib.quaternion_subtract_value(self, sub)
   end
 
-  def self.identity
-    LibRaylib.quaternion_identity
-  end
-
-  def length : LibC::Float
+  def length() : LibC::Float
     LibRaylib.quaternion_length(self)
   end
 
-  def normalize : Quaternion
+  def normalize() : Quaternion
     LibRaylib.quaternion_normalize(self)
   end
 
-  def invert : Quaternion
+  def invert() : Quaternion
     LibRaylib.quaternion_invert(self)
   end
 
@@ -1679,27 +1591,55 @@ struct LibRaylib::Quaternion
     LibRaylib.quaternion_slerp(self, q2, amount)
   end
 
-  def self.from_vector3_to_vector3(from : Vector3, to : Vector3)
-    LibRaylib.quaternion_from_vector3_to_vector3(from, to)
+  def to_matrix() : Matrix
+    LibRaylib.quaternion_to_matrix(self)
   end
 
-  def self.from_matrix(mat : Matrix)
-    LibRaylib.quaternion_from_matrix(mat)
-  end
-
-  def self.from_axis_angle(axis : Vector3, angle : LibC::Float)
-    LibRaylib.quaternion_from_axis_angle(axis, angle)
-  end
-
-  def self.to_axis_angle(q : Quaternion, out_axis : Vector3*, out_angle : Vector3*)
-    LibRaylib.quaternion_to_axis_angle(q, out_axis, out_angle)
-  end
-
-  def self.from_euler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float)
-    LibRaylib.quaternion_from_euler(pitch, yaw, roll)
+  def to_euler() : Vector3
+    LibRaylib.quaternion_to_euler(self)
   end
 
   def transform(mat : Matrix) : Quaternion
     LibRaylib.quaternion_transform(self, mat)
   end
+
+  # Operators for convenience
+
+  def +(other : self) : Quaternion
+    self.add(other)
+  end
+
+  def +(other : LibC::Float) : Quaternion
+    self.add_value(other)
+  end
+
+  def -(other : self) : Quaternion
+    self.subtract(other)
+  end
+
+  def -(other : LibC::Float) : Quaternion
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Quaternion
+    self.multiply(other)
+  end
+
+  def *(other : LibC::Float) : Quaternion
+    self.scale(other)
+  end
+
+  def /(other : self) : Quaternion
+    self.divide(other)
+  end
+
+  # Manually implemented
+  def to_axis_angle(out_axis : Vector3*, out_angle : LibC::Float*)
+    LibRaylib.quaternion_to_axis_angle(self, out_axis, out_angle)
+  end
+
 end
+
+# TODO: unbound functions, resolve manually
+# {'name': 'Vector3ToFloatV', 'description': '', 'returnType': 'float3', 'params': [{'type': 'Vector3', 'name': 'v'}]}
+# {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
