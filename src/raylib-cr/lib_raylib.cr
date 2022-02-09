@@ -1230,7 +1230,8 @@ lib LibRaylib
 
 struct LibRaylib::Vector2
 
-  def self.zero : Vector2 = LibRaylib.vector2_zero
+  def self.zero : Vector2
+    LibRaylib.vector2_zero
   end
 
   def self.one : Vector2
