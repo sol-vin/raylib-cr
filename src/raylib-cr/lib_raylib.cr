@@ -1123,4 +1123,626 @@ lib LibRaylib
   fun set_audio_stream_volume = SetAudioStreamVolume(stream : AudioStream, volume : LibC::Float)
   fun set_audio_stream_pitch = SetAudioStreamPitch(stream : AudioStream, pitch : LibC::Float)
   fun set_audio_stream_buffer_size_default = SetAudioStreamBufferSizeDefault(size : LibC::Int)
+
+  fun clamp = Clamp(value : LibC::Float, min : LibC::Float, max : LibC::Float) : LibC::Float
+  fun lerp = Lerp(start : LibC::Float, finsh : LibC::Float, amount : LibC::Float) : LibC::Float
+  fun normalize = Normalize(value : LibC::Float, start : LibC::Float, finish : LibC::Float) : LibC::Float
+  fun remap = Remap(value : LibC::Float, input_start : LibC::Float, input_end : LibC::Float, output_start : LibC::Float, output_end : LibC::Float) : LibC::Float
+  fun vector2_zero = Vector2Zero() : Vector2
+  fun vector2_one = Vector2One() : Vector2
+  fun vector2_add = Vector2Add(v1 : Vector2, v2 : Vector2) : Vector2
+  fun vector2_add_value = Vector2AddValue(v : Vector2, add : LibC::Float) : Vector2
+  fun vector2_subtract = Vector2Subtract(v1 : Vector2, v2 : Vector2) : Vector2
+  fun vector2_subtract_value = Vector2SubtractValue(v : Vector2, sub : LibC::Float) : Vector2
+  fun vector2_length = Vector2Length(v : Vector2) : LibC::Float
+  fun vector2_length_sqr = Vector2LengthSqr(v : Vector2) : LibC::Float
+  fun vector2_dot_product = Vector2DotProduct(v1 : Vector2, v2 : Vector2) : LibC::Float
+  fun vector2_distance = Vector2Distance(v1 : Vector2, v2 : Vector2) : LibC::Float
+  fun vector2_angle = Vector2Angle(v1 : Vector2, v2 : Vector2) : LibC::Float
+  fun vector2_scale = Vector2Scale(v : Vector2, scale : LibC::Float) : Vector2
+  fun vector2_multiply = Vector2Multiply(v1 : Vector2, v2 : Vector2) : Vector2
+  fun vector2_negate = Vector2Negate(v : Vector2) : Vector2
+  fun vector2_divide = Vector2Divide(v1 : Vector2, v2 : Vector2) : Vector2
+  fun vector2_normalize = Vector2Normalize(v : Vector2) : Vector2
+  fun vector2_transform = Vector2Transform(v : Vector2, mat : Matrix) : Vector2
+  fun vector2_lerp = Vector2Lerp(v1 : Vector2, v2 : Vector2, amount : LibC::Float) : Vector2
+  fun vector2_reflect = Vector2Reflect(v : Vector2, normal : Vector2) : Vector2
+  fun vector2_rotate = Vector2Rotate(v : Vector2, angle : LibC::Float) : Vector2
+  fun vector2_move_towards = Vector2MoveTowards(v : Vector2, target : Vector2, max_distance : LibC::Float) : Vector2
+  fun vector3_zero = Vector3Zero() : Vector3
+  fun vector3_one = Vector3One() : Vector3
+  fun vector3_add = Vector3Add(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_add_value = Vector3AddValue(v : Vector3, add : LibC::Float) : Vector3
+  fun vector3_subtract = Vector3Subtract(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_subtract_value = Vector3SubtractValue(v : Vector3, sub : LibC::Float) : Vector3
+  fun vector3_scale = Vector3Scale(v : Vector3, scalar : LibC::Float) : Vector3
+  fun vector3_multiply = Vector3Multiply(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_cross_product = Vector3CrossProduct(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_perpendicular = Vector3Perpendicular(v : Vector3) : Vector3
+  fun vector3_length = Vector3Length(v : Vector3) : LibC::Float
+  fun vector3_length_sqr = Vector3LengthSqr(v : Vector3) : LibC::Float
+  fun vector3_dot_product = Vector3DotProduct(v1 : Vector3, v2 : Vector3) : LibC::Float
+  fun vector3_distance = Vector3Distance(v1 : Vector3, v2 : Vector3) : LibC::Float
+  fun vector3_angle = Vector3Angle(v1 : Vector3, v2 : Vector3) : LibC::Float
+  fun vector3_negate = Vector3Negate(v : Vector3) : Vector3
+  fun vector3_divide = Vector3Divide(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_normalize = Vector3Normalize(v : Vector3) : Vector3
+  fun vector3_transform = Vector3Transform(v : Vector3, mat : Matrix) : Vector3
+  fun vector3_rotate_by_quaternion = Vector3RotateByQuaternion(v : Vector3, q : Quaternion) : Vector3
+  fun vector3_lerp = Vector3Lerp(v1 : Vector3, v2 : Vector3, amount : LibC::Float) : Vector3
+  fun vector3_reflect = Vector3Reflect(v : Vector3, normal : Vector3) : Vector3
+  fun vector3_min = Vector3Min(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_max = Vector3Max(v1 : Vector3, v2 : Vector3) : Vector3
+  fun vector3_barycenter = Vector3Barycenter(p : Vector3, a : Vector3, b : Vector3, c : Vector3) : Vector3
+  fun vector3_unproject = Vector3Unproject(source : Vector3, projection : Matrix, view : Matrix) : Vector3
+  fun matrix_determinant = MatrixDeterminant(mat : Matrix) : LibC::Float
+  fun matrix_trace = MatrixTrace(mat : Matrix) : LibC::Float
+  fun matrix_transpose = MatrixTranspose(mat : Matrix) : Matrix
+  fun matrix_invert = MatrixInvert(mat : Matrix) : Matrix
+  fun matrix_normalize = MatrixNormalize(mat : Matrix) : Matrix
+  fun matrix_identity = MatrixIdentity() : Matrix
+  fun matrix_add = MatrixAdd(left : Matrix, right : Matrix) : Matrix
+  fun matrix_subtract = MatrixSubtract(left : Matrix, right : Matrix) : Matrix
+  fun matrix_multiply = MatrixMultiply(left : Matrix, right : Matrix) : Matrix
+  fun matrix_translate = MatrixTranslate(x : LibC::Float, y : LibC::Float, z : LibC::Float) : Matrix
+  fun matrix_rotate = MatrixRotate(axis : Vector3, angle : LibC::Float) : Matrix
+  fun matrix_rotate_x = MatrixRotateX(angle : LibC::Float) : Matrix
+  fun matrix_rotate_y = MatrixRotateY(angle : LibC::Float) : Matrix
+  fun matrix_rotate_z = MatrixRotateZ(angle : LibC::Float) : Matrix
+  fun matrix_rotate_xyz = MatrixRotateXYZ(ang : Vector3) : Matrix
+  fun matrix_rotate_zyx = MatrixRotateZYX(ang : Vector3) : Matrix
+  fun matrix_scale = MatrixScale(x : LibC::Float, y : LibC::Float, z : LibC::Float) : Matrix
+  fun matrix_frustum = MatrixFrustum(left : LibC::Double, right : LibC::Double, bottom : LibC::Double, top : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
+  fun matrix_perspective = MatrixPerspective(fovy : LibC::Double, aspect : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
+  fun matrix_ortho = MatrixOrtho(left : LibC::Double, right : LibC::Double, bottom : LibC::Double, top : LibC::Double, near : LibC::Double, far : LibC::Double) : Matrix
+  fun matrix_look_at = MatrixLookAt(eye : Vector3, target : Vector3, up : Vector3) : Matrix
+  fun quaternion_add = QuaternionAdd(q1 : Quaternion, q2 : Quaternion) : Quaternion
+  fun quaternion_add_value = QuaternionAddValue(q : Quaternion, add : LibC::Float) : Quaternion
+  fun quaternion_subtract = QuaternionSubtract(q1 : Quaternion, q2 : Quaternion) : Quaternion
+  fun quaternion_subtract_value = QuaternionSubtractValue(q : Quaternion, sub : LibC::Float) : Quaternion
+  fun quaternion_identity = QuaternionIdentity() : Quaternion
+  fun quaternion_length = QuaternionLength(q : Quaternion) : LibC::Float
+  fun quaternion_normalize = QuaternionNormalize(q : Quaternion) : Quaternion
+  fun quaternion_invert = QuaternionInvert(q : Quaternion) : Quaternion
+  fun quaternion_multiply = QuaternionMultiply(q1 : Quaternion, q2 : Quaternion) : Quaternion
+  fun quaternion_scale = QuaternionScale(q : Quaternion, mul : LibC::Float) : Quaternion
+  fun quaternion_divide = QuaternionDivide(q1 : Quaternion, q2 : Quaternion) : Quaternion
+  fun quaternion_lerp = QuaternionLerp(q1 : Quaternion, q2 : Quaternion, amount : LibC::Float) : Quaternion
+  fun quaternion_nlerp = QuaternionNlerp(q1 : Quaternion, q2 : Quaternion, amount : LibC::Float) : Quaternion
+  fun quaternion_slerp = QuaternionSlerp(q1 : Quaternion, q2 : Quaternion, amount : LibC::Float) : Quaternion
+  fun quaternion_from_vector3_to_vector3 = QuaternionFromVector3ToVector3(from : Vector3, to : Vector3) : Quaternion
+  fun quaternion_from_matrix = QuaternionFromMatrix(mat : Matrix) : Quaternion
+  fun quaternion_to_matrix = QuaternionToMatrix(q : Quaternion) : Matrix
+  fun quaternion_from_axis_angle = QuaternionFromAxisAngle(axis : Vector3, angle : LibC::Float) : Quaternion
+  fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Quaternion
+  fun quaternion_to_euler = QuaternionToEuler(q : Quaternion) : Vector3
+  fun quaternion_transform = QuaternionTransform(q : Quaternion, mat : Matrix) : Quaternion
+  
+  # TODO: unbound functions, resolve manually
+  # {'name': 'Vector3ToFloatV', 'description': '', 'returnType': 'float3', 'params': [{'type': 'Vector3', 'name': 'v'}]}
+  # {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
+
+  fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
+  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)
+
+ end
+
+ struct LibRaylib::Vector2
+
+  def self.zero() : Vector2
+    LibRaylib.vector2_zero()
+  end
+
+  def self.one() : Vector2
+    LibRaylib.vector2_one()
+  end
+
+  def add(v2 : Vector2) : Vector2
+    LibRaylib.vector2_add(self, v2)
+  end
+
+  def add_value(add : Number) : Vector2
+    LibRaylib.vector2_add_value(self, add.to_f32)
+  end
+
+  def subtract(v2 : Vector2) : Vector2
+    LibRaylib.vector2_subtract(self, v2)
+  end
+
+  def subtract_value(sub : Number) : Vector2
+    LibRaylib.vector2_subtract_value(self, sub.to_f32)
+  end
+
+  def length() : LibC::Float
+    LibRaylib.vector2_length(self)
+  end
+
+  def length_sqr() : LibC::Float
+    LibRaylib.vector2_length_sqr(self)
+  end
+
+  def dot_product(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_dot_product(self, v2)
+  end
+
+  def distance(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_distance(self, v2)
+  end
+
+  def angle(v2 : Vector2) : LibC::Float
+    LibRaylib.vector2_angle(self, v2)
+  end
+
+  def scale(scale : Number) : Vector2
+    LibRaylib.vector2_scale(self, scale.to_f32)
+  end
+
+  def multiply(v2 : Vector2) : Vector2
+    LibRaylib.vector2_multiply(self, v2)
+  end
+
+  def negate() : Vector2
+    LibRaylib.vector2_negate(self)
+  end
+
+  def divide(v2 : Vector2) : Vector2
+    LibRaylib.vector2_divide(self, v2)
+  end
+
+  def normalize() : Vector2
+    LibRaylib.vector2_normalize(self)
+  end
+
+  def transform(mat : Matrix) : Vector2
+    LibRaylib.vector2_transform(self, mat)
+  end
+
+  def lerp(v2 : Vector2, amount : Number) : Vector2
+    LibRaylib.vector2_lerp(self, v2, amount.to_f32)
+  end
+
+  def reflect(normal : Vector2) : Vector2
+    LibRaylib.vector2_reflect(self, normal)
+  end
+
+  def rotate(angle : Number) : Vector2
+    LibRaylib.vector2_rotate(self, angle.to_f32)
+  end
+
+  def move_towards(target : Vector2, max_distance : Number) : Vector2
+    LibRaylib.vector2_move_towards(self, target, max_distance.to_f32)
+  end
+
+  # Operators for convenience
+
+  def +(other : self) : Vector2
+    self.add(other)
+  end
+
+  def +(other : Number) : Vector2
+    self.add_value(other)
+  end
+
+  def -(other : self) : Vector2
+    self.subtract(other)
+  end
+
+  def -(other : Number) : Vector2
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Vector2
+    self.multiply(other)
+  end
+
+  def *(other : Number) : Vector2
+    self.scale(other)
+  end
+
+  def /(other : self) : Vector2
+    self.divide(other)
+  end
+
+  def /(other : Number) : Vector2
+    self.scale((1/other).to_f32)
+  end
+
+end
+
+struct LibRaylib::Vector3
+
+  def self.zero() : Vector3
+    LibRaylib.vector3_zero()
+  end
+
+  def self.one() : Vector3
+    LibRaylib.vector3_one()
+  end
+
+  def add(v2 : Vector3) : Vector3
+    LibRaylib.vector3_add(self, v2)
+  end
+
+  def add_value(add : Number) : Vector3
+    LibRaylib.vector3_add_value(self, add.to_f32)
+  end
+
+  def subtract(v2 : Vector3) : Vector3
+    LibRaylib.vector3_subtract(self, v2)
+  end
+
+  def subtract_value(sub : Number) : Vector3
+    LibRaylib.vector3_subtract_value(self, sub.to_f32)
+  end
+
+  def scale(scalar : Number) : Vector3
+    LibRaylib.vector3_scale(self, scalar.to_f32)
+  end
+
+  def multiply(v2 : Vector3) : Vector3
+    LibRaylib.vector3_multiply(self, v2)
+  end
+
+  def cross_product(v2 : Vector3) : Vector3
+    LibRaylib.vector3_cross_product(self, v2)
+  end
+
+  def perpendicular() : Vector3
+    LibRaylib.vector3_perpendicular(self)
+  end
+
+  def dot_product(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_dot_product(self, v2)
+  end
+
+  def distance(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_distance(self, v2)
+  end
+
+  def angle(v2 : Vector3) : LibC::Float
+    LibRaylib.vector3_angle(self, v2)
+  end
+
+  def negate() : Vector3
+    LibRaylib.vector3_negate(self)
+  end
+
+  def divide(v2 : Vector3) : Vector3
+    LibRaylib.vector3_divide(self, v2)
+  end
+
+  def normalize() : Vector3
+    LibRaylib.vector3_normalize(self)
+  end
+
+  def transform(mat : Matrix) : Vector3
+    LibRaylib.vector3_transform(self, mat)
+  end
+
+  def rotate_by_quaternion(q : Quaternion) : Vector3
+    LibRaylib.vector3_rotate_by_quaternion(self, q)
+  end
+
+  def lerp(v2 : Vector3, amount : Number) : Vector3
+    LibRaylib.vector3_lerp(self, v2, amount.to_f32)
+  end
+
+  def reflect(normal : Vector3) : Vector3
+    LibRaylib.vector3_reflect(self, normal)
+  end
+
+  def min(v2 : Vector3) : Vector3
+    LibRaylib.vector3_min(self, v2)
+  end
+
+  def max(v2 : Vector3) : Vector3
+    LibRaylib.vector3_max(self, v2)
+  end
+
+  def barycenter(a : Vector3, b : Vector3, c : Vector3) : Vector3
+    LibRaylib.vector3_barycenter(self, a, b, c)
+  end
+
+  def unproject(projection : Matrix, view : Matrix) : Vector3
+    LibRaylib.vector3_unproject(self, projection, view)
+  end
+
+  def self.rotate(axis : Vector3, angle : Number) : Matrix
+    LibRaylib.matrix_rotate(axis, angle.to_f32)
+  end
+
+  def self.rotate_xyz(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_xyz(ang)
+  end
+
+  def self.rotate_zyx(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_zyx(ang)
+  end
+
+  def self.look_at(eye : Vector3, target : Vector3, up : Vector3) : Matrix
+    LibRaylib.matrix_look_at(eye, target, up)
+  end
+
+  def self.from_vector3_to_vector3(from : Vector3, to : Vector3) : Quaternion
+    LibRaylib.quaternion_from_vector3_to_vector3(from, to)
+  end
+
+  def self.from_axis_angle(axis : Vector3, angle : Number) : Quaternion
+    LibRaylib.quaternion_from_axis_angle(axis, angle.to_f32)
+  end
+
+  def to_euler() : Vector3
+    LibRaylib.quaternion_to_euler(self)
+  end
+
+  # Operators for convenience
+
+  def +(other : self) : Vector3
+    self.add(other)
+  end
+
+  def +(other : Number) : Vector3
+    self.add_value(other)
+  end
+
+  def -(other : self) : Vector3
+    self.subtract(other)
+  end
+
+  def -(other : Number) : Vector3
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Vector3
+    self.multiply(other)
+  end
+
+  def *(other : Number) : Vector3
+    self.scale(other)
+  end
+
+  def /(other : self) : Vector3
+    self.divide(other)
+  end
+
+  def /(other : Number) : Vector3
+    self.scale((1/other).to_f32)
+  end
+
+end
+
+struct LibRaylib::Matrix
+
+  def determinant() : LibC::Float
+    LibRaylib.matrix_determinant(self)
+  end
+
+  def trace() : LibC::Float
+    LibRaylib.matrix_trace(self)
+  end
+
+  def transpose() : Matrix
+    LibRaylib.matrix_transpose(self)
+  end
+
+  def invert() : Matrix
+    LibRaylib.matrix_invert(self)
+  end
+
+  def normalize() : Matrix
+    LibRaylib.matrix_normalize(self)
+  end
+
+  def self.identity() : Matrix
+    LibRaylib.matrix_identity()
+  end
+
+  def add(right : Matrix) : Matrix
+    LibRaylib.matrix_add(self, right)
+  end
+
+  def subtract(right : Matrix) : Matrix
+    LibRaylib.matrix_subtract(self, right)
+  end
+
+  def multiply(right : Matrix) : Matrix
+    LibRaylib.matrix_multiply(self, right)
+  end
+
+  def self.translate(x : Number, y : Number, z : Number) : Matrix
+    LibRaylib.matrix_translate(x.to_f32, y.to_f32, z.to_f32)
+  end
+
+  def self.rotate(axis : Vector3, angle : Number) : Matrix
+    LibRaylib.matrix_rotate(axis, angle.to_f32)
+  end
+
+  def self.rotate_x(angle : Number) : Matrix
+    LibRaylib.matrix_rotate_x(angle.to_f32)
+  end
+
+  def self.rotate_y(angle : Number) : Matrix
+    LibRaylib.matrix_rotate_y(angle.to_f32)
+  end
+
+  def self.rotate_z(angle : Number) : Matrix
+    LibRaylib.matrix_rotate_z(angle.to_f32)
+  end
+
+  def self.rotate_xyz(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_xyz(ang)
+  end
+
+  def self.rotate_zyx(ang : Vector3) : Matrix
+    LibRaylib.matrix_rotate_zyx(ang)
+  end
+
+  def self.scale(x : Number, y : Number, z : Number) : Matrix
+    LibRaylib.matrix_scale(x.to_f32, y.to_f32, z.to_f32)
+  end
+
+  def self.frustum(left : Number, right : Number, bottom : Number, top : Number, near : Number, far : Number) : Matrix
+    LibRaylib.matrix_frustum(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
+  end
+
+  def self.perspective(fovy : Number, aspect : Number, near : Number, far : Number) : Matrix
+    LibRaylib.matrix_perspective(fovy.to_f64, aspect.to_f64, near.to_f64, far.to_f64)
+  end
+
+  def self.ortho(left : Number, right : Number, bottom : Number, top : Number, near : Number, far : Number) : Matrix
+    LibRaylib.matrix_ortho(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
+  end
+
+  def self.look_at(eye : Vector3, target : Vector3, up : Vector3) : Matrix
+    LibRaylib.matrix_look_at(eye, target, up)
+  end
+
+  def self.from_matrix(mat : Matrix) : Quaternion
+    LibRaylib.quaternion_from_matrix(mat)
+  end
+
+  def to_matrix() : Matrix
+    LibRaylib.quaternion_to_matrix(self)
+  end
+
+  # Operators for convenience
+
+  def +(other : self) : Matrix
+    self.add(other)
+  end
+
+  def -(other : self) : Matrix
+    self.subtract(other)
+  end
+
+  def *(other : self) : Matrix
+    self.multiply(other)
+  end
+
+end
+
+struct LibRaylib::Quaternion
+
+  def add(q2 : Quaternion) : Quaternion
+    LibRaylib.quaternion_add(self, q2)
+  end
+
+  def add_value(add : Number) : Quaternion
+    LibRaylib.quaternion_add_value(self, add.to_f32)
+  end
+
+  def subtract(q2 : Quaternion) : Quaternion
+    LibRaylib.quaternion_subtract(self, q2)
+  end
+
+  def subtract_value(sub : Number) : Quaternion
+    LibRaylib.quaternion_subtract_value(self, sub.to_f32)
+  end
+
+  def self.identity() : Quaternion
+    LibRaylib.quaternion_identity()
+  end
+
+  def length() : LibC::Float
+    LibRaylib.quaternion_length(self)
+  end
+
+  def normalize() : Quaternion
+    LibRaylib.quaternion_normalize(self)
+  end
+
+  def invert() : Quaternion
+    LibRaylib.quaternion_invert(self)
+  end
+
+  def multiply(q2 : Quaternion) : Quaternion
+    LibRaylib.quaternion_multiply(self, q2)
+  end
+
+  def scale(mul : Number) : Quaternion
+    LibRaylib.quaternion_scale(self, mul.to_f32)
+  end
+
+  def divide(q2 : Quaternion) : Quaternion
+    LibRaylib.quaternion_divide(self, q2)
+  end
+
+  def lerp(q2 : Quaternion, amount : Number) : Quaternion
+    LibRaylib.quaternion_lerp(self, q2, amount.to_f32)
+  end
+
+  def nlerp(q2 : Quaternion, amount : Number) : Quaternion
+    LibRaylib.quaternion_nlerp(self, q2, amount.to_f32)
+  end
+
+  def slerp(q2 : Quaternion, amount : Number) : Quaternion
+    LibRaylib.quaternion_slerp(self, q2, amount.to_f32)
+  end
+
+  def self.from_vector3_to_vector3(from : Vector3, to : Vector3) : Quaternion
+    LibRaylib.quaternion_from_vector3_to_vector3(from, to)
+  end
+
+  def self.from_matrix(mat : Matrix) : Quaternion
+    LibRaylib.quaternion_from_matrix(mat)
+  end
+
+  def to_matrix() : Matrix
+    LibRaylib.quaternion_to_matrix(self)
+  end
+
+  def self.from_axis_angle(axis : Vector3, angle : Number) : Quaternion
+    LibRaylib.quaternion_from_axis_angle(axis, angle.to_f32)
+  end
+
+  def to_axis_angle(out_axis : Vector3*, out_angle : LibC::Float*)
+    LibRaylib.quaternion_to_axis_angle(self, out_axis, out_angle)
+  end
+
+  def self.from_euler(pitch : Number, yaw : Number, roll : Number) : Quaternion
+    LibRaylib.quaternion_from_euler(pitch.to_f32, yaw.to_f32, roll.to_f32)
+  end
+
+  def to_euler() : Vector3
+    LibRaylib.quaternion_to_euler(self)
+  end
+
+  def transform(mat : Matrix) : Quaternion
+    LibRaylib.quaternion_transform(self, mat)
+  end
+
+  # Operators for convenience
+
+  def +(other : self) : Quaternion
+    self.add(other)
+  end
+
+  def +(other : Number) : Quaternion
+    self.add_value(other)
+  end
+
+  def -(other : self) : Quaternion
+    self.subtract(other)
+  end
+
+  def -(other : Number) : Quaternion
+    self.subtract_value(other)
+  end
+
+  def *(other : self) : Quaternion
+    self.multiply(other)
+  end
+
+  def *(other : Number) : Quaternion
+    self.scale(other)
+  end
+
+  def /(other : self) : Quaternion
+    self.divide(other)
+  end
+
+  def /(other : Number) : Quaternion
+    self.scale((1/other).to_f32)
+  end
+
 end
