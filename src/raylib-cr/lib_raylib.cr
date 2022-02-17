@@ -496,7 +496,7 @@ lib LibRaylib
   end
 
   struct Camera2D
-    offest : Vector2
+    offset : Vector2
     target : Vector2
     rotation : LibC::Float
     zoom : LibC::Float
