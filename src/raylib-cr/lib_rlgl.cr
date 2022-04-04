@@ -197,8 +197,6 @@ lib LibRLGL
     MapPrefilter     = 24
     MapBrdf          = 25
   end
-
-  # TODO: https://github.com/raysan5/raylib/blob/master/src/rlgl.h#L469
   
   enum ShaderUniformDataType
     Float     = 0
@@ -206,9 +204,9 @@ lib LibRLGL
     Vec3      = 2
     Vec4      = 3
     Int       = 4
-    Ivec2     = 5
-    Ivec3     = 6
-    Ivec4     = 7
+    IVec2     = 5
+    IVec3     = 6
+    IVec4     = 7
     Sampler2d = 8
   end
 
@@ -233,5 +231,108 @@ lib LibRLGL
 
   fun begin = rlBegin(mode : LibC::Int)
   fun end = rlEnd()
-    
+  fun vertex_2i = rlVertex2i(x : LibC::Int, y : LibC::Int)
+  fun vertex_2f = rlVertex2f(x : LibC::Float, y : LibC::Float)
+  fun vertex_3f = rlVertex3f(x : LibC::Float, y : LibC::Float, z : LibC::Float)
+  fun texcoord_2f = rlTexCoord2f(x : LibC::Float, y : LibC::Float)
+  fun normal_3f = rlNormal3f(x : LibC::Float, y : LibC::Float, z : LibC::Float)
+  fun color_4ub = rlColor4ub(r : LibC::UChar, g : LibC::UChar, b : LibC::UChar, a : LibC::UChar)
+  fun color_3f = rlColor3f(x : LibC::Float, y : LibC::Float, z : LibC::Float)
+  fun color_4f = rlColor4f(x : LibC::Float, y : LibC::Float, z : LibC::Float, w : LibC::Float)
+
+  fun enable_vertex_array = rlEnableVertexArray(vao_id : LibC::UInt) : Bool
+  fun disable_vertex_array = rlDisableVertexArray
+  fun enable_vertex_buffer = rlEnableVertexBuffer(id : LibC::UInt)
+  fun disable_vertex_buffer = rlDisableVertexBuffer
+  fun enable_vertex_buffer_element = rlEnableVertexBufferElement(id : LibC::UInt)
+  fun disable_vertex_buffer_element = rlDisableVertexBufferElement
+  fun enable_vertex_buffer_attribute = rlEnableVertexBufferAttribute(id : LibC::UInt)
+  fun disable_vertex_buffer_attribute = rlDisableVertexBufferAttribute
+
+  # https://github.com/raysan5/raylib/blob/master/src/rlgl.h#L542
+
+  fun active_texture_slot = rlActiveTextureSlot(slot : LibC::Int)
+  fun enable_texture = rlEnableTexture(id : LibC::UInt)
+  fun disable_texture = rlDisableTexture
+  fun enable_texture_cubemap = rlEnableTextureCubemap(id : LibC::UInt)
+  fun disable_texture_cubemap = rlDisableTextureCubemap
+  fun texture_parameters = rlTextureParameters(id : LibC::UInt, param : LibC::Int, value : LibC::Int)
+
+  fun enable_shader = rlEnableShader(id : LibC::UInt)
+  fun disable_shader = rlDisableShader
+
+  fun enable_frame_buffer = rlEnableFrameBuffer(id : LibC::UInt)
+  fun disable_frame_buffer = rlDisableFrameBuffer
+  fun active_draw_buffers = rlActiveDrawBuffers(count : LibC::Int)
+  fun enable_color_blend = rlEnableColorBlend
+  fun disable_color_blend = rlDisableColorBlend
+  fun enable_depth_test = rlEnableDepthTest
+  fun disable_depth_test = rlDisableDepthTest
+
+  fun enable_depth_mask = rlEnableDepthMask
+  fun disable_depth_mask = rlDisableDepthMask
+
+  fun enable_backface_culling = rlEnableBackfaceCulling
+  fun disable_backface_culling = rlDisableBackfaceCulling
+
+  fun enable_scissor_test = rlEnableScissorTest
+  fun disable_scissor_test = rlDisableScissorTest
+
+  fun scissor = rlScissor(x : LibC::Int, y : LibC::Int, w : LibC::Int, h : LibC::Int)
+  fun enable_wire_mode = rlEnableWireMode
+  fun disable_wire_mode = rlDisableWireMode
+  fun set_line_width = rlSetLineWidth(width : LibC::Float)
+  fun get_line_width = rlGetLineWidth : LibC::Float
+  fun enable_smooth_lines = rlEnableSmoothLines
+  fun disable_smooth_lines = rlDisableSmoothLines
+  fun enable_stereo_render = rlEnableStereoRender
+  fun disable_stereo_render = rlDisableStereoRender
+  fun stereo_render_enabled? = rlIsStereoRenderEnabled : Bool
+  fun clear_color = rlClearColor(r : LibC::UChar, g : LibC::UChar, b : LibC::UChar, a : LibC::UChar)
+  fun clean_screen_buffers = rlClearScreenBuffers
+  fun clear_errors = rlCheckErrors
+  fun set_blend_mode = rlSetBlendMode(mode : LibC::Int)
+  fun set_blend_factors = rlSetBlendFactors(gl_src_factor : LibC::Int, gl_dst_factor : LibC::Int, gl_equation : LibC::Int)
+
+  fun init = rlglInit(width : LibC::Int, height : LibC::Int)
+  fun close = rlglClose(width : LibC::Int, height : LibC::Int)
+  fun load_extensions = rlLoadExtensions(loader : Void*)
+  fun get_version = rlGetVersion : LibC::Int
+  fun get_framebuffer_width = rlGetFramebufferWidth : LibC::Int
+  fun get_framebuffer_height = rlGetFramebufferHeight : LibC::Int
+  fun get_texture_id_default = rlGetTextureIdDefault : LibC::UInt
+  fun get_shader_id_default = rlGetShaderIdDefault : LibC::UInt
+  fun get_shader_locs_default = rlGetShaderLocsDefault : LibC::Int*
+
+  fun load_render_batch = rlLoadRenderBatch(num_buffers : LibC::Int, buffer_elements : LibC::Int) : RenderBatch
+  fun unload_render_batch = rlUnloadRenderBatch(batch : RenderBatch)
+  fun draw_render_batch = rlDrawRenderBatch(batch : RenderBatch*)
+  fun draw_render_batch_active = rlDrawRenderBatchActive(v_count : LibC::Int) : Bool
+  fun set_texture = rlSetTexture(id : LibC::UInt)
+
+  fun load_vertex_array = rlLoadVertexArray : LibC::UInt
+  fun load_vertex_buffer = rlLoadVertexBuffer(buffer : Void*, size : LibC::Int, dynamic : Bool) : LibC::UInt
+  fun load_vertex_buffer_element = rlLoadVertexBufferElement(buffer : Void*, size : LibC::Int, dynamic : Bool) : LibC::UInt
+  fun update_vertex_buffer = rlLoadVertexBuffer(buffer_id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int) 
+  fun update_vertex_buffer_elements = rlLoadVertexBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int)
+  fun unload_vertex_array = rlUnloadVertexArray(vao_id : LibC::UInt) 
+  fun unload_vertex_buffer = rlUnloadVertexBuffer(vbo_id : LibC::UInt) 
+  fun set_vertex_attribute = rlSetVertexAttribute(index : LibC::UInt, comp_size : LibC::Int, type : LibC::Int, normalized : Bool, stride : LibC::Int, pointer : Void*)
+  fun set_vertex_attribute_divisor = rlSetVertexAttributeDivisor(index : LibC::UInt, divisor : LibC::Int)
+  fun set_vertex_attribute_default = rlSetVertexAttributeDefault(loc_index : LibC::Int, value : Void*, attrib_type : LibC::Int, count : LibC::Int)
+  fun draw_vertex_array = rlDrawVertexArray(offset : LibC::Int, count : LibC::Int) 
+  fun draw_vertex_array_elements = rlDrawVertexArrayElements(offset : LibC::Int, count : LibC::Int, buffer : Void*) 
+  fun draw_vertex_array_instanced = rlDrawVertexArrayInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int) 
+  fun draw_vertex_array_elements_instanced = rlDrawVertexArrayElementsInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int) 
+  
+  fun load_texture = rlLoadTexture(data : Void*, width : LibC::Int, height : LibC::Int, format : LibC::Int, mimmap_count : LibC::Int) : LibC::UInt
+  fun load_texture_depth = rlLoadTextureDepth(width : LibC::Int, height : LibC::Int, use_render_buffer : Bool) : LibC::UInt
+  fun load_texture_cubemap = rlLoadTextureCubemap(data : Void*, size : LibC::Int, format : LibC::Int) : LibC::UInt
+  fun update_texture = rlUpdateTexture(id : LibC::UInt, offset_x : LibC::Int, offset_y : LibC::Int, width : LibC::Int, height : LibC::Int, format : LibC::Int, data : Void*)
+  fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::Int*, gl_format : LibC::Int*, gl_type : LibC::Int*)
+  fun get_pixel_format_name = rlGetPixelFormatName(format : LibC::UInt) : LibC::Char*
+  fun unload_texture = rlUnloadTexture(id : LibC::UInt)
+  fun gen_texture_mipmaps = rlGenTextureMipmaps(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int, mipmaps : LibC::Int*)
+  fun read_texture_pixels = rlReadTexturePixels(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int) : Void*
+  fun read_screen_pixels = rlReadScreenPixels(width : LibC::Int, height : LibC::Int) : LibC::UChar*
 end
