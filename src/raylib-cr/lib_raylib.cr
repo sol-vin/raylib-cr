@@ -1324,124 +1324,6 @@ lib LibRaylib
     current_depth : LibC::Float
   end
 
-  struct Matrix
-    m0 : LibC::Float
-    m4 : LibC::Float
-    m8 : LibC::Float
-    m12 : LibC::Float
-    m1 : LibC::Float
-    m5 : LibC::Float
-    m9 : LibC::Float
-    m13 : LibC::Float
-    m2 : LibC::Float
-    m6 : LibC::Float
-    m10 : LibC::Float
-    m14 : LibC::Float
-    m3 : LibC::Float
-    m7 : LibC::Float
-    m11 : LibC::Float
-    m15 : LibC::Float
-  end
-
-  enum TraceLogLevel
-    All     = 0
-    Trace   = 1
-    Debug   = 2
-    Info    = 3
-    Warning = 4
-    Error   = 5
-    Fatal   = 6
-  end
-
-  enum PixelFormat
-    UncompressedGrayscale    =  1
-    UncompressedGrayAlpha    =  2
-    UncompressedR5g6b5       =  3
-    UncompressedR8g8b8       =  4
-    UncompressedR5g5b5a1     =  5
-    UncompressedR4g4b4a4     =  6
-    UncompressedR8g8b8a8     =  7
-    UncompressedR32          =  8
-    UncompressedR32g32b32    =  9
-    UncompressedR32g32b32a32 = 10
-    CompressedDxt1Rgb        = 11
-    CompressedDxt1Rgba       = 12
-    CompressedDxt3Rgba       = 13
-    CompressedDxt5Rgba       = 14
-    CompressedEtc1Rgb        = 15
-    CompressedEtc2Rgb        = 16
-    CompressedEtc2EacRgba    = 17
-    CompressedPvrtRgb        = 18
-    CompressedPvrtRgba       = 19
-    CompressedAstc4x4Rgba    = 20
-  end
-
-  enum TextureFilter
-    Point          = 0
-    Bilinear       = 1
-    Trilinear      = 2
-    Anisotropic4x  = 3
-    Anisotropic8x  = 4
-    Anisotropic16x = 5
-  end
-
-  enum BlendMode
-    Alpha          = 0
-    Additive       = 1
-    Multiplied     = 2
-    AddColors      = 3
-    SubtractColors = 4
-    Custom         = 5
-  end
-
-  enum ShaderLocationIndex
-    VertexPosition   =  0
-    VertexTexcoord01 =  1
-    VertexTexcoord02 =  2
-    VertexNormal     =  3
-    VertexTangent    =  4
-    VertexColor      =  5
-    MatrixMvp        =  6
-    MatrixView       =  7
-    MatrixProjection =  8
-    MatrixModel      =  9
-    MatrixNormal     = 10
-    VectorView       = 11
-    ColorDiffuse     = 12
-    ColorSpecular    = 13
-    ColorAmbient     = 14
-    MapAlbedo        = 15
-    MapMetalness     = 16
-    MapNormal        = 17
-    MapRoughness     = 18
-    MapOcclusion     = 19
-    MapEmission      = 20
-    MapHeight        = 21
-    MapCubemap       = 22
-    MapIrradiance    = 23
-    MapPrefilter     = 24
-    MapBrdf          = 25
-  end
-
-  enum ShaderUniformDataType
-    Float     = 0
-    Vec2      = 1
-    Vec3      = 2
-    Vec4      = 3
-    Int       = 4
-    IVec2     = 5
-    IVec3     = 6
-    IVec4     = 7
-    Sampler2d = 8
-  end
-
-  enum ShaderAttributeDataType
-    Float = 0
-    Vec2  = 1
-    Vec3  = 2
-    Vec4  = 3
-  end
-
   fun matrix_mode = rlMatrixMode(mode : LibC::Int)
   fun push_matrix = rlPushMatrix
   fun pop_matrix = rlPopMatrix
@@ -1538,8 +1420,8 @@ lib LibRaylib
   fun load_vertex_array = rlLoadVertexArray : LibC::UInt
   fun load_vertex_buffer = rlLoadVertexBuffer(buffer : Void*, size : LibC::Int, dynamic : Bool) : LibC::UInt
   fun load_vertex_buffer_element = rlLoadVertexBufferElement(buffer : Void*, size : LibC::Int, dynamic : Bool) : LibC::UInt
-  fun update_vertex_buffer = rlLoadVertexBuffer(buffer_id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int)
-  fun update_vertex_buffer_elements = rlLoadVertexBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int)
+  fun update_vertex_buffer = rlUpdateVertexBuffer(buffer_id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int)
+  fun update_vertex_buffer_elements = rlUpdateVertexBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::Int, offset : LibC::Int)
   fun unload_vertex_array = rlUnloadVertexArray(vao_id : LibC::UInt)
   fun unload_vertex_buffer = rlUnloadVertexBuffer(vbo_id : LibC::UInt)
   fun set_vertex_attribute = rlSetVertexAttribute(index : LibC::UInt, comp_size : LibC::Int, type : LibC::Int, normalized : Bool, stride : LibC::Int, pointer : Void*)
@@ -1566,7 +1448,7 @@ lib LibRaylib
   fun unload_framebuffer = rlUnloadFramebuffer(id : LibC::UInt)
 
   fun load_shader_code = rlLoadShaderCode(vscode : LibC::Char*, fscode : LibC::Char*) : LibC::UInt
-  fun compile_shader = rlLoadShaderCode(shader_code : LibC::Char*, type : LibC::Int) : LibC::UInt
+  fun compile_shader = rlCompileShader(shader_code : LibC::Char*, type : LibC::Int) : LibC::UInt
   fun load_shader_program = rlLoadShaderProgram(v_shader_id : LibC::UInt, f_shader_id : LibC::UInt) : LibC::UInt
   fun unload_shader_program = rlUnloadShaderProgram(id : LibC::UInt)
   fun get_location_uniform = rlGetLocationUniform(shader_id : LibC::UInt, uniform_name : LibC::Char*) : LibC::Int
@@ -1582,7 +1464,7 @@ lib LibRaylib
   fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::LongLong, data : Void*, usage_hint : LibC::Int) : LibC::UInt
   fun unload_shader_buffer = rlUnoadShaderBuffer(ssbo_id : LibC::UInt)
   fun update_shader_buffer_elements = rlUpdateShaderBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::ULongLong, offset : LibC::ULongLong)
-  fun get_shader_buffer_size = rlUpdateShaderBufferElements(id : LibC::UInt) : LibC::ULongLong
+  fun get_shader_buffer_size = rlGetShaderBufferSize(id : LibC::UInt) : LibC::ULongLong
   fun read_shader_buffer_elements = rlReadShaderBufferElements(id : LibC::UInt, dest : Void*, count : LibC::ULongLong, offset : LibC::ULongLong)
   fun bind_shader_buffer = rlBindShaderBuffer(id : LibC::UInt, index : LibC::UInt)
 

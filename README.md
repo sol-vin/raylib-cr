@@ -35,6 +35,11 @@ dependencies:
 $env:LIB="${env:LIB};C:\raylib\lib"
 $env:PATH="${env:PATH};C:\raylib\lib"
 ```
+3. Run in cmd
+```cmd
+set PATH=%PATH%;C:\raylib\lib
+set LIB=%LIB%;C:\raylib\lib
+```
 4. Go back to your project directory. Add `raylib-cr` to your `shard.yml`:
 ```yml
 dependencies:
