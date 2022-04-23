@@ -1,0 +1,15 @@
+name: rlglsoloarsystem
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@sol.vin>
+
+targets:
+  helloworld:
+    main: src/rlglsoloarsystem.cr
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+crystal: 1.2.2
+
+license: MIT

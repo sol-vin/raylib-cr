@@ -1328,7 +1328,7 @@ lib LibRaylib
   fun push_matrix = rlPushMatrix
   fun pop_matrix = rlPopMatrix
   fun load_identity = rlLoadIdentity
-  fun translate_f = rlTranslatef
+  fun translate_f = rlTranslatef(x : LibC::Float, y : LibC::Float, z : LibC::Float)
   fun rotate_f = rlRotatef(angle : LibC::Float, x : LibC::Float, y : LibC::Float, z : LibC::Float)
   fun scale_f = rlScalef(x : LibC::Float, y : LibC::Float, z : LibC::Float)
   fun multi_matrix_f = rlMultMatrixf
@@ -1414,7 +1414,9 @@ lib LibRaylib
   fun load_render_batch = rlLoadRenderBatch(num_buffers : LibC::Int, buffer_elements : LibC::Int) : RenderBatch
   fun unload_render_batch = rlUnloadRenderBatch(batch : RenderBatch)
   fun draw_render_batch = rlDrawRenderBatch(batch : RenderBatch*)
-  fun draw_render_batch_active = rlDrawRenderBatchActive(v_count : LibC::Int) : Bool
+  fun set_render_batch_active = rlDrawRenderBatch(batch : RenderBatch*)
+  fun draw_render_batch_active = rlDrawRenderBatchActive()
+  fun check_render_batch_limit = rlCheckRenderBatchLimit(v_count : LibC::Int) : Bool
   fun set_texture = rlSetTexture(id : LibC::UInt)
 
   fun load_vertex_array = rlLoadVertexArray : LibC::UInt
