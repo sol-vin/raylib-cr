@@ -1,4 +1,4 @@
-@[Link("rlgl")]
+@[Link("raylib")]
 lib LibRLGL
   TEXTURE_WRAP_S                    = 0x2802
   TEXTURE_WRAP_T                    = 0x2803
@@ -335,4 +335,45 @@ lib LibRLGL
   fun gen_texture_mipmaps = rlGenTextureMipmaps(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int, mipmaps : LibC::Int*)
   fun read_texture_pixels = rlReadTexturePixels(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int) : Void*
   fun read_screen_pixels = rlReadScreenPixels(width : LibC::Int, height : LibC::Int) : LibC::UChar*
+  fun load_framebuffer = rlLoadFramebuffer(width : LibC::Int, height : LibC::Int) : LibC::UInt
+  fun framebuffer_attach = rlFramebufferAttach(fbo_id : LibC::UInt, tex_id : LibC::UInt, attach_type : LibC::Int, text_type : LibC::Int, mip_level : LibC::Int)
+  fun framebuffer_complete = rlFramebufferComplete(id : LibC::UInt) : Bool
+  fun unload_framebuffer = rlUnloadFramebuffer(id : LibC::UInt)
+  
+  fun load_shader_code = rlLoadShaderCode(vscode : LibC::Char*, fscode : LibC::Char*) : LibC::UInt
+  fun compile_shader = rlLoadShaderCode(shader_code : LibC::Char*, type : LibC::Int) : LibC::UInt
+  fun load_shader_program = rlLoadShaderProgram(v_shader_id : LibC::UInt, f_shader_id : LibC::UInt)  : LibC::UInt
+  fun unload_shader_program = rlUnloadShaderProgram(id : LibC::UInt)
+  fun get_location_uniform = rlGetLocationUniform(shader_id : LibC::UInt, uniform_name : LibC::Char*) : LibC::Int
+  fun get_location_attrib = rlGetLocationAttrib(shader_id : LibC::UInt, attrib_name : LibC::Char*)
+  fun set_uniform = rlSetUniform(loc_index : LibC::Int, value : Void*, uniform_type : LibC::Int, count : LibC::Int)
+  fun set_uniform_matrix = rlSetUniformMatrix(loc_index : LibC::Int, mat : Matrix)
+  fun set_uniform_sampler = rlSetUniformSampler(loc_index : LibC::Int, texture_id : LibC::UInt)
+  fun set_shader = rlSetShader(id : LibC::UInt, locs : LibC::Int*)
+
+  fun load_compute_shader_program = rlLoadComputeShaderProgram(shader_id : LibC::UInt) : LibC::UInt
+  fun compute_shader_dispatch = rlComputeShaderDispatch(group_x : LibC::UInt, group_y : LibC::UInt, group_z : LibC::UInt)
+
+  fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::LongLong, data : Void*, usage_hint : LibC::Int) : LibC::UInt
+  fun unload_shader_buffer = rlUnoadShaderBuffer(ssbo_id : LibC::UInt)
+  fun update_shader_buffer_elements = rlUpdateShaderBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::ULongLong, offset : LibC::ULongLong)
+  fun get_shader_buffer_size = rlUpdateShaderBufferElements(id : LibC::UInt) : LibC::ULongLong
+  fun read_shader_buffer_elements = rlReadShaderBufferElements(id : LibC::UInt, dest : Void*, count : LibC::ULongLong, offset : LibC::ULongLong)
+  fun bind_shader_buffer = rlBindShaderBuffer(id : LibC::UInt, index : LibC::UInt)
+  
+  fun copy_buffers_elements = rlCopyBuffersElements(dest_id : LibC::UInt, src_id : LibC::UInt, dest_offset : LibC::ULongLong,  src_offset : LibC::ULongLong,  count : LibC::ULongLong)
+  fun bind_image_texture = rlBindImageTexture(id : LibC::UInt, index : LibC::UInt, format : LibC::UInt, readonly : LibC::Int)
+  
+  fun get_matrix_modelview = rlGetMatrixModelview() : Matrix
+  fun get_matrix_projection = rlGetMatrixProjection() : Matrix
+  fun get_matrix_transform = rlGetMatrixTransform() : Matrix
+  fun get_matrix_projection_stereo = rlGetMatrixProjectionStereo(eye : LibC::Int) : Matrix
+  fun get_matrix_view_offset_stereo = rlGetMatrixViewOffsetStereo(eye : LibC::Int) : Matrix
+  fun set_matrix_projection = rlSetMatrixProjection(proj : Matrix)
+  fun set_matrix_modelview = rlSetMatrixModelview(view : Matrix)
+  fun set_matrix_projection_stereo = rlSetMatrixProjectionStereo(right : Matrix, left : Matrix) : Matrix
+  fun set_matrix_view_offset_stereo = rlSetMatrixViewOffsetStereo(right : Matrix, left : Matrix) : Matrix
+
+  fun load_draw_cube = rlLoadDrawCube
+  fun load_draw_quad = rlLoadDrawCube
 end
