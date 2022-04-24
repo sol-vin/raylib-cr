@@ -1356,6 +1356,7 @@ lib LibRaylib
   fun enable_vertex_buffer_attribute = rlEnableVertexBufferAttribute(id : LibC::UInt)
   fun disable_vertex_buffer_attribute = rlDisableVertexBufferAttribute
 
+  # TODO: Figure out what needs to be done to do this :(
   # https://github.com/raysan5/raylib/blob/master/src/rlgl.h#L542
 
   fun active_texture_slot = rlActiveTextureSlot(slot : LibC::Int)
@@ -1415,7 +1416,7 @@ lib LibRaylib
   fun unload_render_batch = rlUnloadRenderBatch(batch : RenderBatch)
   fun draw_render_batch = rlDrawRenderBatch(batch : RenderBatch*)
   fun set_render_batch_active = rlDrawRenderBatch(batch : RenderBatch*)
-  fun draw_render_batch_active = rlDrawRenderBatchActive()
+  fun draw_render_batch_active = rlDrawRenderBatchActive
   fun check_render_batch_limit = rlCheckRenderBatchLimit(v_count : LibC::Int) : Bool
   fun set_texture = rlSetTexture(id : LibC::UInt)
 
@@ -1480,11 +1481,11 @@ lib LibRaylib
   fun get_matrix_view_offset_stereo = rlGetMatrixViewOffsetStereo(eye : LibC::Int) : Matrix
   fun set_matrix_projection = rlSetMatrixProjection(proj : Matrix)
   fun set_matrix_modelview = rlSetMatrixModelview(view : Matrix)
-  fun set_matrix_projection_stereo = rlSetMatrixProjectionStereo(right : Matrix, left : Matrix) : Matrix
-  fun set_matrix_view_offset_stereo = rlSetMatrixViewOffsetStereo(right : Matrix, left : Matrix) : Matrix
+  fun set_matrix_projection_stereo = rlSetMatrixProjectionStereo(right : Matrix, left : Matrix)
+  fun set_matrix_view_offset_stereo = rlSetMatrixViewOffsetStereo(right : Matrix, left : Matrix)
 
   fun load_draw_cube = rlLoadDrawCube
-  fun load_draw_quad = rlLoadDrawCube
+  fun load_draw_quad = rlLoadDrawQuad
 end
 
 struct LibRaylib::Vector2
