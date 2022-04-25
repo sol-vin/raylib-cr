@@ -148,13 +148,13 @@ lib LibRaylib
   end
 
   enum MouseButton
-    MouseButtonLeft    = 0
-    MouseButtonRight   = 1
-    MouseButtonMiddle  = 2
-    MouseButtonSide    = 3
-    MouseButtonExtra   = 4
-    MouseButtonForward = 5
-    MouseButtonBack    = 6
+    Left    = 0
+    Right   = 1
+    Middle  = 2
+    Side    = 3
+    Extra   = 4
+    Forward = 5
+    Back    = 6
   end
 
   enum MouseCursor
