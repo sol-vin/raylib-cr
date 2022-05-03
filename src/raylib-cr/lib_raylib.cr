@@ -1486,6 +1486,33 @@ lib LibRaylib
 
   fun load_draw_cube = rlLoadDrawCube
   fun load_draw_quad = rlLoadDrawQuad
+
+  # PhysAC
+
+  PHYSAC_MAX_BODIES              =   64
+  PHYSAC_MAX_MANIFOLDS           = 4096
+  PHYSAC_MAX_VERTICES            =   24
+  PHYSAC_DEFAULT_CIRCLE_VERTICES =   24
+
+  PHYSAC_COLLISION_ITERATIONS   =      100
+  PHYSAC_PENETRATION_ALLOWANCE  = 0.05_f32
+  PHYSAC_PENETRATION_CORRECTION =  0.4_f32
+
+  PHYSAC_PI      = 3.14159265358979323846_f32
+  PHYSAC_DEG2RAD = (PHYSAC_PI/180.0_f32)
+
+  struct Matrix2x2
+    m00 : LibC::Float
+    m01 : LibC::Float
+    m10 : LibC::Float
+    m11 : LibC::Float
+  end
+
+  struct PhysicsVertexData 
+    vertex_count : LibC::UInt
+    positions : StaticArray(Vector2, PHYSAC_MAX_VERTICES)
+    normals : StaticArray(Vector2, PHYSAC_MAX_VERTICES)
+  end
 end
 
 struct LibRaylib::Vector2
