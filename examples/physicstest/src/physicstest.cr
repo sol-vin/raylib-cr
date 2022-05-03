@@ -4,7 +4,7 @@ LibRaylib.init_window(800, 450, "Hello World")
 LibRaylib.set_target_fps(60)
 
 until LibRaylib.close_window?
-  LibRaylib.init_physics
+  LibPhysAC.init_physics
   LibRaylib.begin_drawing
   LibRaylib.clear_background(LibRaylib::RAYWHITE)
   
@@ -12,6 +12,6 @@ until LibRaylib.close_window?
   LibRaylib.end_drawing
 end
 
-LibRaylib.close_physics
+LibPhysAC.close_physics
 
 LibRaylib.close_window
