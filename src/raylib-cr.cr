@@ -1,5 +1,6 @@
 require "./raylib-cr/lib_raylib"
 require "./raylib-cr/lib_physac"
+require "./raylib-cr/lib_raygui"
 
 
 module Raylib

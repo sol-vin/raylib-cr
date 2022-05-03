@@ -134,7 +134,7 @@ lib LibRayGUI
   fun is_locked? = GuiIsLocked : Bool
   fun fade = GuiFade(alpha : LibC::Float)
   fun set_state = GuiSetState(state : LibC::Int)
-  fun get_state = GuiSetState : LibC::Int
+  fun get_state = GuiGetState : LibC::Int
 
   fun set_font = GuiSetFont(font : LibRaylib::Font)
   fun get_font = GuiGetFont : LibRaylib::Font
@@ -169,7 +169,25 @@ lib LibRayGUI
   fun grid = GuiGrid(bounds : LibRaylib::Rectangle, spacing : LibC::Float, subdivs : LibC::Int) : LibRaylib::Vector2
 
   fun list_view = GuiListView(bounds : LibRaylib::Rectangle, text : LibC::Char*, scroll_index : LibC::Int*, active : LibC::Int) : LibC::Int
-  fun list_view_ex = GuiListView(bounds : LibRaylib::Rectangle, text : LibC::Char**, count : LibC::Int, focus : LibC::Int*, scroll_index : LibC::Int*, active : LibC::Int) : LibC::Int
+  fun list_view_ex = GuiListViewEx(bounds : LibRaylib::Rectangle, text : LibC::Char**, count : LibC::Int, focus : LibC::Int*, scroll_index : LibC::Int*, active : LibC::Int) : LibC::Int
   fun message_box = GuiMessageBox(bounds : LibRaylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*) : LibC::Int
   fun text_input_box = GuiTextInputBox(bounds : LibRaylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*) : LibC::Int
+  fun color_picker = GuiColorPicker(bounds : LibRaylib::Rectangle, color : LibRaylib::Color) : LibRaylib::Color
+  fun color_panel = GuiColorPanel(bounds : LibRaylib::Rectangle, color : LibRaylib::Color) : LibRaylib::Color
+  fun color_bar_alpha = GuiColorBarAlpha(bounds : LibRaylib::Rectangle, alpha : LibC::Float) : LibC::Float
+  fun color_bar_hue = GuiColorBarAlpha(bounds : LibRaylib::Rectangle, value : LibC::Float) : LibC::Float
+  
+  fun load_style = GuiLoadStyle(filename : LibC::Char*)
+  fun load_style_default = GuiLoadStyleDefault
+
+  fun icon_text = GuiIconText(icon_id : LibC::Int, text : LibC::Char*) : LibC::Char*
+
+  fun draw_icon = GuiDrawIcon(icon_id : LibC::Int, pos_x : LibC::Int, pos_y : LibC::Int, pixel_size : LibC::Int, color : LibRaylib::Color)
+  fun get_icons = GuiGetIcons : LibC::UInt*
+  fun get_icon_data = GuiGetIconData(icon_id : LibC::Int) : LibC::UInt*
+  fun set_icon_data = GuiSetIconData(icon_id : LibC::Int, data : LibC::UInt*)
+
+  fun set_icon_pixel = GuiSetIconPixel(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int)
+  fun clear_icon_pixel = GuiClearIconPixel(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int)
+  fun check_icon_pixel = GuiCheckIconPixel(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int)
 end
