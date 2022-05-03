@@ -88,7 +88,7 @@ lib LibPhysAC
 
   fun create_physics_body_circle = CreatePhysicsBodyCircle(pos : LibRaylib::Vector2, radius : LibC::Float, density : LibC::Float) : PhysicsBody
   fun create_physics_body_rectangle = CreatePhysicsBodyRectangle(pos : LibRaylib::Vector2, width : LibC::Float, height : LibC::Float, density : LibC::Float) : PhysicsBody
-  fun create_physics_body_polygon = CreatePhysicsBodyPolygon(pos : LibRaylib::Vector2, sides : LibC::Int, density : LibC::Float) : PhysicsBody
+  fun create_physics_body_polygon = CreatePhysicsBodyPolygon(pos : LibRaylib::Vector2, radius : LibC::Float, sides : LibC::Int, density : LibC::Float) : PhysicsBody
   fun destroy_physics_body = DestroyPhysicsBody(body : PhysicsBody)
 
   fun physics_add_force = PhysicsAddForce(body : PhysicsBody, force : LibRaylib::Vector2)
@@ -97,7 +97,7 @@ lib LibPhysAC
   fun set_physics_body_rotation = SetPhysicsBodyRotation(body : PhysicsBody, radians : LibC::Float)
 
   fun get_physics_body = GetPhysicsBody(index : LibC::Int) : PhysicsBody
-  fun get_physics_bodies_count = GetPhysicsBodiesCount(index : LibC::Int) : LibC::Int
+  fun get_physics_bodies_count = GetPhysicsBodiesCount() : LibC::Int
   fun get_physics_shape_type = GetPhysicsShapeType(index : LibC::Int) : LibC::Int
   fun get_physics_shape_vertices_count = GetPhysicsShapeVerticesCount(index : LibC::Int) : LibC::Int
   fun get_physics_shape_vertex = GetPhysicsShapeVertex(body : PhysicsBody, vertex : LibC::Int) : LibRaylib::Vector2
