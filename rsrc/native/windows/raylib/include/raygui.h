@@ -292,6 +292,7 @@
     } Font;
 #endif
 
+
 // Style property
 typedef struct GuiStyleProp {
     unsigned short controlId;
