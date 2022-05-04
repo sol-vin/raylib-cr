@@ -1,7 +1,7 @@
 require "raylib-cr"
 
-alias LibFerox = F
-alias LibRaylib = R
+alias F = LibFerox
+alias R = LibRaylib
 
 module Screen
   class_property width : LibC::Float = 800
@@ -16,97 +16,100 @@ module Screen
   end
 end
 
-circle : Pointer(F::Shape) = pointerof(F::Shape.new)
-polygon : Pointer(F::Shape) = pointerof(F::Shape.new)
+module Vars
+  @@shape_v : F::Shape = F::Shape.new
+  class_property circle : Pointer(F::Shape) = pointerof(@@shape_v)
+  class_property polygon : Pointer(F::Shape) = pointerof(@@shape_v)
 
-large_circle : Pointer(F::Body) = pointerof(F::Body.new)
-cursor : Pointer(F::Body) = pointerof(F::Body.new)
-cursor_clone : Pointer(F::Body) = pointerof(F::Body.new)
+  @@body_v : F::Body = F::Body.new
 
-use_polygon_cursor = false
+  class_property large_circle : Pointer(F::Body) = pointerof(@@body_v)
+  class_property cursor : Pointer(F::Body) = pointerof(@@body_v)
+  class_property cursor_clone : Pointer(F::Body) = pointerof(@@body_v)
 
-text = "LEFT-CLICK TO CHANGE THE SHAPE TYPE OF THE CURSOR!"
-font_size = 20
+  class_property? use_polygon_cursor = false
+
+  TEXT      = "LEFT-CLICK TO CHANGE THE SHAPE TYPE OF THE CURSOR!"
+  FONT_SIZE = 20
+end
 
 def init_example
-  circle = F.create_circle(F::Material.new, 4.0_f32)
-  polygon = F.create_rectangle(
+  Vars.circle = F.create_circle(F::Material.new, 4.0_f32)
+  Vars.polygon = F.create_rectangle(
     F::Material.new,
     12.0_f32,
     6.0_f32,
   )
-  large_circle = F.create_body_from_shape(
-    BodyType::Static,
-    BodyFlag::None,
+  Vars.large_circle = F.create_body_from_shape(
+    F::BodyType::Static,
+    F::BodyFlag::None,
     R::Vector2.new(
-      x: Screen.width_in_meters,
-      y: Screen.height_in_meters
+      x: Screen.width_in_meters * 0.5_f32,
+      y: Screen.height_in_meters * 0.5_f32
     ),
     F.create_circle(F::Material.new, 10.0_f32)
   )
 
-  cursor = F.create_body_from_shape(
-    BodyType::Kinematic,
-    BodyFlag::None,
+  Vars.cursor = F.create_body_from_shape(
+    F::BodyType::Kinematic,
+    F::BodyFlag::None,
     R::Vector2.zero,
-    circle
+    Vars.circle
   )
 
-  cursor_clone = F.create_body_from_shape(
-    BodyType::Kinematic,
-    BodyFlag::None,
+  Vars.cursor_clone = F.create_body_from_shape(
+    F::BodyType::Kinematic,
+    F::BodyFlag::None,
     R::Vector2.zero,
-    circle
+    Vars.circle
   )
 end
 
 def deinit_example
-  F.release_shape(F.get_body_shape(large_circle))
-  F.release_shape(large_circle)
+  F.release_shape(F.get_body_shape(Vars.large_circle))
+  F.release_body(Vars.large_circle)
 
-  F.release_shape(circle)
-  F.release_shape(polygon)
+  F.release_shape(Vars.circle)
+  F.release_shape(Vars.polygon)
 
-  F.release_shape(cursor_clone)
-  F.release_shape(cursor)
+  F.release_body(Vars.cursor_clone)
+  F.release_body(Vars.cursor)
 end
 
 def update_example
-  F.set_body_position(cursor, F.vec2_pixels_to_meters(R.get_mouse_position))
+  F.set_body_position(Vars.cursor, F.vec2_pixels_to_meters(R.get_mouse_position))
 
   if R.mouse_button_pressed?(R::MouseButton::Left)
-    use_polygon_cursor = !use_polygon_cursor
+    Vars.use_polygon_cursor = !Vars.use_polygon_cursor?
 
-    if use_polygon_cursor
-      F.attach_shape_to_body(cursor, polygon)
-      F.attach_shape_to_body(cursor_clone, polygon)
-
+    if Vars.use_polygon_cursor?
+      F.attach_shape_to_body(Vars.cursor, Vars.polygon)
+      F.attach_shape_to_body(Vars.cursor_clone, Vars.polygon)
     else
-      F.attach_shape_to_body(cursor, circle)
-      F.attach_shape_to_body(cursor_clone, circle)
+      F.attach_shape_to_body(Vars.cursor, Vars.circle)
+      F.attach_shape_to_body(Vars.cursor_clone, Vars.circle)
     end
   elsif R.mouse_button_pressed?(R::MouseButton::Right)
     rotation = R::DEG2RAD * rand(360)
 
-    F.set_body_rotation(cursor, rotation)
-    F.set_body_rotation(cursor_clone, rotation)
-
+    F.set_body_rotation(Vars.cursor, rotation)
+    F.set_body_rotation(Vars.cursor_clone, rotation)
   end
 end
 
 def draw_example
   R.begin_drawing
   R.clear_background(R::RAYWHITE)
-  F.draw_body(large_circle, R::GRAY)
-  F.draw_body_aabb(large_circle, 1.0_f32, R::GREEN)
+  F.draw_body(Vars.large_circle, R::GRAY)
+  F.draw_body_aabb(Vars.large_circle, 1.0_f32, R::GREEN)
 
-  collision = F.compute_body_collision(cursor, large_circle)
+  collision = F.compute_body_collision(Vars.cursor, Vars.large_circle)
 
   if collision.check
     F.set_body_position(
-      cursor_clone,
+      Vars.cursor_clone,
       F.vec2_add(
-        F.get_body_position cursor,
+        F.get_body_position(Vars.cursor),
         F.vec2_scalar_multiply(
           collision.direction,
           -Math.max(
@@ -116,7 +119,7 @@ def draw_example
       )
     )
 
-    F.draw_body_lines(cursor_clone, 2.0_f32, R::RED)
+    F.draw_body_lines(Vars.cursor_clone, 2.0_f32, R::RED)
 
     collision.count.times do |i|
       R.draw_ring(
@@ -132,7 +135,7 @@ def draw_example
       F.draw_arrow(
         F.vec2_add(
           collision.points[i],
-          F.scalar_multiply(
+          F.vec2_scalar_multiply(
             collision.direction,
             -collision.depths[i]
           )
@@ -144,19 +147,19 @@ def draw_example
     end
   end
 
-  F.draw_body(cursor, R.fade(R::BLACK, 0.75_f32))
-  F.draw_body_aabb(cursor, 1.0_f32, R::GREEN)
+  F.draw_body(Vars.cursor, R.fade(R::BLACK, 0.75_f32))
+  F.draw_body_aabb(Vars.cursor, 1.0_f32, R::GREEN)
 
-  F.draw_fps(8, 8)
+  R.draw_fps(8, 8)
 
   R.draw_text_ex(
     R.get_font_default,
-    text,
+    Vars::TEXT,
     R::Vector2.new(
-      x: 0.5_f32 * (Screen.width - R.measure_text(text, font_size)),
-      y: Screen.height / 16/0_f32
+      x: 0.5_f32 * (Screen.width - R.measure_text(Vars::TEXT, Vars::FONT_SIZE)),
+      y: Screen.height / 16.0_f32
     ),
-    font_size,
+    Vars::FONT_SIZE,
     2.0_f32,
     R.fade(R::GRAY, 0.85_f32)
   )
@@ -165,7 +168,7 @@ end
 
 R.set_config_flags(R::ConfigFlags::MSAA4xHint)
 R.set_target_fps(60)
-R.init_window(800, 450, "Hello World")
+R.init_window(Screen.width, Screen.height, "Hello World")
 
 init_example
 

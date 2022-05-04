@@ -74,10 +74,10 @@ lib LibFerox
     inverse_mass : LibC::Float
     inertia : LibC::Float
     inverse_inertia : LibC::Float
-    velocity : LibRaylib::Vector
+    velocity : LibRaylib::Vector2
     angular_velocity : LibC::Float
     gravity_Scale : LibC::Float
-    force : LibRaylib::Vector
+    force : LibRaylib::Vector2
     torque : LibC::Float
   end
 
@@ -92,7 +92,7 @@ lib LibFerox
   end
 
   struct SolverCache
-    bodies : StaticArray(Body, 2)
+    bodies : StaticArray(Body*, 2)
   end
 
   struct Collision
@@ -100,8 +100,8 @@ lib LibFerox
     cache : SolverCache
     direction : LibRaylib::Vector2
     points : StaticArray(LibRaylib::Vector2, 2)
-    points : StaticArray(LibC::Float, 2)
-    direction : LibC::Int
+    depths : StaticArray(LibC::Float, 2)
+    count : LibC::Int
   end
 
   alias CollisionCallback = Collision* ->
@@ -148,7 +148,7 @@ lib LibFerox
     gravity : LibRaylib::Vector2
     bodies : Body**
     hash : SpatialHash*
-    collisions : Collisions*
+    collisions : Collision*
     handler : CollisionHandler
     accumulator : LibC::Double
     timestamp : LibC::Double
@@ -245,7 +245,7 @@ lib LibFerox
   fun get_polygon_vertices = frGetPolygonVertices(s : Shape*, index : LibC::Int) : Vertices
   fun get_polygon_normals = frGetPolygonNormals(s : Shape*) : Vertices
   fun is_shape_rectangle? = frIsShapeRectangle(s : Shape*) : Bool
-  fun set_circle_radius = frGetCircleRadius(s : Shape*, radius : LibC::Float
+  fun set_circle_radius = frSetCircleRadius(s : Shape*, radius : LibC::Float)
   fun set_rectangle_dimensions = frSetRectangleDimensions(s : Shape*, wh : LibRaylib::Vector2)
   fun set_polygon_vertices = frSetPolygonVertices(s : Shape*, vertices : Vertices)
   fun set_shape_material = frSetShapeMaterial(s : Shape*, material : Material)
@@ -295,7 +295,7 @@ lib LibFerox
   fun vec2_negate = frVec2Negate(v : LibRaylib::Vector2) : LibRaylib::Vector2
   fun vec2_normalize = frVec2Normalize(v : LibRaylib::Vector2) : LibRaylib::Vector2
   fun vec2_angle = frVec2Angle(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibC::Float
-  fun vec2_approx_equals? = frNumberApproxEquals(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : Bool
+  fun vec2_approx_equals? = frVec2ApproxEquals(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : Bool
   fun vec2_left_normal = frVec2LeftNormal(v : LibRaylib::Vector2) : LibRaylib::Vector2
   fun vec2_right_normal = frVec2RightNormal(v : LibRaylib::Vector2) : LibRaylib::Vector2
   fun vec2_rotate = frVec2Rotate(v : LibRaylib::Vector2, angle : LibC::Float) : LibRaylib::Vector2
