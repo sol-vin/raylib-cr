@@ -279,4 +279,29 @@ lib LibFerox
   fun simulate_world = frSimulateWorld(world : World*, dt : LibC::Double)
   fun query_world_spatial_hash = frQueryWorldSpatialHash(world : World*, bounds : LibRaylib::Rectangle, bodies : Body**) : LibC::Int
   fun compute_world_raycast = frComputeWorldRaycast(world : World*, ray : Ray, hits : RaycastHit*) : LibC::Int
+
+  fun number_pixels_to_meters = frNumberPixelsToMeters(value : LibC::Float) : LibC::Float
+  fun number_meters_to_pixels = frNumberMetersToPixels(value : LibC::Float) : LibC::Float
+  fun rec_pixels_to_meters = frRecPixelsToMeters(rec : LibRaylib::Rectangle) : LibRaylib::Rectangle
+  fun rec_meters_to_pixels = frRecMetersToPixels(rec : LibRaylib::Rectangle) : LibRaylib::Rectangle
+
+  fun vec2_add = frVec2Add(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_subtract = frVec2Subtract(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_scalar_multiply = frVec2ScalarMultiply(v1 : LibRaylib::Vector2, value : LibC::Float) : LibRaylib::Vector2
+  fun vec2_cross_product = frVec2CrossProduct(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibC::Float
+  fun vec2_dot_product = frVec2DotProduct(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibC::Float
+  fun vec2_magnitude_sqr = frVec2MagnitudeSqr(v : LibRaylib::Vector2) : LibC::Float
+  fun vec2_magnitude = frVec2Magnitude(v : LibRaylib::Vector2) : LibC::Float
+  fun vec2_negate = frVec2Negate(v : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_normalize = frVec2Normalize(v : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_angle = frVec2Angle(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : LibC::Float
+  fun vec2_approx_equals? = frNumberApproxEquals(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2) : Bool
+  fun vec2_left_normal = frVec2LeftNormal(v : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_right_normal = frVec2RightNormal(v : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_rotate = frVec2Rotate(v : LibRaylib::Vector2, angle : LibC::Float) : LibRaylib::Vector2
+  fun vec2_rotate_tx = frVec2RotateTx(v : LibRaylib::Vector2, tx : Transform) : LibRaylib::Vector2
+  fun vec2_transform = frVec2Transform(v : LibRaylib::Vector2, tx : Transform) : LibRaylib::Vector2
+  fun vec2_ccw = frVec2CCW(v1 : LibRaylib::Vector2, v2 : LibRaylib::Vector2, v3 : LibRaylib::Vector2) : Bool
+  fun vec2_pixels_to_meters = frVec2PixelsToMeters(v : LibRaylib::Vector2) : LibRaylib::Vector2
+  fun vec2_meters_to_pixels = frVec2MetersToPixels(v : LibRaylib::Vector2) : LibRaylib::Vector2
 end

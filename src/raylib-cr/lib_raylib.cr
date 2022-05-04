@@ -20,7 +20,7 @@ lib LibRaylib
     WindowAlwaysRun   = 0x00000100
     WindowTransparent = 0x00000010
     WindowHighdpi     = 0x00002000
-    Msaa4xHint        = 0x00000020
+    MSAA4xHint        = 0x00000020
     InterlacedHint    = 0x00010000
   end
 
