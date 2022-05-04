@@ -1,15 +1,15 @@
-name: physicstest
+name: helloworld
 version: 0.1.0
 
 authors:
   - Ian Rash <ian@sol.vin>
 
 targets:
-  physicstest:
-    main: src/physicstest.cr
+  helloworld:
+    main: src/helloworld.cr
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
-crystal: 1.4.0
+crystal: 1.2.2
 
 license: MIT
