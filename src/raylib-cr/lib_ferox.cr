@@ -1,6 +1,7 @@
 @[Link("ferox")]
 lib LibFerox
-  FR_GEOMETRY_MAX_VERTEX_COUNT = 8
+  GEOMETRY_MAX_VERTEX_COUNT = 8
+  WORLD_DEFAULT_GRAVITY = LibRaylib::Vector2.new(x: 0.0_f32, y: 9.8_f32)
 
   enum BodyType
     Unknown   = -1
@@ -42,8 +43,10 @@ lib LibFerox
     cache : TransformCache
   end
 
+  alias VerticesData = StaticArray(LibRaylib::Vector2, GEOMETRY_MAX_VERTEX_COUNT)
+  
   struct Vertices
-    data : StaticArray(LibRaylib::Vector2, FR_GEOMETRY_MAX_VERTEX_COUNT)
+    data : StaticArray(LibRaylib::Vector2, GEOMETRY_MAX_VERTEX_COUNT)
     count : LibC::Int
   end
 
@@ -275,6 +278,7 @@ lib LibFerox
   fun get_world_gravity = frGetWorldGravity(world : World*) : LibRaylib::Vector2
   fun in_world_bounds? = frIsInWorldBounds(world : World*, b : Body*) : Bool
   fun set_world_bounds = frSetWorldBounds(world : World*, bounds : LibRaylib::Rectangle)
+  fun set_world_collision_handler = frSetWorldCollisionHandler(world : World*, handler : CollisionHandler)
   fun set_world_gravity = frSetWorldGravity(world : World*, gravity : LibRaylib::Vector2)
   fun simulate_world = frSimulateWorld(world : World*, dt : LibC::Double)
   fun query_world_spatial_hash = frQueryWorldSpatialHash(world : World*, bounds : LibRaylib::Rectangle, bodies : Body**) : LibC::Int
