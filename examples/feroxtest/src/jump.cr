@@ -56,6 +56,9 @@ module Vars
 
   class_property platform : Pointer(F::Body) = Pointer(F::Body).null
   class_property box : Pointer(F::Body) = Pointer(F::Body).null
+  class_property box2 : Pointer(F::Body) = Pointer(F::Body).null
+
+  class_property boxes : Array(Pointer(F::Body)) = [] of Pointer(F::Body)
 
   @@brick_obj = LibJump::Brick.new(width: 40.0_f32, height: 80.0_f32)
   class_property brick : Pointer(LibJump::Brick) = pointerof(@@brick_obj)
@@ -198,8 +201,42 @@ def init_example
   )
   F.set_body_user_data(Vars.box, Vars.box_id)
 
+  Vars.box2 = F.create_body_from_shape(
+    F::BodyType::Dynamic,
+    F::BodyFlag::None,
+    F.vec2_pixels_to_meters(R::Vector2.new(x: 0.2_f32 * Screen.width, y: 0.4_f32 * Screen.height)),
+    F.create_rectangle(
+      Vars::BOX_MATERIAL, 
+      F.number_pixels_to_meters(50.0_f32),
+      F.number_pixels_to_meters(40.0_f32)
+    )
+  )
+  F.set_body_user_data(Vars.box2, Vars.box_id)
 
   F.add_to_world(Vars.world, Vars.box)
+  F.add_to_world(Vars.world, Vars.box2)
+
+  5.times do
+    a_box = F.create_body_from_shape(
+      F::BodyType::Dynamic,
+      F::BodyFlag::None,
+      F.vec2_pixels_to_meters(R::Vector2.new(x: 0.2_f32 * Screen.width, y: 0.4_f32 * Screen.height)),
+      F.create_rectangle(
+        Vars::BOX_MATERIAL, 
+        F.number_pixels_to_meters(50.0_f32),
+        F.number_pixels_to_meters(40.0_f32)
+      )
+    )
+    F.set_body_user_data(a_box, Vars.box_id)
+
+    Vars.boxes << a_box
+    F.add_to_world(Vars.world, a_box)
+
+  end
+  
+
+
+
 end
 
 def deinit_example
@@ -277,6 +314,10 @@ def draw_example
   F.draw_body(Vars.platform, R::BLACK)
 
   F.draw_body(Vars.box, R::DARKGRAY)
+  F.draw_body(Vars.box2, R::LIGHTGRAY)
+
+  Vars.boxes.each {|body| F.draw_body(body, R::GREEN)}
+
   brick_body = Vars.brick.value.body
   F.draw_body(Vars.brick.value.body, R::RED)
 
@@ -293,18 +334,6 @@ def draw_example
       y: 0.125_f32 * Screen.height
     ),
     Vars::FONT_SIZE,
-    2.0_f32,
-    R.fade(R::GRAY, 0.85_f32)
-  )
-
-  R.draw_text_ex(
-    R.get_font_default,
-    Vars.brick.value.inspect,
-    R::Vector2.new(
-      x: 30,
-      y: 0.5_f32 * Screen.height
-    ),
-    10,
     2.0_f32,
     R.fade(R::GRAY, 0.85_f32)
   )
