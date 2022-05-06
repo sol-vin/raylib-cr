@@ -24,14 +24,14 @@ module Screen
   end
 end
 
+class Brick
+  property width : LibC::Float = 0.0_f32
+  property height : LibC::Float = 0.0_f32
+  property? is_jumping : Bool = false
+  property? on_ground : Bool = false
+  property body : Pointer(F::Body) = Pointer(F::Body).null
 
-lib LibJump
-  struct Brick
-    width : LibC::Float
-    height : LibC::Float
-    is_jumping : Bool
-    on_ground : Bool
-    body : F::Body*
+  def initialize(@width : LibC::Float , @height : LibC::Float)
   end
 end
 
@@ -39,7 +39,7 @@ module Vars
   TEXT      = "PRESS SPACE TO JUMP!"
   FONT_SIZE = 30
 
-  BOX_MATERIAL = F::Material.new(density: 2.25_f32, restitution: 0.0_f32, static_friction: 1.25_f32, dynamic_friction: 1.0_f32)
+  BOX_MATERIAL = F::Material.new(density: 2.25_f32, restitution: 0.0_f32, static_friction: 0.25_f32, dynamic_friction: 0.5_f32)
   BRICK_MATERIAL = F::Material.new(density: 1.85_f32, restitution: 0.0_f32, static_friction: 1.0_f32, dynamic_friction: 0.85_f32)
   PLATFORM_MATERIAL  = F::Material.new(density: 2.0_f32, restitution: 0.0_f32, static_friction: 1.25_f32, dynamic_friction: 1.0_f32)
   WALL_MATERIAL = F::Material.new(density: 2.5_f32, restitution: 0.0_f32, static_friction: 1.25_f32, dynamic_friction: 1.0_f32)
@@ -60,8 +60,7 @@ module Vars
 
   class_property boxes : Array(Pointer(F::Body)) = [] of Pointer(F::Body)
 
-  @@brick_obj = LibJump::Brick.new(width: 40.0_f32, height: 80.0_f32)
-  class_property brick : Pointer(LibJump::Brick) = pointerof(@@brick_obj)
+  class_property brick = Brick.new(width: 40.0_f32, height: 80.0_f32)
 
   WALL_ID1 = 0
   @@wall_id1_obj = WALL_ID1
@@ -122,21 +121,21 @@ def init_example
 
 
 
-  Vars.brick.value.body = F.create_body_from_shape(
+  Vars.brick.body = F.create_body_from_shape(
     F::BodyType::Dynamic,
     F::BodyFlag::InfiniteInertia,
     F.vec2_pixels_to_meters(R::Vector2.new(x: 0.35_f32 * Screen.width, y: Screen.height / 3.0_f32)),
     F.create_rectangle(
       Vars::BRICK_MATERIAL,
-      F.number_pixels_to_meters(Vars.brick.value.width),
-      F.number_pixels_to_meters(Vars.brick.value.height)
+      F.number_pixels_to_meters(Vars.brick.width),
+      F.number_pixels_to_meters(Vars.brick.height)
     )
   )
 
-  F.set_body_user_data(Vars.brick.value.body, Vars.brick_id)
+  F.set_body_user_data(Vars.brick.body, Vars.brick_id)
 
 
-  F.add_to_world(Vars.world, Vars.brick.value.body)
+  F.add_to_world(Vars.world, Vars.brick.body)
 
   Vars.wall1 = F.create_body_from_shape(
     F::BodyType::Static,
@@ -246,15 +245,15 @@ end
 def update_example
   F.simulate_world(Vars.world, Vars::DELTA_TIME)
 
-  handle_brick_movement(Vars.world, Vars.brick)
+  handle_brick_movement
 end
 
-def handle_brick_movement(world : F::World*, brick : Pointer(LibJump::Brick))
-  position = F.get_body_position(Vars.brick.value.body)
-  velocity = F.get_body_velocity(Vars.brick.value.body)
+def handle_brick_movement
+  position = F.get_body_position(Vars.brick.body)
+  velocity = F.get_body_velocity(Vars.brick.body)
 
-  half_brick_width = 0.5_f32 * F.number_pixels_to_meters(Vars.brick.value.width)
-  half_brick_height = 0.5_f32 * F.number_pixels_to_meters(Vars.brick.value.height)
+  half_brick_width = 0.5_f32 * F.number_pixels_to_meters(Vars.brick.width)
+  half_brick_height = 0.5_f32 * F.number_pixels_to_meters(Vars.brick.height)
 
   if position.x <= half_brick_width
     position.x = half_brick_width
@@ -272,18 +271,18 @@ def handle_brick_movement(world : F::World*, brick : Pointer(LibJump::Brick))
     velocity.x = 0.0_f32
   end
 
-  if R.key_down?(R::KeyboardKey::Space) && !Vars.brick.value.is_jumping
-    Vars.brick.value.is_jumping = true
-    Vars.brick.value.on_ground = false
+  if R.key_down?(R::KeyboardKey::Space) && !Vars.brick.is_jumping?
+    Vars.brick.is_jumping = true
+    Vars.brick.on_ground = false
     velocity.y = -Vars::BRICK_VERTICAL_SPEED
   end
 
-  if Vars.brick.value.on_ground
-    Vars.brick.value.is_jumping = false
+  if Vars.brick.on_ground?
+    Vars.brick.is_jumping = false
   end
 
-  F.set_body_position(Vars.brick.value.body, position)
-  F.set_body_velocity(Vars.brick.value.body, velocity)
+  F.set_body_position(Vars.brick.body, position)
+  F.set_body_velocity(Vars.brick.body, velocity)
 end
 
 def on_collision_pre_solve(collision : Pointer(F::Collision))
@@ -296,9 +295,9 @@ def on_collision_pre_solve(collision : Pointer(F::Collision))
   if !data1.null? && !data2.null?
     if data1.value == Vars::BRICK_ID
       if collision.value.check && (collision.value.direction.y > 0.0_f32)
-        Vars.brick.value.on_ground = true
+        Vars.brick.on_ground = true
       else
-        Vars.brick.value.on_ground = false
+        Vars.brick.on_ground = false
       end
     end
   end
@@ -318,13 +317,13 @@ def draw_example
 
   Vars.boxes.each {|body| F.draw_body(body, R::GREEN)}
 
-  brick_body = Vars.brick.value.body
-  F.draw_body(Vars.brick.value.body, R::RED)
+  brick_body = Vars.brick.body
+  F.draw_body(Vars.brick.body, R::RED)
 
   F.draw_spatial_hash(F.get_world_spatial_hash(Vars.world), 0.25_f32, R::GRAY)
 
-  position = F.get_body_position(Vars.brick.value.body)
-  velocity = F.get_body_velocity(Vars.brick.value.body)
+  position = F.get_body_position(Vars.brick.body)
+  velocity = F.get_body_velocity(Vars.brick.body)
 
   R.draw_text_ex(
     R.get_font_default,
