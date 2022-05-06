@@ -50,9 +50,8 @@ module Vars
   DELTA_TIME = (1.0_f32 / 60) * 100.0_f32
 
   class_property world : Pointer(F::World) = Pointer(F::World).null
-  class_property wall1 : Pointer(F::Body) = Pointer(F::Body).null
-  class_property wall2 : Pointer(F::Body) = Pointer(F::Body).null
-  class_property wall3 : Pointer(F::Body) = Pointer(F::Body).null
+
+  class_property walls = [] of Pointer(F::Body)
 
   class_property platform : Pointer(F::Body) = Pointer(F::Body).null
   class_property box : Pointer(F::Body) = Pointer(F::Body).null
@@ -63,28 +62,12 @@ module Vars
   class_property brick = Brick.new(width: 40.0_f32, height: 80.0_f32)
 
   WALL_ID1 = 0
-  @@wall_id1_obj = WALL_ID1
-  class_property wall_id1 : Pointer(Int32) = pointerof(@@wall_id1_obj)
-
   WALL_ID2 = 1
-  @@wall_id2_obj = 1
-  class_property wall_id2 : Pointer(Int32) = pointerof(@@wall_id2_obj)
-
   WALL_ID3 = 2
-  @@wall_id3_obj = 2
-  class_property wall_id3 : Pointer(Int32) = pointerof(@@wall_id3_obj)
 
   PLATFORM_ID = 3
-  @@platform_id_obj = PLATFORM_ID
-  class_property platform_id : Pointer(Int32) = pointerof(@@platform_id_obj)
-
   BRICK_ID = 4
-  @@brick_id_obj = BRICK_ID
-  class_property brick_id : Pointer(Int32) = pointerof(@@brick_id_obj)
-
   BOX_ID = 5
-  @@box_id_obj = BOX_ID
-  class_property box_id : Pointer(Int32) = pointerof(@@box_id_obj)
 end
 
 def init_example
@@ -132,22 +115,21 @@ def init_example
     )
   )
 
-  F.set_body_user_data(Vars.brick.body, Vars.brick_id)
+  F.set_body_user_data(Vars.brick.body, pointerof(Vars::BRICK_ID))
 
 
   F.add_to_world(Vars.world, Vars.brick.body)
 
-  Vars.wall1 = F.create_body_from_shape(
+  Vars.walls << F.create_body_from_shape(
     F::BodyType::Static,
     F::BodyFlag::None,
     F.vec2_pixels_to_meters(R::Vector2.new(x: 0.1_f32 * Screen.width, y: 0.65_f32 * Screen.height)),
     F.create_polygon(Vars::WALL_MATERIAL, wall1_vertices)
   )
-  pp Vars.wall1
 
-  F.set_body_user_data(Vars.wall1, Vars.wall_id1)
+  F.set_body_user_data(Vars.walls[0], pointerof(Vars::WALL_ID1))
 
-  Vars.wall2 = F.create_body_from_shape(
+  Vars.walls << F.create_body_from_shape(
     F::BodyType::Static,
     F::BodyFlag::None,
     F.vec2_pixels_to_meters(R::Vector2.new(x: 0.5_f32 * Screen.width, y: Screen.height - 60)),
@@ -157,21 +139,21 @@ def init_example
       F.number_pixels_to_meters(120.0_f32)
     )
   )
-  F.set_body_user_data(Vars.wall2, Vars.wall_id2)
+  F.set_body_user_data(Vars.walls[1], pointerof(Vars::WALL_ID2))
 
 
-  Vars.wall3 = F.create_body_from_shape(
+
+  Vars.walls << F.create_body_from_shape(
     F::BodyType::Static,
     F::BodyFlag::None,
     F.vec2_pixels_to_meters(R::Vector2.new(x: 0.9_f32 * Screen.width, y: 0.65_f32 * Screen.height)),
     F.create_polygon(Vars::WALL_MATERIAL, wall3_vertices)
   )
 
-  F.set_body_user_data(Vars.wall3, Vars.wall_id3)
+  F.set_body_user_data(Vars.walls[2], pointerof(Vars::WALL_ID3))
 
-  F.add_to_world(Vars.world, Vars.wall1)
-  F.add_to_world(Vars.world, Vars.wall2)
-  F.add_to_world(Vars.world, Vars.wall3)
+
+  Vars.walls.each {|w| F.add_to_world(Vars.world, w)}
 
   Vars.platform = F.create_body_from_shape(
     F::BodyType::Static,
@@ -183,7 +165,7 @@ def init_example
       F.number_pixels_to_meters(40.0_f32)
     )
   )
-  F.set_body_user_data(Vars.platform, Vars.platform_id)
+  F.set_body_user_data(Vars.platform, pointerof(Vars::PLATFORM_ID))
 
 
   F.add_to_world(Vars.world, Vars.platform)
@@ -198,7 +180,7 @@ def init_example
       F.number_pixels_to_meters(40.0_f32)
     )
   )
-  F.set_body_user_data(Vars.box, Vars.box_id)
+  F.set_body_user_data(Vars.box, pointerof(Vars::BOX_ID))
 
   Vars.box2 = F.create_body_from_shape(
     F::BodyType::Dynamic,
@@ -210,7 +192,7 @@ def init_example
       F.number_pixels_to_meters(40.0_f32)
     )
   )
-  F.set_body_user_data(Vars.box2, Vars.box_id)
+  F.set_body_user_data(Vars.box2, pointerof(Vars::BOX_ID))
 
   F.add_to_world(Vars.world, Vars.box)
   F.add_to_world(Vars.world, Vars.box2)
@@ -226,7 +208,7 @@ def init_example
         F.number_pixels_to_meters(40.0_f32)
       )
     )
-    F.set_body_user_data(a_box, Vars.box_id)
+    F.set_body_user_data(a_box, pointerof(Vars::BOX_ID))
 
     Vars.boxes << a_box
     F.add_to_world(Vars.world, a_box)
@@ -307,9 +289,7 @@ def draw_example
   R.begin_drawing
   R.clear_background(R::RAYWHITE)
 
-  F.draw_body(Vars.wall1, R::BLACK)
-  F.draw_body(Vars.wall2, R::BLACK)
-  F.draw_body(Vars.wall3, R::BLACK)
+  Vars.walls.each {|w| F.draw_body(w, R::BLACK)}
   F.draw_body(Vars.platform, R::BLACK)
 
   F.draw_body(Vars.box, R::BLUE)
