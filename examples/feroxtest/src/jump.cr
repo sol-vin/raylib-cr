@@ -191,7 +191,7 @@ def init_example
 
   Vars.box = F.create_body_from_shape(
     F::BodyType::Dynamic,
-    F::BodyFlag::None,
+    F::BodyFlag::InfiniteInertia,
     F.vec2_pixels_to_meters(R::Vector2.new(x: 0.5_f32 * Screen.width, y: 0.25_f32 * Screen.height)),
     F.create_rectangle(
       Vars::BOX_MATERIAL, 
@@ -313,7 +313,7 @@ def draw_example
   F.draw_body(Vars.wall3, R::BLACK)
   F.draw_body(Vars.platform, R::BLACK)
 
-  F.draw_body(Vars.box, R::DARKGRAY)
+  F.draw_body(Vars.box, R::BLUE)
   F.draw_body(Vars.box2, R::LIGHTGRAY)
 
   Vars.boxes.each {|body| F.draw_body(body, R::GREEN)}
