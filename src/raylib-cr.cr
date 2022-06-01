@@ -1,4 +1,5 @@
 require "./raylib-cr/lib_raylib"
+require "./raylib-cr/lib_rlgl"
 require "./raylib-cr/lib_ferox"
 require "./raylib-cr/lib_raygui"
 
