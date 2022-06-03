@@ -643,6 +643,7 @@ lib LibRaylib
   fun close_window? = WindowShouldClose : Bool
   fun close_window = CloseWindow
   fun window_ready? = IsWindowReady : Bool
+  fun window_hidden? = IsWindowHidden : Bool
   fun window_minimized? = IsWindowMinimized : Bool
   fun window_maximized? = IsWindowMaximized : Bool
   fun window_focused? = IsWindowFocused : Bool
