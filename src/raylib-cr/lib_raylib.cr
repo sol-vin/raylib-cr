@@ -647,6 +647,7 @@ lib LibRaylib
   fun window_maximized? = IsWindowMaximized : Bool
   fun window_focused? = IsWindowFocused : Bool
   fun window_resized? = IsWindowResized : Bool
+  fun window_fullscreen? = IsWindowFullscreen : Bool
   fun window_state? = IsWindowState(flag : LibC::UInt) : Bool
   fun set_window_state = SetWindowState(flag : LibC::UInt)
   fun clear_window_state = ClearWindowState(flag : LibC::UInt)
