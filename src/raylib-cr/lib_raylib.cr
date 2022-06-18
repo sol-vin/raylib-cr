@@ -1435,13 +1435,13 @@ lib LibRaylib
   fun draw_vertex_array_instanced = rlDrawVertexArrayInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int)
   fun draw_vertex_array_elements_instanced = rlDrawVertexArrayElementsInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int)
 
-  fun load_texture = rlLoadTexture(data : Void*, width : LibC::Int, height : LibC::Int, format : LibC::Int, mimmap_count : LibC::Int) : LibC::UInt
+  fun load_texture_rlgl = rlLoadTexture(data : Void*, width : LibC::Int, height : LibC::Int, format : LibC::Int, mimmap_count : LibC::Int) : LibC::UInt
   fun load_texture_depth = rlLoadTextureDepth(width : LibC::Int, height : LibC::Int, use_render_buffer : Bool) : LibC::UInt
   fun load_texture_cubemap = rlLoadTextureCubemap(data : Void*, size : LibC::Int, format : LibC::Int) : LibC::UInt
   fun update_texture = rlUpdateTexture(id : LibC::UInt, offset_x : LibC::Int, offset_y : LibC::Int, width : LibC::Int, height : LibC::Int, format : LibC::Int, data : Void*)
   fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::Int*, gl_format : LibC::Int*, gl_type : LibC::Int*)
   fun get_pixel_format_name = rlGetPixelFormatName(format : LibC::UInt) : LibC::Char*
-  fun unload_texture = rlUnloadTexture(id : LibC::UInt)
+  fun unload_texture_rlgl = rlUnloadTexture(id : LibC::UInt)
   fun gen_texture_mipmaps = rlGenTextureMipmaps(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int, mipmaps : LibC::Int*)
   fun read_texture_pixels = rlReadTexturePixels(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int) : Void*
   fun read_screen_pixels = rlReadScreenPixels(width : LibC::Int, height : LibC::Int) : LibC::UChar*
@@ -1997,5 +1997,69 @@ struct LibRaylib::Quaternion
 
   def /(other : Number) : Quaternion
     self.scale((1/other).to_f32)
+  end
+end
+
+struct LibRaylib::Light
+  type : Lights::Type
+  position : Vector3
+  target : Vector3
+  color : Color
+  enabled : Bool
+
+  enabled_loc : LibC::Int
+  type_loc : LibC::Int
+  pos_loc : LibC::Int
+  target_loc : LibC::Int
+  color_loc : LibC::Int
+end
+
+module LibRaylib::Lights
+  MAX = 4
+
+  class_getter count = 0 
+
+  enum Type
+    Directional
+    Point
+  end
+
+  def self.create(type : Type, position : Vector3, target : Vector3, color : Color, shader : Shader) : Light
+    light = Light.new
+
+    if @@count < MAX
+      light.enabled = true
+      light.type = type
+      light.position = position
+      light.target = target
+      light.color = color
+
+      light.enabled_loc = LibRaylib.get_shader_location(shader, "lights[0#{@@count}].enabled")
+      light.type_loc = LibRaylib.get_shader_location(shader, "lights[0#{@@count}].type")
+      light.pos_loc = LibRaylib.get_shader_location(shader, "lights[0#{@@count}].position")
+      light.target_loc = LibRaylib.get_shader_location(shader, "lights[0#{@@count}].target")
+      light.color_loc = LibRaylib.get_shader_location(shader, "lights[0#{@@count}].color")
+
+      update(shader, light)
+      @@count += 1
+    else
+      raise "Too many lights!"
+    end
+
+    return light
+  end
+
+  def self.update(shader : Shader, light : Light)
+    LibRaylib.set_shader_value(shader, light.enabled_loc, light.enabled, LibRaylib::ShaderUniformDataType::Int)
+    LibRaylib.set_shader_value(shader, light.type_loc, light.type.value, LibRaylib::ShaderUniformDataType::Int)
+
+    LibRaylib.set_shader_value(shader, light.pos_loc, LibC::Float32[light.position.x, light.position.y, light.position.z], LibRaylib::ShaderUniformDataType::Vec3)
+    LibRaylib.set_shader_value(shader, light.target_loc, LibC::Float32[light.target.x, light.target.y, light.target.z], LibRaylib::ShaderUniformDataType::Vec3)
+    LibRaylib.set_shader_value(shader, light.color_loc, LibC::Float32[
+      light.color.r/255.0_f32, 
+      light.color.g/255.0_f32, 
+      light.color.b/255.0_f32,
+      light.color.a/255.0_f32
+      ], LibRaylib::ShaderUniformDataType::Vec4)
   end
 end
