@@ -2029,7 +2029,7 @@ module LibRaylib::Lights
 
     if @@count < MAX
       light.enabled = true
-      light.type = Type.new(type)
+      light.type = type
       light.position = position
       light.target = target
       light.color = color
