@@ -21,6 +21,7 @@ lib LibRaylib
     WindowAlwaysRun   = 0x00000100
     WindowTransparent = 0x00000010
     WindowHighdpi     = 0x00002000
+    WindowMousePassthrough = 0x00004000
     MSAA4xHint        = 0x00000020
     InterlacedHint    = 0x00010000
   end
@@ -323,7 +324,9 @@ lib LibRaylib
     Multiplied     = 2
     AddColors      = 3
     SubtractColors = 4
-    Custom         = 5
+    AlphaPremultiply = 5
+    Custom         = 6
+    CustomSeparate = 7
   end
 
   enum Gesture
@@ -357,6 +360,16 @@ lib LibRaylib
     NinePatch            = 0
     ThreePatchVertical   = 1
     ThreePatchHorizontal = 2
+  end
+
+  enum MusicContextType
+    AudioNone = 0
+    AudioWav = 1
+    AudioOGG = 2
+    AudioFLAC = 3
+    AudioMP3 = 4
+    ModuleXM = 5
+    ModuleMod = 6
   end
 
   LIGHTGRAY  = Color.new r: 200, g: 200, b: 200, a: 255
@@ -595,6 +608,7 @@ lib LibRaylib
     data : Void*
   end
 
+  # TODO: Finish ma_* stuff
   struct MADataConverter
   end
 
@@ -711,6 +725,12 @@ lib LibRaylib
     scale_in : StaticArray(LibC::Float, 2)
   end
 
+  struct FilePathList
+    capacity : LibC::UInt
+    count : LibC::UInt
+    paths : LibC::Char**
+  end
+
   fun init_window = InitWindow(width : LibC::Int, height : LibC::Int, title : LibC::Char*)
   fun close_window? = WindowShouldClose : Bool
   fun close_window = CloseWindow
@@ -732,9 +752,12 @@ lib LibRaylib
   fun set_window_monitor = SetWindowMonitor(monitor : LibC::Int)
   fun set_window_min_size = SetWindowMinSize(width : LibC::Int, height : LibC::Int)
   fun set_window_size = SetWindowSize(width : LibC::Int, height : LibC::Int)
+  fun set_window_opacity = SetWindowOpacity(opacity : LibC::Float)
   fun get_window_handle = GetWindowHandle : Void*
   fun get_screen_width = GetScreenWidth : LibC::Int
   fun get_screen_height = GetScreenHeight : LibC::Int
+  fun get_render_width = GetRenderWidth : LibC::Int
+  fun get_render_height = GetRenderHeight : LibC::Int
   fun get_monitor_count = GetMonitorCount : LibC::Int
   fun get_current_monitor = GetCurrentMonitor : LibC::Int
   fun get_monitor_position = GetMonitorPosition(monitor : LibC::Int) : Vector2
@@ -748,10 +771,12 @@ lib LibRaylib
   fun get_monitor_name = GetMonitorName(monitor : LibC::Int) : Char*
   fun set_clipboard_text = SetClipboardText(text : LibC::Char*)
   fun get_clipboard_text = GetClipboardText : Char*
+  fun enable_event_waiting = EnableEventWaiting
+  fun disable_event_waiting = DisableEventWaiting
 
   fun swap_screen_buffer = SwapScreenBuffer
   fun poll_input_events = PollInputEvents
-  fun wait_time = WaitTime(ms : LibC::Float)
+  fun wait_time = WaitTime(seconds : LibC::Double)
 
   fun show_cursor = ShowCursor
   fun hide_cursor = HideCursor
@@ -793,9 +818,9 @@ lib LibRaylib
   fun get_camera_matrix = GetCameraMatrix(camera : Camera) : Matrix
   fun get_camera_matrix_2d = GetCameraMatrix2D(camera : Camera2D) : Matrix
   fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera) : Vector2
+  fun get_screen_to_world_2d = GetScreenToWorld2D(position : Vector2, camera : Camera2D) : Vector2
   fun get_world_to_screen_ex = GetWorldToScreenEx(position : Vector3, camera : Camera, width : LibC::Int, height : LibC::Int) : Vector2
   fun get_world_to_screen_2d = GetWorldToScreen2D(position : Vector2, camera : Camera2D) : Vector2
-  fun get_screen_to_world_2d = GetScreenToWorld2D(position : Vector2, camera : Camera2D) : Vector2
   fun set_target_fps = SetTargetFPS(fps : LibC::Int)
   fun get_fps = GetFPS : LibC::Int
   fun get_frame_time = GetFrameTime : LibC::Float
@@ -806,38 +831,43 @@ lib LibRaylib
   fun set_config_flags = SetConfigFlags(flags : LibC::UInt)
   fun trace_log = TraceLog(log_level : LibC::Int, text : LibC::Char*, ...)
   fun set_trace_log_level = SetTraceLogLevel(log_level : LibC::Int)
-  fun mem_alloc = MemAlloc(size : LibC::Int) : Void*
-  fun mem_realloc = MemRealloc(ptr : Void*, size : LibC::Int) : Void*
+  
+  fun mem_alloc = MemAlloc(size : LibC::UInt) : Void*
+  fun mem_realloc = MemRealloc(ptr : Void*, size : LibC::UInt) : Void*
   fun mem_free = MemFree(ptr : Void*)
+
+  fun open_url = OpenUrl(url : LibC::Char*)
   fun load_file_data = LoadFileData(file_name : LibC::Char*, bytes_read : LibC::UInt*) : LibC::UChar*
   fun unload_file_data = UnloadFileData(data : LibC::UChar*)
   fun save_file_data? = SaveFileData(file_name : LibC::Char*, data : Void*, bytes_to_write : LibC::UInt) : Bool
+  fun export_data_as_code = ExportDataAsCode(data : LibC::Char*, size : LibC::UInt, filename : LibC::Char*) : Bool
   fun load_file_text = LoadFileText(file_name : LibC::Char*) : LibC::Char*
   fun unload_file_text = UnloadFileText(text : LibC::Char*)
   fun save_file_text? = SaveFileText(file_name : LibC::Char*, text : LibC::Char*) : Bool
   fun file_exists? = FileExists(file_name : LibC::Char*) : Bool
   fun directory_exists? = DirectoryExists(dir_path : LibC::Char*) : Bool
   fun file_extension? = IsFileExtension(file_name : LibC::Char*, ext : LibC::Char*) : Bool
+  fun get_file_length = GetFileLength(filename : LibC::Char*, ext : LibC::Char*) : LibC::Int
   fun get_file_extension = GetFileExtension(file_name : LibC::Char*) : LibC::Char*
   fun get_file_name = GetFileName(file_path : LibC::Char*) : LibC::Char*
   fun get_file_name_without_ext = GetFileNameWithoutExt(file_path : LibC::Char*) : LibC::Char*
   fun get_directory_path = GetDirectoryPath(file_path : LibC::Char*) : LibC::Char*
   fun get_prev_directory_path = GetPrevDirectoryPath(dir_path : LibC::Char*) : LibC::Char*
   fun get_working_directory = GetWorkingDirectory : LibC::Char*
-  fun get_directory_files = GetDirectoryFiles(dir_path : LibC::Char*, count : LibC::Int*) : LibC::Char**
-  fun clear_directory_files = ClearDirectoryFiles
+  fun get_application_directory = GetApplicationDirectory : LibC::Char*
   fun change_directory? = ChangeDirectory(dir : LibC::Char*) : Bool
+  fun path_file? = IsPathFile(path : LibC::Char*) : Bool
+  fun load_directory_files = LoadDirectoryFiles(dir_path : LibC::Char*) : FilePathList
+  fun load_directory_files_ex = LoadDirectoryFilesEx(base_path : LibC::Char*, filter : LibC::Char*, scan_sub_dirs : Bool) : FilePathList
+  fun unload_directory_files = UnloadDirectoryFiles(files : FilePathList)
   fun file_dropped? = IsFileDropped : Bool
-  fun get_dropped_files = GetDroppedFiles(count : LibC::Int*) : LibC::Char**
-  fun clear_dropped_files = ClearDroppedFiles
+  fun load_dropped_files = LoadDroppedFiles : FilePathList
+  fun unload_dropped_files = UnloadDroppedFiles(files : FilePathList)
   fun get_file_mod_time = GetFileModTime(file_name : LibC::Char*) : LibC::Long
   fun compress_data = CompressData(data : LibC::UChar*, data_length : LibC::Int, comp_data_length : LibC::Int*) : LibC::UChar*
   fun decompress_data = DecompressData(comp_data : LibC::UChar*, comp_data_length : LibC::Int, data_length : LibC::Int*) : LibC::UChar*
   fun encode_data_base64 = EncodeDataBase64(data : LibC::UChar*, data_length : LibC::Int, output_length : LibC::Int*) : LibC::Char*
   fun decode_data_base64 = DecodeDataBase64(data : LibC::UChar*, output_length : LibC::Int*) : LibC::UChar*
-  fun save_storage_value? = SaveStorageValue(position : LibC::UInt, value : LibC::Int) : Bool
-  fun load_storage_value = LoadStorageValue(position : LibC::UInt) : LibC::Int
-  fun open_url = OpenURL(url : LibC::Char*)
   fun key_pressed? = IsKeyPressed(key : LibC::Int) : Bool
   fun key_down? = IsKeyDown(key : LibC::Int) : Bool
   fun key_released? = IsKeyReleased(key : LibC::Int) : Bool
@@ -867,6 +897,7 @@ lib LibRaylib
   fun set_mouse_offset = SetMouseOffset(offset_x : LibC::Int, offset_y : LibC::Int)
   fun set_mouse_scale = SetMouseScale(scale_x : LibC::Float, scale_y : LibC::Float)
   fun get_mouse_wheel_move = GetMouseWheelMove : LibC::Float
+  fun get_mouse_wheel_move_v = GetMouseWheelMove : Vector2
   fun set_mouse_cursor = SetMouseCursor(cursor : LibC::Int)
   fun get_touch_x = GetTouchX : LibC::Int
   fun get_touch_y = GetTouchY : LibC::Int
@@ -931,6 +962,7 @@ lib LibRaylib
   fun check_collision_point_rec? = CheckCollisionPointRec(point : Vector2, rec : Rectangle) : Bool
   fun check_collision_point_circle? = CheckCollisionPointCircle(point : Vector2, center : Vector2, radius : LibC::Float) : Bool
   fun check_collision_point_triangle? = CheckCollisionPointTriangle(point : Vector2, p1 : Vector2, p2 : Vector2, p3 : Vector2) : Bool
+  fun check_collision_point_poly? = CheckCollisionPointPoly(point : Vector2, points : Vector2*, points_length : LibC::Int) : Bool
   fun check_collision_lines? = CheckCollisionLines(start_pos1 : Vector2, end_pos1 : Vector2, start_pos2 : Vector2, end_pos2 : Vector2, collision_point : Vector2*) : Bool
   fun check_collision_point_line? = CheckCollisionPointLine(point : Vector2, p1 : Vector2, p2 : Vector2, threshold : LibC::Int) : Bool
   fun get_collision_rec = GetCollisionRec(rec1 : Rectangle, rec2 : Rectangle) : Rectangle
@@ -949,7 +981,10 @@ lib LibRaylib
   fun gen_image_gradient_radial = GenImageGradientRadial(width : LibC::Int, height : LibC::Int, density : LibC::Float, inner : Color, outer : Color) : Image
   fun gen_image_checked = GenImageChecked(width : LibC::Int, height : LibC::Int, checks_x : LibC::Int, checks_y : LibC::Int, col1 : Color, col2 : Color) : Image
   fun gen_image_white_noise = GenImageWhiteNoise(width : LibC::Int, height : LibC::Int, factor : LibC::Float) : Image
+  fun gen_image_perlin_noise = GenImagePerlinNoise(width : LibC::Int, height : LibC::Int, offset_x : LibC::Int, offset_y : LibC::Int, scale : LibC::Float) : Image
   fun gen_image_cellular = GenImageCellular(width : LibC::Int, height : LibC::Int, tile_size : LibC::Int) : Image
+  fun gen_image_text = GenImageText(width : LibC::Int, height : LibC::Int, text : LibC::Char*) : Image
+
   fun image_copy = ImageCopy(image : Image) : Image
   fun image_from_image = ImageFromImage(image : Image, rec : Rectangle) : Image
   fun image_text = ImageText(text : LibC::Char*, font_size : LibC::Int, color : Color) : Image
@@ -989,6 +1024,9 @@ lib LibRaylib
   fun image_draw_line_v = ImageDrawLineV(dst : Image*, start : Vector2, end : Vector2, color : Color)
   fun image_draw_circle = ImageDrawCircle(dst : Image*, center_x : LibC::Int, center_y : LibC::Int, radius : LibC::Int, color : Color)
   fun image_draw_circle_v = ImageDrawCircleV(dst : Image*, center : Vector2, radius : LibC::Int, color : Color)
+  fun image_draw_circle_lines = ImageDrawCircle(dst : Image*, center_X : LibC::Int, center_y : LibC::Int, radius : LibC::Int, color : Color)
+  fun image_draw_circle_lines_v = ImageDrawCircleV(dst : Image*, center : Vector2, radius : LibC::Int, color : Color)
+
   fun image_draw_rectangle = ImageDrawRectangle(dst : Image*, pos_x : LibC::Int, pos_y : LibC::Int, width : LibC::Int, height : LibC::Int, color : Color)
   fun image_draw_rectangle_v = ImageDrawRectangleV(dst : Image*, position : Vector2, size : Vector2, color : Color)
   fun image_draw_rectangle_rec = ImageDrawRectangleRec(dst : Image*, rec : Rectangle, color : Color)
@@ -1037,22 +1075,30 @@ lib LibRaylib
   fun gen_image_font_atlas = GenImageFontAtlas(chars : GlyphInfo*, recs : Rectangle**, glyph_count : LibC::Int, font_size : LibC::Int, padding : LibC::Int, pack_method : LibC::Int) : Image
   fun unload_font_data = UnloadFontData(chars : GlyphInfo*, glyph_count : LibC::Int)
   fun unload_font = UnloadFont(font : Font)
+  fun export_font_as_code = ExportFontAsCode(font : Font, filename : LibC::Char*) : Bool
   fun draw_fps = DrawFPS(pos_x : LibC::Int, pos_y : LibC::Int)
   fun draw_text = DrawText(text : LibC::Char*, pos_x : LibC::Int, pos_y : LibC::Int, font_size : LibC::Int, color : Color)
   fun draw_text_ex = DrawTextEx(font : Font, text : LibC::Char*, position : Vector2, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_pro = DrawTextPro(font : Font, text : LibC::Char*, position : Vector2, origin : Vector2, rotation : LibC::Float, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_codepoint = DrawTextCodepoint(font : Font, codepoint : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
+  fun draw_text_codepoints = DrawTextCodepoint(font : Font, codepoints : LibC::Int*, count : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
+
   fun measure_text = MeasureText(text : LibC::Char*, font_size : LibC::Int) : LibC::Int
   fun measure_text_ex = MeasureTextEx(font : Font, text : LibC::Char*, font_size : LibC::Float, spacing : LibC::Float) : Vector2
   fun get_glyph_index = GetGlyphIndex(font : Font, codepoint : LibC::Int) : LibC::Int
   fun get_glyph_info = GetGlyphInfo(font : Font, codepoint : LibC::Int) : GlyphInfo
   fun get_glyph_atlas_rec = GetGlyphAtlasRec(font : Font, codepoint : LibC::Int) : Rectangle
+  fun load_utf8 = LoadUTF8(codepoints : LibC::Int*, length : LibC::Int) : LibC::Char*
+  fun unload_utf8 = UnloadUTF8(text : LibC::Char*)
   fun load_codepoints = LoadCodepoints(text : LibC::Char*, count : LibC::Int*) : LibC::Int*
   fun unload_codepoints = UnloadCodepoints(codepoints : LibC::Int*)
   fun get_codepoint_count = GetCodepointCount(text : LibC::Char*) : LibC::Int
   fun get_codepoint = GetCodepoint(text : LibC::Char*, bytes_processed : LibC::Int*) : LibC::Int
-  fun codepoint_to_utf8 = CodepointToUTF8(codepoint : LibC::Int, byte_size : LibC::Int*) : LibC::Char*
-  fun text_codepoints_to_utf8 = TextCodepointsToUTF8(codepoints : LibC::Int*, length : LibC::Int) : LibC::Char*
+  fun get_codepoint_next = GetCodepointNext(text : LibC::Char*, codepoint_size : LibC::Int*) : LibC::Int
+  fun get_codepoint_previous = GetCodepointPrevious(text : LibC::Char*, codepoint_size : LibC::Int*) : LibC::Int
+  fun codepoint_to_utf8 = CodepointToUTF8(codepoint : LibC::Int, utf8_size : LibC::Int*) : LibC::Char*
+
+ 
   fun text_copy = TextCopy(dst : LibC::Char*, src : LibC::Char*) : LibC::Int
   fun text_is_equal? = TextIsEqual(text1 : LibC::Char*, text2 : LibC::Char*) : Bool
   fun text_length = TextLength(text : LibC::Char*) : LibC::UInt
@@ -1086,6 +1132,8 @@ lib LibRaylib
   fun draw_cylinder_ex = DrawCylinderEx(start_pos : Vector3, end_pos : Vector3, start_radius : LibC::Float, end_radius : LibC::Float, sides : LibC::Int, color : Color)
   fun draw_cylinder_wires = DrawCylinderWires(position : Vector3, radius_top : LibC::Float, radius_bottom : LibC::Float, height : LibC::Float, slices : LibC::Int, color : Color)
   fun draw_cylinder_wires_ex = DrawCylinderWiresEx(start_pos : Vector3, end_pos : Vector3, start_radius : LibC::Float, end_radius : LibC::Float, sides : LibC::Int, color : Color)
+  fun draw_capsule = DrawCapsule(start_position : Vector3, end_position : Vector3, radius : LibC::Float, slices : LibC::Int, rings : LibC::Int, color : Color)
+  fun draw_capsule_wires = DrawCapsuleWires(start_position : Vector3, end_position : Vector3, radius : LibC::Float, slices : LibC::Int, rings : LibC::Int, color : Color)
   fun draw_plane = DrawPlane(center_pos : Vector3, size : Vector2, color : Color)
   fun draw_ray = DrawRay(ray : Ray, color : Color)
   fun draw_grid = DrawGrid(slices : LibC::Int, spacing : LibC::Float)
@@ -1110,7 +1158,6 @@ lib LibRaylib
   fun export_mesh? = ExportMesh(mesh : Mesh, file_name : LibC::Char*) : Bool
   fun get_mesh_bounding_box = GetMeshBoundingBox(mesh : Mesh) : BoundingBox
   fun gen_mesh_tangents = GenMeshTangents(mesh : Mesh*)
-  fun gen_mesh_binormals = GenMeshBinormals(mesh : Mesh*)
   fun gen_mesh_poly = GenMeshPoly(sides : LibC::Int, radius : LibC::Float) : Mesh
   fun gen_mesh_plane = GenMeshPlane(width : LibC::Float, length : LibC::Float, res_x : LibC::Int, res_z : LibC::Int) : Mesh
   fun gen_mesh_cube = GenMeshCube(width : LibC::Float, height : LibC::Float, length : LibC::Float) : Mesh
@@ -1137,7 +1184,6 @@ lib LibRaylib
   fun check_collision_box_sphere? = CheckCollisionBoxSphere(box : BoundingBox, center : Vector3, radius : LibC::Float) : Bool
   fun get_ray_collision_sphere = GetRayCollisionSphere(ray : Ray, center : Vector3, radius : LibC::Float) : RayCollision
   fun get_ray_collision_box = GetRayCollisionBox(ray : Ray, box : BoundingBox) : RayCollision
-  fun get_ray_collision_model = GetRayCollisionModel(ray : Ray, model : Model) : RayCollision
   fun get_ray_collision_mesh = GetRayCollisionMesh(ray : Ray, mesh : Mesh, transform : Matrix) : RayCollision
   fun get_ray_collision_triangle = GetRayCollisionTriangle(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3) : RayCollision
   fun get_ray_collision_quad = GetRayCollisionQuad(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3, p4 : Vector3) : RayCollision
@@ -1164,9 +1210,10 @@ lib LibRaylib
   fun sound_playing? = IsSoundPlaying(sound : Sound) : Bool
   fun set_sound_volume = SetSoundVolume(sound : Sound, volume : LibC::Float)
   fun set_sound_pitch = SetSoundPitch(sound : Sound, pitch : LibC::Float)
-  fun wave_format = WaveFormat(wave : Wave*, sample_rate : LibC::Int, sample_size : LibC::Int, channels : LibC::Int)
+  fun set_sound_pan = SetSoundPan(sound : Sound, pan : LibC::Float)
   fun wave_copy = WaveCopy(wave : Wave) : Wave
   fun wave_crop = WaveCrop(wave : Wave*, init_sample : LibC::Int, final_sample : LibC::Int)
+  fun wave_format = WaveFormat(wave : Wave*, sample_rate : LibC::Int, sample_size : LibC::Int, channels : LibC::Int)
   fun load_wave_samples = LoadWaveSamples(wave : Wave) : LibC::Float*
   fun unload_wave_samples = UnloadWaveSamples(samples : LibC::Float*)
   fun load_music_stream = LoadMusicStream(file_name : LibC::Char*) : Music
@@ -1181,6 +1228,7 @@ lib LibRaylib
   fun seek_music_stream = SeekMusicStream(music : Music, position : LibC::Float)
   fun set_music_volume = SetMusicVolume(music : Music, volume : LibC::Float)
   fun set_music_pitch = SetMusicPitch(music : Music, pitch : LibC::Float)
+  fun set_music_pan = SetMusicPan(music : Music, pan : LibC::Float)
   fun get_music_time_length = GetMusicTimeLength(music : Music) : LibC::Float
   fun get_music_time_played = GetMusicTimePlayed(music : Music) : LibC::Float
   fun load_audio_stream = LoadAudioStream(sample_rate : LibC::UInt, sample_size : LibC::UInt, channels : LibC::UInt) : AudioStream
@@ -1194,8 +1242,11 @@ lib LibRaylib
   fun stop_audio_stream = StopAudioStream(stream : AudioStream)
   fun set_audio_stream_volume = SetAudioStreamVolume(stream : AudioStream, volume : LibC::Float)
   fun set_audio_stream_pitch = SetAudioStreamPitch(stream : AudioStream, pitch : LibC::Float)
+  fun set_audio_stream_pan = SetAudioStreamPan(stream : AudioStream, pan : LibC::Float)
+
   fun set_audio_stream_buffer_size_default = SetAudioStreamBufferSizeDefault(size : LibC::Int)
 
+  fun set_audio_stream_callback = SetAudioStreamCallback(stream : AudioStream, callback : AudioCallback)
   fun attach_audio_stream_processor = AttachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
   fun detach_audio_stream_processor = DetachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
 
@@ -1301,6 +1352,7 @@ lib LibRaylib
   fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
   fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)
 
+  # RLGL           
   TEXTURE_WRAP_S                    = 0x2802
   TEXTURE_WRAP_T                    = 0x2803
   TEXTURE_MAG_FILTER                = 0x2800
@@ -1312,6 +1364,8 @@ lib LibRaylib
   TEXTURE_FILTER_LINEAR_MIP_NEAREST = 0x2701
   TEXTURE_FILTER_MIP_LINEAR         = 0x2703
   TEXTURE_FILTER_ANISOTROPIC        = 0x3000
+  TEXTURE_MIPMAP_BIAS_RATIO       = 0x4000
+
 
   TEXTURE_WRAP_REPEAT        = 0x2901
   TEXTURE_WRAP_CLAMP         = 0x812F
@@ -1477,6 +1531,7 @@ lib LibRaylib
   fun clear_errors = rlCheckErrors
   fun set_blend_mode = rlSetBlendMode(mode : LibC::Int)
   fun set_blend_factors = rlSetBlendFactors(gl_src_factor : LibC::Int, gl_dst_factor : LibC::Int, gl_equation : LibC::Int)
+  fun set_blend_factors_separate = rlSetBlendFactorsSeparate(gl_src_factor : LibC::Int, gl_dst_rgb : LibC::Int, gl_dst_alpha : LibC::Int, gl_equation_rgb : LibC::Int, gl_equation_alpha : LibC::Int)
 
   fun init = rlglInit(width : LibC::Int, height : LibC::Int)
   fun close = rlglClose(width : LibC::Int, height : LibC::Int)
@@ -1484,6 +1539,8 @@ lib LibRaylib
   fun get_version = rlGetVersion : LibC::Int
   fun get_framebuffer_width = rlGetFramebufferWidth : LibC::Int
   fun get_framebuffer_height = rlGetFramebufferHeight : LibC::Int
+  fun set_framebuffer_width = rlSetFramebufferWidth(width : LibC::Int) : LibC::Int
+  fun set_framebuffer_height = rlSetFramebufferHeight(height : LibC::Int) : LibC::Int
   fun get_texture_id_default = rlGetTextureIdDefault : LibC::UInt
   fun get_shader_id_default = rlGetShaderIdDefault : LibC::UInt
   fun get_shader_locs_default = rlGetShaderLocsDefault : LibC::Int*
@@ -1515,7 +1572,7 @@ lib LibRaylib
   fun load_texture_depth = rlLoadTextureDepth(width : LibC::Int, height : LibC::Int, use_render_buffer : Bool) : LibC::UInt
   fun load_texture_cubemap = rlLoadTextureCubemap(data : Void*, size : LibC::Int, format : LibC::Int) : LibC::UInt
   fun update_texture = rlUpdateTexture(id : LibC::UInt, offset_x : LibC::Int, offset_y : LibC::Int, width : LibC::Int, height : LibC::Int, format : LibC::Int, data : Void*)
-  fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::Int*, gl_format : LibC::Int*, gl_type : LibC::Int*)
+  fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::UInt*, gl_format : LibC::UInt*, gl_type : LibC::UInt*)
   fun get_pixel_format_name = rlGetPixelFormatName(format : LibC::UInt) : LibC::Char*
   fun unload_texture_rlgl = rlUnloadTexture(id : LibC::UInt)
   fun gen_texture_mipmaps = rlGenTextureMipmaps(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int, mipmaps : LibC::Int*)
@@ -1540,14 +1597,14 @@ lib LibRaylib
   fun load_compute_shader_program = rlLoadComputeShaderProgram(shader_id : LibC::UInt) : LibC::UInt
   fun compute_shader_dispatch = rlComputeShaderDispatch(group_x : LibC::UInt, group_y : LibC::UInt, group_z : LibC::UInt)
 
-  fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::LongLong, data : Void*, usage_hint : LibC::Int) : LibC::UInt
-  fun unload_shader_buffer = rlUnoadShaderBuffer(ssbo_id : LibC::UInt)
-  fun update_shader_buffer_elements = rlUpdateShaderBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::ULongLong, offset : LibC::ULongLong)
+  fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::UInt, data : Void*, usage_hint : LibC::Int) : LibC::UInt
+  fun unload_shader_buffer = rlUnloadShaderBuffer(ssbo_id : LibC::UInt)
+  fun update_shader_buffer = rlUpdateShaderBuffer(id : LibC::UInt, data : Void*, data_size : LibC::UInt, offset : LibC::UInt)
   fun get_shader_buffer_size = rlGetShaderBufferSize(id : LibC::UInt) : LibC::ULongLong
-  fun read_shader_buffer_elements = rlReadShaderBufferElements(id : LibC::UInt, dest : Void*, count : LibC::ULongLong, offset : LibC::ULongLong)
+  fun read_shader_buffer = rlReadShaderBuffer(id : LibC::UInt, dest : Void*, count : LibC::UInt, offset : LibC::UInt)
   fun bind_shader_buffer = rlBindShaderBuffer(id : LibC::UInt, index : LibC::UInt)
+  fun copy_shader_buffer = rlCopyShaderBuffer(dst_id : LibC::UInt, src_id : LibC::UInt, dst_offset : LibC::UInt, src_offset : LibC::UInt, count : LibC::UInt)
 
-  fun copy_buffers_elements = rlCopyBuffersElements(dest_id : LibC::UInt, src_id : LibC::UInt, dest_offset : LibC::ULongLong, src_offset : LibC::ULongLong, count : LibC::ULongLong)
   fun bind_image_texture = rlBindImageTexture(id : LibC::UInt, index : LibC::UInt, format : LibC::UInt, readonly : LibC::Int)
 
   fun get_matrix_modelview = rlGetMatrixModelview : Matrix
