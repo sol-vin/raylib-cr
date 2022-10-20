@@ -6,7 +6,8 @@ lib LibRaylib
 
   alias Camera = Camera3D
   alias TextureCubemap = Texture2D
-
+  alias AudioCallback = Proc(Void*, LibC::UInt)
+  
   enum ConfigFlags
     VSyncHint         = 0x00000040
     FullscreenMode    = 0x00000002
@@ -519,12 +520,12 @@ lib LibRaylib
     bone_ids : LibC::UChar*
     bone_weights : LibC::Float*
     vaoId : LibC::UInt
-    vboId : LibC::Int* # StaticArray(LibC::UInt, 7)
+    vboId : LibC::Int*
   end
 
   struct Shader
     id : LibC::UInt
-    locs : LibC::Int* # StaticArray(LibC::Int, 32)
+    locs : LibC::Int*
   end
 
   struct MaterialMap
@@ -594,8 +595,79 @@ lib LibRaylib
     data : Void*
   end
 
+  struct MADataConverter
+  end
+
+  struct MAContext
+  end
+  
+  struct MADevice
+  end
+
+  struct MAMutex
+  end
+
+  struct AudioBuffer
+    converter : MADataConverter
+    callback : AudioCallback
+    processor : AudioProcessor*
+
+    volume : LibC::Float
+    pitch : LibC::Float
+    pan : LibC::Float
+
+    bool : LibC::Bool
+    paused : Bool
+    looping : Bool
+    usage : LibC::Int
+
+    is_subbuffer_processed : StaticArray(LibC::Bool, 2)
+    size_in_frames : LibC::UInt
+    frame_cursor_pos : LibC::UInt
+    frames_processed : LibC::UInt
+
+    data : LibC::UChar*
+
+    next : AudioBuffer*
+    prev : AudioBuffer*
+  end
+
+  struct AudioProcessor
+    process : AudioCallback
+    next : AudioProcessor*
+    prev : AudioProcessor*
+  end
+
+  struct AudioDataSystem
+    context : MAContext
+    device : MADevice
+    lock : MALock
+    is_ready : Bool
+    pcm_buffer_size : Void
+    pcm_buffer : Void*
+  end
+
+  struct AudioDataBuffer
+    first : AudioBuffer*
+    last : AudioBuffer*
+    default_size : LibC::Int
+  end
+
+  struct AudioDataMultiChannel
+    pool_counter : LibC::UInt
+    pool : StaticArray(AudioBuffer, 16)
+    channels : StaticArray(LibC::UInt, 16)
+  end
+
+  struct AudioData
+    system : AudioDataSystem
+    buffer : AudioDataBuffer
+    multi_channel : AudioDataMultiChannel
+  end
+
   struct AudioStream
-    audioBuffer : Void*
+    audio_buffer : AudioBuffer
+    audio_processor : AudioProcessor
     sample_rate : LibC::UInt
     sample_size : LibC::UInt
     channels : LibC::UInt

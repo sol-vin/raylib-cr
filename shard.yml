@@ -4,6 +4,6 @@ version: 0.1.0
 authors:
   - sol-vin <ian@sol.vin>
 
-crystal: 1.2.2
+crystal: 1.6.0
 
 license: MIT
