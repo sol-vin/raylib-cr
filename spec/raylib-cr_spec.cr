@@ -1,8 +1,6 @@
 require "./spec_helper"
 
-describe Raylib::Cr do
-  # TODO: Write tests
-
+describe LibRaylib do
   it "works" do
     false.should eq(true)
   end
