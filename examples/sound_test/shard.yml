@@ -1,0 +1,13 @@
+name: sound_test
+version: 0.1.0
+
+authors:
+  - Ian Rash <redcodefinal@gmail.com>
+
+targets:
+  sound_test:
+    main: src/sound_test.cr
+
+crystal: 1.6.0
+
+license: MIT

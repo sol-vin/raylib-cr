@@ -7,23 +7,23 @@ lib LibRaylib
   alias Camera = Camera3D
   alias TextureCubemap = Texture2D
   alias AudioCallback = Proc(Void*, LibC::UInt)
-  
+
   enum ConfigFlags
-    VSyncHint         = 0x00000040
-    FullscreenMode    = 0x00000002
-    WindowResizable   = 0x00000004
-    WindowUndecorated = 0x00000008
-    WindowHidden      = 0x00000080
-    WindowMinimized   = 0x00000200
-    WindowMaximized   = 0x00000400
-    WindowUnfocused   = 0x00000800
-    WindowTopmost     = 0x00001000
-    WindowAlwaysRun   = 0x00000100
-    WindowTransparent = 0x00000010
-    WindowHighdpi     = 0x00002000
+    VSyncHint              = 0x00000040
+    FullscreenMode         = 0x00000002
+    WindowResizable        = 0x00000004
+    WindowUndecorated      = 0x00000008
+    WindowHidden           = 0x00000080
+    WindowMinimized        = 0x00000200
+    WindowMaximized        = 0x00000400
+    WindowUnfocused        = 0x00000800
+    WindowTopmost          = 0x00001000
+    WindowAlwaysRun        = 0x00000100
+    WindowTransparent      = 0x00000010
+    WindowHighdpi          = 0x00002000
     WindowMousePassthrough = 0x00004000
-    MSAA4xHint        = 0x00000020
-    InterlacedHint    = 0x00010000
+    MSAA4xHint             = 0x00000020
+    InterlacedHint         = 0x00010000
   end
 
   enum TraceLogLevel
@@ -319,14 +319,14 @@ lib LibRaylib
   end
 
   enum BlendMode
-    Alpha          = 0
-    Additive       = 1
-    Multiplied     = 2
-    AddColors      = 3
-    SubtractColors = 4
+    Alpha            = 0
+    Additive         = 1
+    Multiplied       = 2
+    AddColors        = 3
+    SubtractColors   = 4
     AlphaPremultiply = 5
-    Custom         = 6
-    CustomSeparate = 7
+    Custom           = 6
+    CustomSeparate   = 7
   end
 
   enum Gesture
@@ -364,11 +364,11 @@ lib LibRaylib
 
   enum MusicContextType
     AudioNone = 0
-    AudioWav = 1
-    AudioOGG = 2
+    AudioWav  = 1
+    AudioOGG  = 2
     AudioFLAC = 3
-    AudioMP3 = 4
-    ModuleXM = 5
+    AudioMP3  = 4
+    ModuleXM  = 5
     ModuleMod = 6
   end
 
@@ -610,20 +610,21 @@ lib LibRaylib
 
   # MINIAUDIO DUMMY STRUCTS
   struct MADataConverter
-    data : StaticArray(UInt8, 39)
+    data : StaticArray(UInt8, 312)
   end
 
   struct MAContext
-    data : StaticArray(UInt8, 83)
+    data : StaticArray(UInt8, 664)
   end
-  
+
   struct MADevice
-    data : StaticArray(UInt8, 401)
+    data : StaticArray(UInt8, 3208)
   end
 
   struct MAMutex
-    data : UInt8
+    data : StaticArray(UInt8, 8)
   end
+
   # END DUMMY
 
   struct AudioBuffer
@@ -662,7 +663,7 @@ lib LibRaylib
     device : MADevice
     lock : MAMutex
     is_ready : Bool
-    pcm_buffer_size : UInt8
+    pcm_buffer_size : UInt64 # TODO: Fix foe 32 bit, should be a `size_t`
     pcm_buffer : Void*
   end
 
@@ -685,8 +686,8 @@ lib LibRaylib
   end
 
   struct AudioStream
-    audio_buffer : AudioBuffer
-    audio_processor : AudioProcessor
+    audio_buffer : AudioBuffer*
+    audio_processor : AudioProcessor*
     sample_rate : LibC::UInt
     sample_size : LibC::UInt
     channels : LibC::UInt
@@ -699,7 +700,7 @@ lib LibRaylib
 
   struct Music
     stream : AudioStream
-    frame_count : LibC::Int
+    frame_count : LibC::UInt
     looping : Bool
 
     ctx_type : LibC::Int
@@ -836,7 +837,7 @@ lib LibRaylib
   fun set_config_flags = SetConfigFlags(flags : LibC::UInt)
   fun trace_log = TraceLog(log_level : LibC::Int, text : LibC::Char*, ...)
   fun set_trace_log_level = SetTraceLogLevel(log_level : LibC::Int)
-  
+
   fun mem_alloc = MemAlloc(size : LibC::UInt) : Void*
   fun mem_realloc = MemRealloc(ptr : Void*, size : LibC::UInt) : Void*
   fun mem_free = MemFree(ptr : Void*)
@@ -1103,7 +1104,6 @@ lib LibRaylib
   fun get_codepoint_previous = GetCodepointPrevious(text : LibC::Char*, codepoint_size : LibC::Int*) : LibC::Int
   fun codepoint_to_utf8 = CodepointToUTF8(codepoint : LibC::Int, utf8_size : LibC::Int*) : LibC::Char*
 
- 
   fun text_copy = TextCopy(dst : LibC::Char*, src : LibC::Char*) : LibC::Int
   fun text_is_equal? = TextIsEqual(text1 : LibC::Char*, text2 : LibC::Char*) : Bool
   fun text_length = TextLength(text : LibC::Char*) : LibC::UInt
@@ -1255,7 +1255,6 @@ lib LibRaylib
   fun attach_audio_stream_processor = AttachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
   fun detach_audio_stream_processor = DetachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
 
-
   fun clamp = Clamp(value : LibC::Float, min : LibC::Float, max : LibC::Float) : LibC::Float
   fun lerp = Lerp(start : LibC::Float, finsh : LibC::Float, amount : LibC::Float) : LibC::Float
   fun normalize = Normalize(value : LibC::Float, start : LibC::Float, finish : LibC::Float) : LibC::Float
@@ -1357,7 +1356,7 @@ lib LibRaylib
   fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
   fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)
 
-  # RLGL           
+  # RLGL
   TEXTURE_WRAP_S                    = 0x2802
   TEXTURE_WRAP_T                    = 0x2803
   TEXTURE_MAG_FILTER                = 0x2800
@@ -1369,8 +1368,7 @@ lib LibRaylib
   TEXTURE_FILTER_LINEAR_MIP_NEAREST = 0x2701
   TEXTURE_FILTER_MIP_LINEAR         = 0x2703
   TEXTURE_FILTER_ANISOTROPIC        = 0x3000
-  TEXTURE_MIPMAP_BIAS_RATIO       = 0x4000
-
+  TEXTURE_MIPMAP_BIAS_RATIO         = 0x4000
 
   TEXTURE_WRAP_REPEAT        = 0x2901
   TEXTURE_WRAP_CLAMP         = 0x812F
@@ -1624,6 +1622,11 @@ lib LibRaylib
 
   fun load_draw_cube = rlLoadDrawCube
   fun load_draw_quad = rlLoadDrawQuad
+
+  fun ma_data_converter_size = MADataConverterSize : UInt64
+  fun ma_device_size = MADeviceSize : UInt64
+  fun ma_context_size = MAContextSize : UInt64
+  fun ma_mutex_size = MAMutexSize : UInt64
 end
 
 struct LibRaylib::Vector2
@@ -2155,7 +2158,7 @@ end
 module LibRaylib::Lights
   MAX = 4
 
-  class_getter count = 0 
+  class_getter count = 0
 
   enum Type
     Directional
@@ -2194,10 +2197,10 @@ module LibRaylib::Lights
     LibRaylib.set_shader_value(shader, light.pos_loc, LibC::Float32[light.position.x, light.position.y, light.position.z], LibRaylib::ShaderUniformDataType::Vec3)
     LibRaylib.set_shader_value(shader, light.target_loc, LibC::Float32[light.target.x, light.target.y, light.target.z], LibRaylib::ShaderUniformDataType::Vec3)
     LibRaylib.set_shader_value(shader, light.color_loc, LibC::Float32[
-      light.color.r/255.0_f32, 
-      light.color.g/255.0_f32, 
+      light.color.r/255.0_f32,
+      light.color.g/255.0_f32,
       light.color.b/255.0_f32,
-      light.color.a/255.0_f32
-      ], LibRaylib::ShaderUniformDataType::Vec4)
+      light.color.a/255.0_f32,
+    ], LibRaylib::ShaderUniformDataType::Vec4)
   end
 end

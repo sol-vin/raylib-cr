@@ -5,6 +5,7 @@ Set-Location -Path "..\..\examples"
 
 Remove-Item "_build" -Force
 mkdir _build
+mkdir _build\rsrc
 
 Copy-Item -Path "..\rsrc\native\windows\raylib\lib\raylib.dll" -Destination "_build"
 
@@ -17,6 +18,7 @@ function Build-Example {
 
 
   Set-Location -Path $Name
+  Copy-Item -Path "rsrc\*" -Destination "..\_build\rsrc" -Recurse -Force
   Remove-Item "lib" -Recurse -Force
   mkdir lib
   mkdir lib\raylib-cr
@@ -30,6 +32,7 @@ Build-Example -Name "rlgl_solar_system"
 Build-Example -Name "shapes"
 Build-Example -Name "smooth_pixel_perfect_camera"
 Build-Example -Name "three_d_camera_mode"
+Build-Example -Name "sound_test"
 
 
 Set-Location -Path "..\rsrc\build-examples"
