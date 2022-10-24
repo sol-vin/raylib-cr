@@ -6,7 +6,7 @@ lib LibRaylib
 
   alias Camera = Camera3D
   alias TextureCubemap = Texture2D
-  # alias AudioCallback = Proc(Void*, LibC::UInt)
+  alias AudioCallback = Proc(Void*, LibC::UInt)
   
   enum ConfigFlags
     VSyncHint         = 0x00000040
@@ -640,7 +640,7 @@ lib LibRaylib
     looping : Bool
     usage : LibC::Int
 
-    is_subbuffer_processed : StaticArray(LibC::Bool, 2)
+    is_subbuffer_processed : StaticArray(Bool, 2)
     size_in_frames : LibC::UInt
     frame_cursor_pos : LibC::UInt
     frames_processed : LibC::UInt
@@ -662,7 +662,7 @@ lib LibRaylib
     device : MADevice
     lock : MAMutex
     is_ready : Bool
-    pcm_buffer_size : Void
+    pcm_buffer_size : UInt8
     pcm_buffer : Void*
   end
 
@@ -902,7 +902,7 @@ lib LibRaylib
   fun set_mouse_offset = SetMouseOffset(offset_x : LibC::Int, offset_y : LibC::Int)
   fun set_mouse_scale = SetMouseScale(scale_x : LibC::Float, scale_y : LibC::Float)
   fun get_mouse_wheel_move = GetMouseWheelMove : LibC::Float
-  fun get_mouse_wheel_move_v = GetMouseWheelMove : Vector2
+  fun get_mouse_wheel_move_v = GetMouseWheelMoveV : Vector2
   fun set_mouse_cursor = SetMouseCursor(cursor : LibC::Int)
   fun get_touch_x = GetTouchX : LibC::Int
   fun get_touch_y = GetTouchY : LibC::Int
@@ -1086,7 +1086,7 @@ lib LibRaylib
   fun draw_text_ex = DrawTextEx(font : Font, text : LibC::Char*, position : Vector2, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_pro = DrawTextPro(font : Font, text : LibC::Char*, position : Vector2, origin : Vector2, rotation : LibC::Float, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_codepoint = DrawTextCodepoint(font : Font, codepoint : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
-  fun draw_text_codepoints = DrawTextCodepoint(font : Font, codepoints : LibC::Int*, count : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
+  fun draw_text_codepoints = DrawTextCodepoints(font : Font, codepoints : LibC::Int*, count : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
 
   fun measure_text = MeasureText(text : LibC::Char*, font_size : LibC::Int) : LibC::Int
   fun measure_text_ex = MeasureTextEx(font : Font, text : LibC::Char*, font_size : LibC::Float, spacing : LibC::Float) : Vector2
