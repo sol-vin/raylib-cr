@@ -1,0 +1,12 @@
+name:
+  'fog demo'
+version:
+  0.0
+
+targets:
+  wsim:
+    main: src/main.cr
+
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
