@@ -5,8 +5,7 @@
 Crystal Bindings for `raylib`, a small and easy to use game development library.  
 As for now the bindings only support the raw function calls from raylib itself.
 `raymath` functions are also supported, as are infix operators for vectors,
-matricies, and quaternions. We also have `physac` and `raygui` support built in.
-
+matricies, and quaternions.
 # Supported platforms
 
 These platforms are supported out of the box and are linked statically
