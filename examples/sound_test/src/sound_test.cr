@@ -2,11 +2,6 @@ require "raylib-cr"
 
 alias Rl = LibRaylib
 
-puts "ma_data_converter_size: #{Rl.ma_data_converter_size}"
-puts "ma_device_size: #{Rl.ma_device_size}"
-puts "ma_context_size: #{Rl.ma_context_size}"
-puts "ma_mutex_size: #{Rl.ma_mutex_size}"
-
 Rl.init_window(100, 100, "Sound Test")
 Rl.init_audio_device
 Rl.set_target_fps(60)

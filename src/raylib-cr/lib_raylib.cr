@@ -1622,11 +1622,6 @@ lib LibRaylib
 
   fun load_draw_cube = rlLoadDrawCube
   fun load_draw_quad = rlLoadDrawQuad
-
-  fun ma_data_converter_size = MADataConverterSize : UInt64
-  fun ma_device_size = MADeviceSize : UInt64
-  fun ma_context_size = MAContextSize : UInt64
-  fun ma_mutex_size = MAMutexSize : UInt64
 end
 
 struct LibRaylib::Vector2
