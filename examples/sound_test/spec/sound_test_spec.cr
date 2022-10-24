@@ -1,6 +1,8 @@
 require "./spec_helper"
 
-describe LibRaylib do
+describe SoundTest do
+  # TODO: Write tests
+
   it "works" do
     false.should eq(true)
   end
