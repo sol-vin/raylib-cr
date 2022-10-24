@@ -1,0 +1,13 @@
+1. Open raylib repo
+2. Go to last commit reviewed (7e7939e)
+3. Right click -> Select for compare
+4. Go to HEAD
+5. Right click -> Compare with selected
+6. See https://github.com/raysan5/raylib/wiki/CMake-Build-Options
+7. Run
+  ```
+  mkdir build # Create a build directory
+  cd build && cmake .. # Build from that directory so the build files are in one place
+  cmake --build -DBUILD_SHARED_LIBS=1 . # Build the project
+  ```
+8. Copy new .lib files into rsrc/native etc. etc.
