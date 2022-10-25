@@ -15,7 +15,7 @@ camera = Rl::Camera3D.new(
   projection: Rl::CameraProjection::Perspective)
 Rl.set_camera_mode camera, Rl::CameraMode::Orbital
 
-fog = Rl.load_shader "res/shd/fog.vs","res/shd/fog.fs"
+fog = Rl.load_shader "rsrc/shd/fog.vs","rsrc/shd/fog.fs"
 fog_color = [1_f32,1_f32,1_f32,1_f32]
 fog_density = 0.07_f32
 

@@ -27,6 +27,7 @@ function Build-Example {
   Set-Location -Path ".."
 }
 
+Build-Example -Name "fogshader"
 Build-Example -Name "collisionarea"
 Build-Example -Name "rlgl_solar_system"
 Build-Example -Name "shapes"
