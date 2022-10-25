@@ -742,10 +742,12 @@ lib LibRaylib
   fun close_window? = WindowShouldClose : Bool
   fun close_window = CloseWindow
   fun window_ready? = IsWindowReady : Bool
+  fun window_hidden? = IsWindowHidden : Bool
   fun window_minimized? = IsWindowMinimized : Bool
   fun window_maximized? = IsWindowMaximized : Bool
   fun window_focused? = IsWindowFocused : Bool
   fun window_resized? = IsWindowResized : Bool
+  fun window_fullscreen? = IsWindowFullscreen : Bool
   fun window_state? = IsWindowState(flag : LibC::UInt) : Bool
   fun set_window_state = SetWindowState(flag : LibC::UInt)
   fun clear_window_state = ClearWindowState(flag : LibC::UInt)
@@ -1355,8 +1357,8 @@ lib LibRaylib
   # {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
 
   fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Vector3*, v2 : Vector3*)
-  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)
-
+  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Quaternion, out_axis : Vector3*, out_angle : LibC::Float*)\
+  
   # RLGL
   TEXTURE_WRAP_S                    = 0x2802
   TEXTURE_WRAP_T                    = 0x2803
