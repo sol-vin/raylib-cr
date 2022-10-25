@@ -14,17 +14,17 @@ module Basic_template
         end
 
         def draw
-            LibRaylib.draw_text("Super Pong!",  LibRaylib.get_screen_width //2 - 60,  150, 20, LibRaylib::BLACK)
+            Raylib.draw_text("Super Pong!",  Raylib.get_screen_width //2 - 60,  150, 20, Raylib::BLACK)
 
-            if LibRayGUI.button( LibRaylib::Rectangle.new(x: LibRaylib.get_screen_width //2 - 60, y: 200, width: 120, height: 40), "Start Game" ) 
+            if LibRayGUI.button( Raylib::Rectangle.new(x: Raylib.get_screen_width //2 - 60, y: 200, width: 120, height: 40), "Start Game" ) 
                 SceneManager.current_scene =  SceneGame.new
             end
 
-            if LibRayGUI.button( LibRaylib::Rectangle.new(x: LibRaylib.get_screen_width //2 - 60, y: 250, width: 120, height: 40 ), "Settings" ) 
+            if LibRayGUI.button( Raylib::Rectangle.new(x: Raylib.get_screen_width //2 - 60, y: 250, width: 120, height: 40 ), "Settings" ) 
                 SceneManager.current_scene =  SceneSettings.new
             end
             
-            if LibRayGUI.button( LibRaylib::Rectangle.new(x: LibRaylib.get_screen_width //2 - 60, y: 300, width: 120, height: 40), "Quit" ) 
+            if LibRayGUI.button( Raylib::Rectangle.new(x: Raylib.get_screen_width //2 - 60, y: 300, width: 120, height: 40), "Quit" ) 
                 SceneManager.current_scene.unload
                 GUI.disable
                 RL.close_window

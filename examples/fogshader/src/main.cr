@@ -1,7 +1,7 @@
 #rewrite of https://bedroomcoders.co.uk/raylib-fog/
 
 require "raylib-cr"
-alias Rl = LibRaylib
+alias Rl = Raylib
 alias Vec3 = Rl::Vector3
 
 Rl.init_window 1920, 1080, "fog demo"

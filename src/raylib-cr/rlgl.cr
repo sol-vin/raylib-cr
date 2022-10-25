@@ -1,5 +1,6 @@
 @[Link("raylib")]
 lib RLGL
+  # RLGL
   TEXTURE_WRAP_S                    = 0x2802
   TEXTURE_WRAP_T                    = 0x2803
   TEXTURE_MAG_FILTER                = 0x2800
@@ -11,6 +12,7 @@ lib RLGL
   TEXTURE_FILTER_LINEAR_MIP_NEAREST = 0x2701
   TEXTURE_FILTER_MIP_LINEAR         = 0x2703
   TEXTURE_FILTER_ANISOTROPIC        = 0x3000
+  TEXTURE_MIPMAP_BIAS_RATIO         = 0x4000
 
   TEXTURE_WRAP_REPEAT        = 0x2901
   TEXTURE_WRAP_CLAMP         = 0x812F
@@ -176,6 +178,7 @@ lib RLGL
   fun clear_errors = rlCheckErrors
   fun set_blend_mode = rlSetBlendMode(mode : LibC::Int)
   fun set_blend_factors = rlSetBlendFactors(gl_src_factor : LibC::Int, gl_dst_factor : LibC::Int, gl_equation : LibC::Int)
+  fun set_blend_factors_separate = rlSetBlendFactorsSeparate(gl_src_factor : LibC::Int, gl_dst_rgb : LibC::Int, gl_dst_alpha : LibC::Int, gl_equation_rgb : LibC::Int, gl_equation_alpha : LibC::Int)
 
   fun init = rlglInit(width : LibC::Int, height : LibC::Int)
   fun close = rlglClose(width : LibC::Int, height : LibC::Int)
@@ -183,6 +186,8 @@ lib RLGL
   fun get_version = rlGetVersion : LibC::Int
   fun get_framebuffer_width = rlGetFramebufferWidth : LibC::Int
   fun get_framebuffer_height = rlGetFramebufferHeight : LibC::Int
+  fun set_framebuffer_width = rlSetFramebufferWidth(width : LibC::Int) : LibC::Int
+  fun set_framebuffer_height = rlSetFramebufferHeight(height : LibC::Int) : LibC::Int
   fun get_texture_id_default = rlGetTextureIdDefault : LibC::UInt
   fun get_shader_id_default = rlGetShaderIdDefault : LibC::UInt
   fun get_shader_locs_default = rlGetShaderLocsDefault : LibC::Int*
@@ -210,13 +215,13 @@ lib RLGL
   fun draw_vertex_array_instanced = rlDrawVertexArrayInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int)
   fun draw_vertex_array_elements_instanced = rlDrawVertexArrayElementsInstanced(offset : LibC::Int, count : LibC::Int, buffer : Void*, instances : LibC::Int)
 
-  fun load_texture = rlLoadTexture(data : Void*, width : LibC::Int, height : LibC::Int, format : LibC::Int, mimmap_count : LibC::Int) : LibC::UInt
+  fun load_texture_rlgl = rlLoadTexture(data : Void*, width : LibC::Int, height : LibC::Int, format : LibC::Int, mimmap_count : LibC::Int) : LibC::UInt
   fun load_texture_depth = rlLoadTextureDepth(width : LibC::Int, height : LibC::Int, use_render_buffer : Bool) : LibC::UInt
   fun load_texture_cubemap = rlLoadTextureCubemap(data : Void*, size : LibC::Int, format : LibC::Int) : LibC::UInt
   fun update_texture = rlUpdateTexture(id : LibC::UInt, offset_x : LibC::Int, offset_y : LibC::Int, width : LibC::Int, height : LibC::Int, format : LibC::Int, data : Void*)
-  fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::Int*, gl_format : LibC::Int*, gl_type : LibC::Int*)
+  fun get_gl_texture_formats = rlGetGlTextureFormats(format : LibC::Int, gl_internal_format : LibC::UInt*, gl_format : LibC::UInt*, gl_type : LibC::UInt*)
   fun get_pixel_format_name = rlGetPixelFormatName(format : LibC::UInt) : LibC::Char*
-  fun unload_texture = rlUnloadTexture(id : LibC::UInt)
+  fun unload_texture_rlgl = rlUnloadTexture(id : LibC::UInt)
   fun gen_texture_mipmaps = rlGenTextureMipmaps(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int, mipmaps : LibC::Int*)
   fun read_texture_pixels = rlReadTexturePixels(id : LibC::UInt, width : LibC::Int, height : LibC::Int, format : LibC::Int) : Void*
   fun read_screen_pixels = rlReadScreenPixels(width : LibC::Int, height : LibC::Int) : LibC::UChar*
@@ -232,32 +237,32 @@ lib RLGL
   fun get_location_uniform = rlGetLocationUniform(shader_id : LibC::UInt, uniform_name : LibC::Char*) : LibC::Int
   fun get_location_attrib = rlGetLocationAttrib(shader_id : LibC::UInt, attrib_name : LibC::Char*)
   fun set_uniform = rlSetUniform(loc_index : LibC::Int, value : Void*, uniform_type : LibC::Int, count : LibC::Int)
-  fun set_uniform_matrix = rlSetUniformMatrix(loc_index : LibC::Int, mat : LibRaylib::Matrix)
+  fun set_uniform_matrix = rlSetUniformMatrix(loc_index : LibC::Int, mat : Raylib::Matrix)
   fun set_uniform_sampler = rlSetUniformSampler(loc_index : LibC::Int, texture_id : LibC::UInt)
   fun set_shader = rlSetShader(id : LibC::UInt, locs : LibC::Int*)
 
   fun load_compute_shader_program = rlLoadComputeShaderProgram(shader_id : LibC::UInt) : LibC::UInt
   fun compute_shader_dispatch = rlComputeShaderDispatch(group_x : LibC::UInt, group_y : LibC::UInt, group_z : LibC::UInt)
 
-  fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::LongLong, data : Void*, usage_hint : LibC::Int) : LibC::UInt
-  fun unload_shader_buffer = rlUnoadShaderBuffer(ssbo_id : LibC::UInt)
-  fun update_shader_buffer_elements = rlUpdateShaderBufferElements(id : LibC::UInt, data : Void*, data_size : LibC::ULongLong, offset : LibC::ULongLong)
+  fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::UInt, data : Void*, usage_hint : LibC::Int) : LibC::UInt
+  fun unload_shader_buffer = rlUnloadShaderBuffer(ssbo_id : LibC::UInt)
+  fun update_shader_buffer = rlUpdateShaderBuffer(id : LibC::UInt, data : Void*, data_size : LibC::UInt, offset : LibC::UInt)
   fun get_shader_buffer_size = rlGetShaderBufferSize(id : LibC::UInt) : LibC::ULongLong
-  fun read_shader_buffer_elements = rlReadShaderBufferElements(id : LibC::UInt, dest : Void*, count : LibC::ULongLong, offset : LibC::ULongLong)
+  fun read_shader_buffer = rlReadShaderBuffer(id : LibC::UInt, dest : Void*, count : LibC::UInt, offset : LibC::UInt)
   fun bind_shader_buffer = rlBindShaderBuffer(id : LibC::UInt, index : LibC::UInt)
+  fun copy_shader_buffer = rlCopyShaderBuffer(dst_id : LibC::UInt, src_id : LibC::UInt, dst_offset : LibC::UInt, src_offset : LibC::UInt, count : LibC::UInt)
 
-  fun copy_buffers_elements = rlCopyBuffersElements(dest_id : LibC::UInt, src_id : LibC::UInt, dest_offset : LibC::ULongLong, src_offset : LibC::ULongLong, count : LibC::ULongLong)
   fun bind_image_texture = rlBindImageTexture(id : LibC::UInt, index : LibC::UInt, format : LibC::UInt, readonly : LibC::Int)
 
-  fun get_matrix_modelview = rlGetMatrixModelview : LibRaylib::Matrix
-  fun get_matrix_projection = rlGetMatrixProjection : LibRaylib::Matrix
-  fun get_matrix_transform = rlGetMatrixTransform : LibRaylib::Matrix
-  fun get_matrix_projection_stereo = rlGetMatrixProjectionStereo(eye : LibC::Int) : LibRaylib::Matrix
-  fun get_matrix_view_offset_stereo = rlGetMatrixViewOffsetStereo(eye : LibC::Int) : LibRaylib::Matrix
-  fun set_matrix_projection = rlSetMatrixProjection(proj : LibRaylib::Matrix)
-  fun set_matrix_modelview = rlSetMatrixModelview(view : LibRaylib::Matrix)
-  fun set_matrix_projection_stereo = rlSetMatrixProjectionStereo(right : LibRaylib::Matrix, left : LibRaylib::Matrix)
-  fun set_matrix_view_offset_stereo = rlSetMatrixViewOffsetStereo(right : LibRaylib::Matrix, left : LibRaylib::Matrix)
+  fun get_matrix_modelview = rlGetMatrixModelview : Raylib::Matrix
+  fun get_matrix_projection = rlGetMatrixProjection : Raylib::Matrix
+  fun get_matrix_transform = rlGetMatrixTransform : Raylib::Matrix
+  fun get_matrix_projection_stereo = rlGetMatrixProjectionStereo(eye : LibC::Int) : Raylib::Matrix
+  fun get_matrix_view_offset_stereo = rlGetMatrixViewOffsetStereo(eye : LibC::Int) : Raylib::Matrix
+  fun set_matrix_projection = rlSetMatrixProjection(proj : Raylib::Matrix)
+  fun set_matrix_modelview = rlSetMatrixModelview(view : Raylib::Matrix)
+  fun set_matrix_projection_stereo = rlSetMatrixProjectionStereo(right : Raylib::Matrix, left : Raylib::Matrix)
+  fun set_matrix_view_offset_stereo = rlSetMatrixViewOffsetStereo(right : Raylib::Matrix, left : Raylib::Matrix)
 
   fun load_draw_cube = rlLoadDrawCube
   fun load_draw_quad = rlLoadDrawQuad

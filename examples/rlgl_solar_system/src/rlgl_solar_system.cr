@@ -1,39 +1,39 @@
 require "raylib-cr"
 
-alias Rl = LibRaylib
+alias Rl = Raylib
 
 def draw_sphere_basic(color : Rl::Color)
   rings = 16
   slices = 16
 
-  Rl.check_render_batch_limit((rings + 2)*slices*6)
+  RLGL.check_render_batch_limit((rings + 2)*slices*6)
 
-  Rl.begin(Rl::TRIANGLES)
-  Rl.color_4ub(color.r, color.g, color.b, color.a)
+  RLGL.begin(RLGL::TRIANGLES)
+  RLGL.color_4ub(color.r, color.g, color.b, color.a)
   (rings+2).times do |i|
     (slices+2).times do |j|
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*i)),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))* Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))* Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)))
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
 
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*i)),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i))),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)))
-      Rl.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
         Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
         Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)));
     end
   end
-  Rl.end
+  RLGL.end
 end
 
 screen_width = 800
@@ -77,27 +77,27 @@ until Rl.close_window?
   Rl.clear_background(Rl::RAYWHITE)
   Rl.begin_mode_3d(camera)
 
-  Rl.push_matrix
-  Rl.scale_f(sun_radius, sun_radius, sun_radius)
+  RLGL.push_matrix
+  RLGL.scale_f(sun_radius, sun_radius, sun_radius)
   draw_sphere_basic(Rl::GOLD)
-  Rl.pop_matrix
+  RLGL.pop_matrix
 
-  Rl.push_matrix
-  Rl.rotate_f(earth_orbit_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
-  Rl.translate_f(earth_orbit_radius, 0.0_f32, 0.0_f32)
+  RLGL.push_matrix
+  RLGL.rotate_f(earth_orbit_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
+  RLGL.translate_f(earth_orbit_radius, 0.0_f32, 0.0_f32)
 
-  Rl.push_matrix
-  Rl.rotate_f(earth_rotation, 0.25, 1.0, 0.0)
-  Rl.scale_f(earth_radius, earth_radius, earth_radius)
+  RLGL.push_matrix
+  RLGL.rotate_f(earth_rotation, 0.25, 1.0, 0.0)
+  RLGL.scale_f(earth_radius, earth_radius, earth_radius)
   draw_sphere_basic(Rl::BLUE)
-  Rl.pop_matrix
+  RLGL.pop_matrix
 
-  Rl.rotate_f(moon_orbit_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
-  Rl.translate_f(moon_orbit_radius, 0.0_f32, 0.0_f32)
-  Rl.rotate_f(moon_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
-  Rl.scale_f(moon_radius, moon_radius, moon_radius)
+  RLGL.rotate_f(moon_orbit_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
+  RLGL.translate_f(moon_orbit_radius, 0.0_f32, 0.0_f32)
+  RLGL.rotate_f(moon_rotation, 0.0_f32, 1.0_f32, 0.0_f32)
+  RLGL.scale_f(moon_radius, moon_radius, moon_radius)
   draw_sphere_basic(Rl::LIGHTGRAY)
-  Rl.pop_matrix
+  RLGL.pop_matrix
 
   Rl.draw_circle_3d(Rl::Vector3.new(x: 0.0_f32, y: 0.0_f32, z: 0.0_f32), earth_orbit_radius, Rl::Vector3.new(x: 1.0_f32, y: 0.0_f32, z: 0.0_f32), 90.0_f32, Rl.fade(Rl::RED, 0.5_f32))
   Rl.draw_grid(20, 1.0_f32)

@@ -86,7 +86,7 @@ module Basic_template
 
             # State 4: Reset and Replay
             when 4
-                if LibRaylib.key_pressed? LibRaylib::KeyboardKey::R
+                if Raylib.key_pressed? Raylib::KeyboardKey::R
                     @framesCounter = 0
                     @lettersCount = 0
     
@@ -101,43 +101,43 @@ module Basic_template
                 end
             end
 
-            if LibRaylib.key_pressed? LibRaylib::KeyboardKey::Space
+            if Raylib.key_pressed? Raylib::KeyboardKey::Space
                 puts "space clicked"
                 SceneManager.current_scene =  SceneMainMenu.new
             end
         end
 
         def draw
-            LibRaylib.draw_text("MADE WITH LOVE USING", LibRaylib.get_screen_width //2 - 128 , LibRaylib.get_screen_width //2 - 286, 20, LibRaylib::GRAY)
+            Raylib.draw_text("MADE WITH LOVE USING", Raylib.get_screen_width //2 - 128 , Raylib.get_screen_width //2 - 286, 20, Raylib::GRAY)
 
             case @state
             when 0 #TODO
 
                 if (@framesCounter//15).odd? 
-                    LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, 16, LibRaylib::BLACK)
+                    Raylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, 16, Raylib::BLACK)
                 end
 
             when 1
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, LibRaylib::BLACK)
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, @leftSideRecHeight, LibRaylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, Raylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, @leftSideRecHeight, Raylib::BLACK)
 
             when 2
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, LibRaylib::BLACK)
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, @leftSideRecHeight, LibRaylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, Raylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY, 16, @leftSideRecHeight, Raylib::BLACK)
 
-                LibRaylib.draw_rectangle(@logoPositionX + 240, @logoPositionY, 16, @rightSideRecHeight, LibRaylib::BLACK)
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY + 240, @bottomSideRecWidth, 16, LibRaylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX + 240, @logoPositionY, 16, @rightSideRecHeight, Raylib::BLACK)
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY + 240, @bottomSideRecWidth, 16, Raylib::BLACK)
             
             when 3
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, LibRaylib.fade(LibRaylib::BLACK, @alpha))
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY + 16, 16, @leftSideRecHeight - 32, LibRaylib.fade(LibRaylib::BLACK, @alpha))
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY, @topSideRecWidth, 16, Raylib.fade(Raylib::BLACK, @alpha))
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY + 16, 16, @leftSideRecHeight - 32, Raylib.fade(Raylib::BLACK, @alpha))
 
-                LibRaylib.draw_rectangle(@logoPositionX + 240, @logoPositionY + 16, 16, @rightSideRecHeight - 32, LibRaylib.fade(LibRaylib::BLACK, @alpha))
-                LibRaylib.draw_rectangle(@logoPositionX, @logoPositionY + 240, @bottomSideRecWidth, 16, LibRaylib.fade(LibRaylib::BLACK, @alpha))
+                Raylib.draw_rectangle(@logoPositionX + 240, @logoPositionY + 16, 16, @rightSideRecHeight - 32, Raylib.fade(Raylib::BLACK, @alpha))
+                Raylib.draw_rectangle(@logoPositionX, @logoPositionY + 240, @bottomSideRecWidth, 16, Raylib.fade(Raylib::BLACK, @alpha))
 
-                LibRaylib.draw_rectangle(LibRaylib.get_screen_width //2 - 112, LibRaylib.get_screen_height //2 - 112, 224, 224, LibRaylib.fade(LibRaylib::RAYWHITE, @alpha))
+                Raylib.draw_rectangle(Raylib.get_screen_width //2 - 112, Raylib.get_screen_height //2 - 112, 224, 224, Raylib.fade(Raylib::RAYWHITE, @alpha))
 
-                LibRaylib.draw_text( LibRaylib.text_subtext("raylib", 0, @lettersCount), LibRaylib.get_screen_width //2 - 44, LibRaylib.get_screen_height //2 + 48, 50,  LibRaylib.fade(LibRaylib::BLACK, @alpha))
+                Raylib.draw_text( Raylib.text_subtext("raylib", 0, @lettersCount), Raylib.get_screen_width //2 - 44, Raylib.get_screen_height //2 + 48, 50,  Raylib.fade(Raylib::BLACK, @alpha))
             
             when 4
                 # Automatically goto next scene

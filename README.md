@@ -53,18 +53,18 @@ dependencies:
 ```crystal
 require "raylib-cr"
 
-LibRaylib.init_window(800, 450, "Hello World")
-LibRaylib.set_target_fps(60)
+Raylib.init_window(800, 450, "Hello World")
+Raylib.set_target_fps(60)
 
-until LibRaylib.close_window?
-  LibRaylib.begin_drawing
-  LibRaylib.clear_background(LibRaylib::RAYWHITE)
+until Raylib.close_window?
+  Raylib.begin_drawing
+  Raylib.clear_background(Raylib::RAYWHITE)
   
-  LibRaylib.draw_text("Hello World!", 190, 200, 20, LibRaylib::BLACK)
-  LibRaylib.end_drawing
+  Raylib.draw_text("Hello World!", 190, 200, 20, Raylib::BLACK)
+  Raylib.end_drawing
 end
 
-LibRaylib.close_window
+Raylib.close_window
 ```
 
 # Contributing

@@ -8,7 +8,7 @@ require "./sceneSettings.cr"
 require "./sceneGame.cr"
 
 # The aliases here are just to show that you don't need to use the full namespaces
-alias RL = LibRaylib
+alias RL = Raylib
 alias GUI = LibRayGUI
 
 module Basic_template

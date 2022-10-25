@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe LibRaylib do
+describe Raylib do
   it "works" do
     false.should eq(true)
   end

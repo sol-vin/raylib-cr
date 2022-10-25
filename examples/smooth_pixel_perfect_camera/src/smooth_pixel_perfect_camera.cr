@@ -1,6 +1,6 @@
 require "raylib-cr"
 
-alias Rl = LibRaylib
+alias Rl = Raylib
 
 screen_width = 800
 screen_height = 450
