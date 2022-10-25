@@ -34,8 +34,9 @@ Build-Example -Name "smooth_pixel_perfect_camera"
 Build-Example -Name "three_d_camera_mode"
 Build-Example -Name "sound_test"
 
-
-Set-Location -Path "..\rsrc\build-examples"
+Set-Location -Path "_build"
+del *.pdb
+Set-Location -Path "..\..\rsrc\build-examples"
 
 
 
