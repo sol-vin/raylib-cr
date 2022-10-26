@@ -12,12 +12,15 @@ These platforms are supported out of the box and are linked statically
 1. `x86_64-linux-gnu` = 64-bit Linux
 2. `x86_64-windows` = 64-bit Windows
 
+Hopefully soon
+3. Raspberry PI
+
 # Installation
 
 ### Linux
 1. Install raylib from [github](https://github.com/raysan5/raylib/releases)
 2. Run `make install` in raylib
-3. Add `raylib-cr` to your `shard.yml`:
+3. Add `raylib-cr` to your `shard.yml` dependencies like so:
 ```yml
 dependencies:
   raylib-cr:
@@ -34,7 +37,10 @@ dependencies:
 $env:LIB="${env:LIB};C:\raylib\lib"
 $env:PATH="${env:PATH};C:\raylib\lib"
 ```
-3. Run in cmd
+
+OR
+
+Run in cmd
 ```cmd
 set PATH=%PATH%;C:\raylib\lib
 set LIB=%LIB%;C:\raylib\lib
@@ -75,8 +81,15 @@ Raylib.close_window
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-# Contributors
-- [sol-vin](https://github.com/sol-vin) - maintainer
+# Owner
+- [sol-vin](https://github.com/sol-vin)
+
+# Major Contributors
+- [rightbrace](https://github.com/b1tlet) - Raymath & Wrapper
+
+# Minor Contributors
+- [b1tlet](https://github.com/b1tlet) - Fog Shader
+- [rishavs](https://github.com/rishavs) - Basic Template
 
 # Inactive Contributors
-- [AregevDev](https://github.com/AregevDev) - creator and maintainer
+- [AregevDev](https://github.com/AregevDev) - creator
