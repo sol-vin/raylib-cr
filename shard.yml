@@ -1,6 +1,6 @@
 name: raylib-cr
-version: 4.5-dev (7e7939e)
-
+version: 0.9
+raylib_version: 4.5-dev (7e7939e)
 authors:
   - sol-vin <ian@sol.vin>
 

@@ -469,11 +469,14 @@ lib Raylib
     format : LibC::Int
   end
 
+
   struct RenderTexture2D
     id : LibC::UInt
     texture : Texture2D
     depth : Texture2D
   end
+  
+  alias RenderTexture = RenderTexture2D
 
   struct NPatchInfo
     source : Rectangle

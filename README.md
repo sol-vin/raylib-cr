@@ -89,7 +89,6 @@ Raylib.close_window
 
 # Minor Contributors
 - [b1tlet](https://github.com/b1tlet) - Fog Shader
-- [rishavs](https://github.com/rishavs) - Basic Template
 
 # Inactive Contributors
 - [AregevDev](https://github.com/AregevDev) - creator

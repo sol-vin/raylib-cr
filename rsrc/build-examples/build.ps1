@@ -1,6 +1,5 @@
 param ($name)
 
-
 $env:LIB="${env:LIB};C:\raylib\lib"
 $env:PATH="${env:PATH};C:\raylib\lib"
 
@@ -26,7 +25,7 @@ function Build-Example {
   mkdir lib
   mkdir lib\raylib-cr
   Copy-Item -Path (Get-Item -Path "..\..\*" -Exclude ('examples')).FullName -Destination "lib/raylib-cr" -Recurse -Force
-  crystal build --release -o ..\_build\$Name.exe .\src\$Name.cr
+  crystal build --release -s -p -t -o ..\_build\$Name.exe .\src\$Name.cr
   Set-Location -Path ".."
 }
 if ($name -eq $null) {
