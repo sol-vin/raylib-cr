@@ -1,3 +1,6 @@
+param ($name)
+
+
 $env:LIB="${env:LIB};C:\raylib\lib"
 $env:PATH="${env:PATH};C:\raylib\lib"
 
@@ -26,15 +29,17 @@ function Build-Example {
   crystal build --release -o ..\_build\$Name.exe .\src\$Name.cr
   Set-Location -Path ".."
 }
-
-Build-Example -Name "fogshader"
-Build-Example -Name "collisionarea"
-Build-Example -Name "rlgl_solar_system"
-Build-Example -Name "shapes"
-Build-Example -Name "smooth_pixel_perfect_camera"
-Build-Example -Name "three_d_camera_mode"
-Build-Example -Name "sound_test"
-
+if ($name -eq $null) {
+  Build-Example -Name "fogshader"
+  Build-Example -Name "collisionarea"
+  Build-Example -Name "rlgl_solar_system"
+  Build-Example -Name "shapes"
+  Build-Example -Name "smooth_pixel_perfect_camera"
+  Build-Example -Name "three_d_camera_mode"
+  Build-Example -Name "sound_test"
+} else {
+  Build-Example -Name $name
+}
 Set-Location -Path "_build"
 del *.pdb
 Set-Location -Path "..\..\rsrc\build-examples"
