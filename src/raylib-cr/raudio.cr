@@ -18,7 +18,6 @@ lib RAudio
   struct MAMutex
     data : StaticArray(UInt8, 8)
   end
-
   # END DUMMY
 
   struct Wave

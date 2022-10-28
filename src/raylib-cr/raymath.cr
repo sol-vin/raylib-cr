@@ -99,7 +99,8 @@ lib Raymath
   # {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
 
   fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Raylib::Vector3*, v2 : Raylib::Vector3*)
-  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*)\
+  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*) \
+
 end
 
 struct Raylib::Vector2

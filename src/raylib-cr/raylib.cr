@@ -599,7 +599,6 @@ lib Raylib
     min : Vector3
     max : Vector3
   end
-  
 
   struct VrDeviceInfo
     h_resolution : LibC::Int
