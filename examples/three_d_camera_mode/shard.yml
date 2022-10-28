@@ -5,12 +5,12 @@ authors:
   - Ian Rash <ian@sol.vin>
 
 targets:
-  shapes:
+  main:
     main: src/three_d_camera_mode.cr
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
 
-crystal: 1.2.2
+crystal: 1.6.1
 
 license: MIT

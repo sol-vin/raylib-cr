@@ -5,12 +5,12 @@ authors:
   - Ian Rash <ian@sol.vin>
 
 targets:
-  shapes:
-    main: src/collisionarea.cr
+  main:
+    main: src/shapes_top_down_lights.cr
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
 
-crystal: 1.2.2
+crystal: 1.6.1
 
 license: MIT

@@ -5,9 +5,9 @@ authors:
   - Ian Rash <redcodefinal@gmail.com>
 
 targets:
-  sound_test:
+  main:
     main: src/sound_test.cr
 
-crystal: 1.6.0
+crystal: 1.6.1
 
 license: MIT
