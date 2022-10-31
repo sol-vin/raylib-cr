@@ -34,12 +34,12 @@ class Boxes
   end
 end
 
-struct Shadow
+class Shadow
   VERTICES = 4
   property vertices : StaticArray(V2, VERTICES) = StaticArray(V2, VERTICES).new { |i| V2.zero }
 end
 
-struct Light
+class Light
   MAX         = 16
   MAX_SHADOWS = Boxes::MAX * 3
 
@@ -77,7 +77,7 @@ struct Light
     @shadows[@shadow_count].vertices[1] = ep
     @shadows[@shadow_count].vertices[2] = ep_projection
     @shadows[@shadow_count].vertices[3] = sp_projection
-   @shadow_count += 1
+    @shadow_count += 1
   end
 
   def draw
@@ -157,7 +157,7 @@ struct Light
   end
 end
 
-struct Lights
+module Lights
   class_getter lights = Lights.make
 
   def self.make
@@ -165,11 +165,11 @@ struct Lights
   end
 
   def self.[](i)
-    lights[i]
+    @@lights[i]
   end
 
   def self.[]=(i, light : Light)
-    lights[i] = light
+    @@lights[i] = light
   end
 end
 
@@ -186,84 +186,85 @@ R.unload_image img
 light_mask = R.load_render_texture(C::SCREEN_WIDTH, C::SCREEN_HEIGHT)
 
 Lights[0].setup(600, 400, 300)
+puts "CHECK"
 
-# next_light = 1
-# show_lines = false
+next_light = 1
+show_lines = false
 
 R.set_target_fps(60)
 
 until R.close_window?
-  # if R.mouse_button_down?(R::MouseButton::Left)
-  #   if R.mouse_button_down?(R::MouseButton::Left)
-  #     m_p = R.get_mouse_position
-  #     Lights[0].move(m_p.x, m_p.y)
-  #   end
+  if R.mouse_button_down?(R::MouseButton::Left)
+    m_p = R.get_mouse_position
+    Lights[0].move(m_p.x, m_p.y)
+  end
 
-  #   if R.mouse_button_down?(R::MouseButton::Right) && (next_light < Light::MAX)
-  #     m_p = R.get_mouse_position
-  #     Lights[next_light].setup(m_p.x, m_p.y, 200)
-  #     next_light += 1
-  #   end
+  if R.mouse_button_down?(R::MouseButton::Right) && (next_light < Light::MAX)
+    m_p = R.get_mouse_position
+    Lights[next_light].setup(m_p.x, m_p.y, 200)
+    next_light += 1
+  end
 
-  #   if R.key_pressed?(R::KeyboardKey::F1)
-  #     show_lines = !show_lines
-  #   end
+  if R.key_pressed?(R::KeyboardKey::F1)
+    show_lines = !show_lines
+  end
 
-  #   dirty_lights = false
+  dirty_lights = false
 
-  #   Lights.lights.each do |l|
-  #     dirty_lights = true if l.update
-  #   end
 
-  #   if dirty_lights
-  #     R.begin_texture_mode(light_mask)
-  #     R.clear_background(R::BLACK)
-  #     RLGL.set_blend_factors(C::SRC_ALPHA, C::SRC_ALPHA, C::MIN)
-  #     RLGL.set_blend_mode(R::BlendMode::Custom)
-  #     screen_texture_rect_flipped = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: -R.get_screen_height)
-  #     screen_texture_rect = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: R.get_screen_height)
+  Lights.lights.each do |l|
+    dirty_lights = true if l.update
+  end
 
-  #     Lights.lights.each do |l|
-  #       R.draw_texture_rec(l.mask.texture, screen_texture_rect_flipped, V2.zero, R::WHITE) if l.active?
-  #     end
-  #     RLGL.draw_render_batch_active
-  #     RLGL.set_blend_mode(R::BlendMode::Alpha)
-  #     R.end_texture_mode
 
-  #     R.begin_drawing
-  #     R.clear_background(R::BLACK)
-  #     R.draw_texture_rec(bg_texture, screen_texture_rect, V2.zero, R::WHITE)
-  #     R.draw_texture_rec(light_mask.texture, screen_texture_rect_flipped, V2.zero, R.color_alpha(R::WHITE, show_lines ? 0.75_f32 : 1.0_f32))
+  if dirty_lights
+    R.begin_texture_mode(light_mask)
+    R.clear_background(R::BLACK)
+    RLGL.set_blend_factors(C::SRC_ALPHA, C::SRC_ALPHA, C::MIN)
+    RLGL.set_blend_mode(R::BlendMode::Custom)
+    screen_texture_rect_flipped = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: -R.get_screen_height)
+    screen_texture_rect = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: R.get_screen_height)
 
-  #     Lights.lights.each do |l|
-  #       R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW  : R::WHITE) if l.active?
-  #     end
+    Lights.lights.each do |l|
+      R.draw_texture_rec(l.mask.texture, screen_texture_rect_flipped, V2.zero, R::WHITE) if l.active?
+    end
+    RLGL.draw_render_batch_active
+    RLGL.set_blend_mode(R::BlendMode::Alpha)
+    R.end_texture_mode
 
-  #     if show_lines
-  #       Lights[0].shadow_count.times do |s|
-  #         R.draw_triangle_fan(Lights[0].shadows[s].vertices.to_unsafe, Shadow::VERTICES, R::DARKPURPLE)
-  #       end
+    R.begin_drawing
+    R.clear_background(R::BLACK)
+    R.draw_texture_rec(bg_texture, screen_texture_rect, V2.zero, R::WHITE)
+    R.draw_texture_rec(light_mask.texture, screen_texture_rect_flipped, V2.zero, R.color_alpha(R::WHITE, show_lines ? 0.75_f32 : 1.0_f32))
 
-  #       Boxes.boxes.each do |box|
-  #         R.draw_rectangle_rec(box, R::PURPLE) if R.check_collision_recs?(box, Lights[0].bounds)
-  #         R.draw_rectangle_lines(box.x, box.y, box.width, box.height, R::DARKBLUE)
-  #       end
-  #       R.draw_text("(F1) Hide Shadow Volumes", 10, 50, 10, R::GREEN)
-  #     else
-  #       R.draw_text("(F1) Show Shadow Volumes", 10, 50, 10, R::RED)
-  #     end
+    Lights.lights.each do |l|
+      R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW  : R::WHITE) if l.active?
+    end
 
-  #     R.end_drawing
+    if show_lines
+      Lights[0].shadow_count.times do |s|
+        R.draw_triangle_fan(Lights[0].shadows[s].vertices.to_unsafe, Shadow::VERTICES, R::DARKPURPLE)
+      end
 
-  #   end
-  # end
+      Boxes.boxes.each do |box|
+        R.draw_rectangle_rec(box, R::PURPLE) if R.check_collision_recs?(box, Lights[0].bounds)
+        R.draw_rectangle_lines(box.x, box.y, box.width, box.height, R::DARKBLUE)
+      end
+      R.draw_text("(F1) Hide Shadow Volumes", 10, 50, 10, R::GREEN)
+    else
+      R.draw_text("(F1) Show Shadow Volumes", 10, 50, 10, R::RED)
+    end
+
+    R.end_drawing
+
+  end
 end
 
-# R.unload_texture(bg_texture)
-# R.unload_render_texture(light_mask)
+R.unload_texture(bg_texture)
+R.unload_render_texture(light_mask)
 
-# Lights.lights.each do |l|
-#   R.unload_render_texture(l.mask) if l.active?
-# end
+Lights.lights.each do |l|
+  R.unload_render_texture(l.mask) if l.active?
+end
 
 R.close_window

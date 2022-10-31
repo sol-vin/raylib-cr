@@ -669,7 +669,7 @@ lib Raylib
   fun get_monitor_height = GetMonitorHeight(monitor : LibC::Int) : LibC::Int
   fun get_monitor_physical_width = GetMonitorPhysicalWidth(monitor : LibC::Int) : LibC::Int
   fun get_monitor_physical_height = GetMonitorPhysicalHeight(monitor : LibC::Int) : LibC::Int
-  fun get_monitor_refresh_rate = GetMonitorPhysicalHeight(monitor : LibC::Int) : LibC::Int
+  fun get_monitor_refresh_rate = GetMonitorRefreshRate(monitor : LibC::Int) : LibC::Int
   fun get_window_position = GetWindowPosition : Vector2
   fun get_window_scale_dpi = GetWindowScaleDPI : Vector2
   fun get_monitor_name = GetMonitorName(monitor : LibC::Int) : Char*
