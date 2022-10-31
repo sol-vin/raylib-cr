@@ -1,4 +1,4 @@
-name: rlglsoloarsystem
+name: collisionarea
 version: 0.1.0
 
 authors:
@@ -6,10 +6,11 @@ authors:
 
 targets:
   main:
-    main: src/rlglsoloarsystem.cr
+    main: src/shapes_top_down_lights.cr
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
+
 crystal: 1.6.1
 
 license: MIT

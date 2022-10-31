@@ -99,92 +99,93 @@ lib Raymath
   # {'name': 'MatrixToFloatV', 'description': '', 'returnType': 'float16', 'params': [{'type': 'Matrix', 'name': 'mat'}]}
 
   fun vector3_ortho_normalize = Vector3OrthoNormalize(v1 : Raylib::Vector3*, v2 : Raylib::Vector3*)
-  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*)\
+  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*) \
+
 end
 
 struct Raylib::Vector2
   def self.zero : Raylib::Vector2
-    Raylib.vector2_zero
+    Raymath.vector2_zero
   end
 
   def self.one : Raylib::Vector2
-    Raylib.vector2_one
+    Raymath.vector2_one
   end
 
   def add(v2 : Raylib::Vector2) : Raylib::Vector2
-    Raylib.vector2_add(self, v2)
+    Raymath.vector2_add(self, v2)
   end
 
   def add_value(add : Number) : Raylib::Vector2
-    Raylib.vector2_add_value(self, add.to_f32)
+    Raymath.vector2_add_value(self, add.to_f32)
   end
 
   def subtract(v2 : Raylib::Vector2) : Raylib::Vector2
-    Raylib.vector2_subtract(self, v2)
+    Raymath.vector2_subtract(self, v2)
   end
 
   def subtract_value(sub : Number) : Raylib::Vector2
-    Raylib.vector2_subtract_value(self, sub.to_f32)
+    Raymath.vector2_subtract_value(self, sub.to_f32)
   end
 
   def length : LibC::Float
-    Raylib.vector2_length(self)
+    Raymath.vector2_length(self)
   end
 
   def length_sqr : LibC::Float
-    Raylib.vector2_length_sqr(self)
+    Raymath.vector2_length_sqr(self)
   end
 
   def dot_product(v2 : Raylib::Vector2) : LibC::Float
-    Raylib.vector2_dot_product(self, v2)
+    Raymath.vector2_dot_product(self, v2)
   end
 
   def distance(v2 : Raylib::Vector2) : LibC::Float
-    Raylib.vector2_distance(self, v2)
+    Raymath.vector2_distance(self, v2)
   end
 
   def angle(v2 : Raylib::Vector2) : LibC::Float
-    Raylib.vector2_angle(self, v2)
+    Raymath.vector2_angle(self, v2)
   end
 
   def scale(scale : Number) : Raylib::Vector2
-    Raylib.vector2_scale(self, scale.to_f32)
+    Raymath.vector2_scale(self, scale.to_f32)
   end
 
   def multiply(v2 : Raylib::Vector2) : Raylib::Vector2
-    Raylib.vector2_multiply(self, v2)
+    Raymath.vector2_multiply(self, v2)
   end
 
   def negate : Raylib::Vector2
-    Raylib.vector2_negate(self)
+    Raymath.vector2_negate(self)
   end
 
   def divide(v2 : Raylib::Vector2) : Raylib::Vector2
-    Raylib.vector2_divide(self, v2)
+    Raymath.vector2_divide(self, v2)
   end
 
   def normalize : Raylib::Vector2
-    Raylib.vector2_normalize(self)
+    Raymath.vector2_normalize(self)
   end
 
   def transform(mat : Raylib::Matrix) : Raylib::Vector2
-    Raylib.vector2_transform(self, mat)
+    Raymath.vector2_transform(self, mat)
   end
 
   def lerp(v2 : Raylib::Vector2, amount : Number) : Raylib::Vector2
-    Raylib.vector2_lerp(self, v2, amount.to_f32)
+    Raymath.vector2_lerp(self, v2, amount.to_f32)
   end
 
   def reflect(normal : Raylib::Vector2) : Raylib::Vector2
-    Raylib.vector2_reflect(self, normal)
+    Raymath.vector2_reflect(self, normal)
   end
 
   def rotate(angle : Number) : Raylib::Vector2
-    Raylib.vector2_rotate(self, angle.to_f32)
+    Raymath.vector2_rotate(self, angle.to_f32)
   end
 
   def move_towards(target : Raylib::Vector2, max_distance : Number) : Raylib::Vector2
-    Raylib.vector2_move_towards(self, target, max_distance.to_f32)
+    Raymath.vector2_move_towards(self, target, max_distance.to_f32)
   end
 
   # Operators for convenience
@@ -224,127 +225,127 @@ end
 
 struct Raylib::Vector3
   def self.zero : Raylib::Vector3
-    Raylib.vector3_zero
+    Raymath.vector3_zero
   end
 
   def self.one : Raylib::Vector3
-    Raylib.vector3_one
+    Raymath.vector3_one
   end
 
   def add(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_add(self, v2)
+    Raymath.vector3_add(self, v2)
   end
 
   def add_value(add : Number) : Raylib::Vector3
-    Raylib.vector3_add_value(self, add.to_f32)
+    Raymath.vector3_add_value(self, add.to_f32)
   end
 
   def subtract(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_subtract(self, v2)
+    Raymath.vector3_subtract(self, v2)
   end
 
   def subtract_value(sub : Number) : Raylib::Vector3
-    Raylib.vector3_subtract_value(self, sub.to_f32)
+    Raymath.vector3_subtract_value(self, sub.to_f32)
   end
 
   def scale(scalar : Number) : Raylib::Vector3
-    Raylib.vector3_scale(self, scalar.to_f32)
+    Raymath.vector3_scale(self, scalar.to_f32)
   end
 
   def multiply(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_multiply(self, v2)
+    Raymath.vector3_multiply(self, v2)
   end
 
   def cross_product(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_cross_product(self, v2)
+    Raymath.vector3_cross_product(self, v2)
   end
 
   def perpendicular : Raylib::Vector3
-    Raylib.vector3_perpendicular(self)
+    Raymath.vector3_perpendicular(self)
   end
 
   def dot_product(v2 : Raylib::Vector3) : LibC::Float
-    Raylib.vector3_dot_product(self, v2)
+    Raymath.vector3_dot_product(self, v2)
   end
 
   def distance(v2 : Raylib::Vector3) : LibC::Float
-    Raylib.vector3_distance(self, v2)
+    Raymath.vector3_distance(self, v2)
   end
 
   def angle(v2 : Raylib::Vector3) : LibC::Float
-    Raylib.vector3_angle(self, v2)
+    Raymath.vector3_angle(self, v2)
   end
 
   def negate : Raylib::Vector3
-    Raylib.vector3_negate(self)
+    Raymath.vector3_negate(self)
   end
 
   def divide(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_divide(self, v2)
+    Raymath.vector3_divide(self, v2)
   end
 
   def normalize : Raylib::Vector3
-    Raylib.vector3_normalize(self)
+    Raymath.vector3_normalize(self)
   end
 
   def transform(mat : Raylib::Matrix) : Raylib::Vector3
-    Raylib.vector3_transform(self, mat)
+    Raymath.vector3_transform(self, mat)
   end
 
   def rotate_by_quaternion(q : Raylib::Quaternion) : Raylib::Vector3
-    Raylib.vector3_rotate_by_quaternion(self, q)
+    Raymath.vector3_rotate_by_quaternion(self, q)
   end
 
   def lerp(v2 : Raylib::Vector3, amount : Number) : Raylib::Vector3
-    Raylib.vector3_lerp(self, v2, amount.to_f32)
+    Raymath.vector3_lerp(self, v2, amount.to_f32)
   end
 
   def reflect(normal : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_reflect(self, normal)
+    Raymath.vector3_reflect(self, normal)
   end
 
   def min(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_min(self, v2)
+    Raymath.vector3_min(self, v2)
   end
 
   def max(v2 : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_max(self, v2)
+    Raymath.vector3_max(self, v2)
   end
 
   def barycenter(a : Raylib::Vector3, b : Raylib::Vector3, c : Raylib::Vector3) : Raylib::Vector3
-    Raylib.vector3_barycenter(self, a, b, c)
+    Raymath.vector3_barycenter(self, a, b, c)
   end
 
   def unproject(projection : Raylib::Matrix, view : Raylib::Matrix) : Raylib::Vector3
-    Raylib.vector3_unproject(self, projection, view)
+    Raymath.vector3_unproject(self, projection, view)
   end
 
   def self.rotate(axis : Raylib::Vector3, angle : Number) : Raylib::Matrix
-    Raylib.matrix_rotate(axis, angle.to_f32)
+    Raymath.matrix_rotate(axis, angle.to_f32)
   end
 
   def self.rotate_xyz(ang : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_rotate_xyz(ang)
+    Raymath.matrix_rotate_xyz(ang)
   end
 
   def self.rotate_zyx(ang : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_rotate_zyx(ang)
+    Raymath.matrix_rotate_zyx(ang)
   end
 
   def self.look_at(eye : Raylib::Vector3, target : Raylib::Vector3, up : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_look_at(eye, target, up)
+    Raymath.matrix_look_at(eye, target, up)
   end
 
   def self.from_vector3_to_vector3(from : Raylib::Vector3, to : Raylib::Vector3) : Raylib::Quaternion
-    Raylib.quaternion_from_vector3_to_vector3(from, to)
+    Raymath.quaternion_from_vector3_to_vector3(from, to)
   end
 
   def self.from_axis_angle(axis : Raylib::Vector3, angle : Number) : Raylib::Quaternion
-    Raylib.quaternion_from_axis_angle(axis, angle.to_f32)
+    Raymath.quaternion_from_axis_angle(axis, angle.to_f32)
   end
 
   def to_euler : Raylib::Vector3
-    Raylib.quaternion_to_euler(self)
+    Raymath.quaternion_to_euler(self)
   end
 
   # Operators for convenience
@@ -384,95 +385,95 @@ end
 
 struct Raylib::Matrix
   def determinant : LibC::Float
-    Raylib.matrix_determinant(self)
+    Raymath.matrix_determinant(self)
   end
 
   def trace : LibC::Float
-    Raylib.matrix_trace(self)
+    Raymath.matrix_trace(self)
   end
 
   def transpose : Raylib::Matrix
-    Raylib.matrix_transpose(self)
+    Raymath.matrix_transpose(self)
   end
 
   def invert : Raylib::Matrix
-    Raylib.matrix_invert(self)
+    Raymath.matrix_invert(self)
   end
 
   def normalize : Raylib::Matrix
-    Raylib.matrix_normalize(self)
+    Raymath.matrix_normalize(self)
   end
 
   def self.identity : Raylib::Matrix
-    Raylib.matrix_identity
+    Raymath.matrix_identity
   end
 
   def add(right : Raylib::Matrix) : Raylib::Matrix
-    Raylib.matrix_add(self, right)
+    Raymath.matrix_add(self, right)
   end
 
   def subtract(right : Raylib::Matrix) : Raylib::Matrix
-    Raylib.matrix_subtract(self, right)
+    Raymath.matrix_subtract(self, right)
   end
 
   def multiply(right : Raylib::Matrix) : Raylib::Matrix
-    Raylib.matrix_multiply(self, right)
+    Raymath.matrix_multiply(self, right)
   end
 
   def self.translate(x : Number, y : Number, z : Number) : Raylib::Matrix
-    Raylib.matrix_translate(x.to_f32, y.to_f32, z.to_f32)
+    Raymath.matrix_translate(x.to_f32, y.to_f32, z.to_f32)
   end
 
   def self.rotate(axis : Raylib::Vector3, angle : Number) : Raylib::Matrix
-    Raylib.matrix_rotate(axis, angle.to_f32)
+    Raymath.matrix_rotate(axis, angle.to_f32)
   end
 
   def self.rotate_x(angle : Number) : Raylib::Matrix
-    Raylib.matrix_rotate_x(angle.to_f32)
+    Raymath.matrix_rotate_x(angle.to_f32)
   end
 
   def self.rotate_y(angle : Number) : Raylib::Matrix
-    Raylib.matrix_rotate_y(angle.to_f32)
+    Raymath.matrix_rotate_y(angle.to_f32)
   end
 
   def self.rotate_z(angle : Number) : Raylib::Matrix
-    Raylib.matrix_rotate_z(angle.to_f32)
+    Raymath.matrix_rotate_z(angle.to_f32)
   end
 
   def self.rotate_xyz(ang : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_rotate_xyz(ang)
+    Raymath.matrix_rotate_xyz(ang)
   end
 
   def self.rotate_zyx(ang : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_rotate_zyx(ang)
+    Raymath.matrix_rotate_zyx(ang)
   end
 
   def self.scale(x : Number, y : Number, z : Number) : Raylib::Matrix
-    Raylib.matrix_scale(x.to_f32, y.to_f32, z.to_f32)
+    Raymath.matrix_scale(x.to_f32, y.to_f32, z.to_f32)
   end
 
   def self.frustum(left : Number, right : Number, bottom : Number, top : Number, near : Number, far : Number) : Raylib::Matrix
-    Raylib.matrix_frustum(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
+    Raymath.matrix_frustum(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
   end
 
   def self.perspective(fovy : Number, aspect : Number, near : Number, far : Number) : Raylib::Matrix
-    Raylib.matrix_perspective(fovy.to_f64, aspect.to_f64, near.to_f64, far.to_f64)
+    Raymath.matrix_perspective(fovy.to_f64, aspect.to_f64, near.to_f64, far.to_f64)
   end
 
   def self.ortho(left : Number, right : Number, bottom : Number, top : Number, near : Number, far : Number) : Raylib::Matrix
-    Raylib.matrix_ortho(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
+    Raymath.matrix_ortho(left.to_f64, right.to_f64, bottom.to_f64, top.to_f64, near.to_f64, far.to_f64)
   end
 
   def self.look_at(eye : Raylib::Vector3, target : Raylib::Vector3, up : Raylib::Vector3) : Raylib::Matrix
-    Raylib.matrix_look_at(eye, target, up)
+    Raymath.matrix_look_at(eye, target, up)
   end
 
   def self.from_matrix(mat : Raylib::Matrix) : Raylib::Quaternion
-    Raylib.quaternion_from_matrix(mat)
+    Raymath.quaternion_from_matrix(mat)
   end
 
   def to_matrix : Raylib::Matrix
-    Raylib.quaternion_to_matrix(self)
+    Raymath.quaternion_to_matrix(self)
   end
 
   # Operators for convenience
@@ -492,91 +493,91 @@ end
 
 struct Raylib::Quaternion
   def add(q2 : Raylib::Quaternion) : Raylib::Quaternion
-    Raylib.quaternion_add(self, q2)
+    Raymath.quaternion_add(self, q2)
   end
 
   def add_value(add : Number) : Raylib::Quaternion
-    Raylib.quaternion_add_value(self, add.to_f32)
+    Raymath.quaternion_add_value(self, add.to_f32)
   end
 
   def subtract(q2 : Raylib::Quaternion) : Raylib::Quaternion
-    Raylib.quaternion_subtract(self, q2)
+    Raymath.quaternion_subtract(self, q2)
   end
 
   def subtract_value(sub : Number) : Raylib::Quaternion
-    Raylib.quaternion_subtract_value(self, sub.to_f32)
+    Raymath.quaternion_subtract_value(self, sub.to_f32)
   end
 
   def self.identity : Raylib::Quaternion
-    Raylib.quaternion_identity
+    Raymath.quaternion_identity
   end
 
   def length : LibC::Float
-    Raylib.quaternion_length(self)
+    Raymath.quaternion_length(self)
   end
 
   def normalize : Raylib::Quaternion
-    Raylib.quaternion_normalize(self)
+    Raymath.quaternion_normalize(self)
   end
 
   def invert : Raylib::Quaternion
-    Raylib.quaternion_invert(self)
+    Raymath.quaternion_invert(self)
   end
 
   def multiply(q2 : Raylib::Quaternion) : Raylib::Quaternion
-    Raylib.quaternion_multiply(self, q2)
+    Raymath.quaternion_multiply(self, q2)
   end
 
   def scale(mul : Number) : Raylib::Quaternion
-    Raylib.quaternion_scale(self, mul.to_f32)
+    Raymath.quaternion_scale(self, mul.to_f32)
   end
 
   def divide(q2 : Raylib::Quaternion) : Raylib::Quaternion
-    Raylib.quaternion_divide(self, q2)
+    Raymath.quaternion_divide(self, q2)
   end
 
   def lerp(q2 : Raylib::Quaternion, amount : Number) : Raylib::Quaternion
-    Raylib.quaternion_lerp(self, q2, amount.to_f32)
+    Raymath.quaternion_lerp(self, q2, amount.to_f32)
   end
 
   def nlerp(q2 : Raylib::Quaternion, amount : Number) : Raylib::Quaternion
-    Raylib.quaternion_nlerp(self, q2, amount.to_f32)
+    Raymath.quaternion_nlerp(self, q2, amount.to_f32)
   end
 
   def slerp(q2 : Raylib::Quaternion, amount : Number) : Raylib::Quaternion
-    Raylib.quaternion_slerp(self, q2, amount.to_f32)
+    Raymath.quaternion_slerp(self, q2, amount.to_f32)
   end
 
   def self.from_vector3_to_vector3(from : Raylib::Vector3, to : Raylib::Vector3) : Raylib::Quaternion
-    Raylib.quaternion_from_vector3_to_vector3(from, to)
+    Raymath.quaternion_from_vector3_to_vector3(from, to)
   end
 
   def self.from_matrix(mat : Raylib::Matrix) : Raylib::Quaternion
-    Raylib.quaternion_from_matrix(mat)
+    Raymath.quaternion_from_matrix(mat)
   end
 
   def to_matrix : Raylib::Matrix
-    Raylib.quaternion_to_matrix(self)
+    Raymath.quaternion_to_matrix(self)
   end
 
   def self.from_axis_angle(axis : Raylib::Vector3, angle : Number) : Raylib::Quaternion
-    Raylib.quaternion_from_axis_angle(axis, angle.to_f32)
+    Raymath.quaternion_from_axis_angle(axis, angle.to_f32)
   end
 
   def to_axis_angle(out_axis : Raylib::Vector3*, out_angle : LibC::Float*)
-    Raylib.quaternion_to_axis_angle(self, out_axis, out_angle)
+    Raymath.quaternion_to_axis_angle(self, out_axis, out_angle)
   end
 
   def self.from_euler(pitch : Number, yaw : Number, roll : Number) : Raylib::Quaternion
-    Raylib.quaternion_from_euler(pitch.to_f32, yaw.to_f32, roll.to_f32)
+    Raymath.quaternion_from_euler(pitch.to_f32, yaw.to_f32, roll.to_f32)
   end
 
   def to_euler : Raylib::Vector3
-    Raylib.quaternion_to_euler(self)
+    Raymath.quaternion_to_euler(self)
   end
 
   def transform(mat : Raylib::Matrix) : Raylib::Quaternion
-    Raylib.quaternion_transform(self, mat)
+    Raymath.quaternion_transform(self, mat)
   end
 
   # Operators for convenience
