@@ -14,6 +14,12 @@ class Wireland::Component::NotOut < Wireland::Component::Active
   end
 
   def self.output_whitelist : Array(Wireland::Component.class)
-    super
+    super.reject(Wireland::Component::NotIn, self)
+  end
+
+  def on_tick
+    if low?
+      parent.active_pulse(id, connects)
+    end
   end
 end

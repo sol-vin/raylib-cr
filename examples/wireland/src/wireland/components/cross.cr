@@ -1,4 +1,4 @@
-class Wireland::Component::Crossing < Wireland::Component
+class Wireland::Component::Cross < Wireland::Component
   alias Point = NamedTuple(x: Int32, y: Int32)
 
   # This can technically only have a total of 4 directions 

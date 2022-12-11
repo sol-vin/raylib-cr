@@ -49,8 +49,6 @@ class Wireland::Component
   # The list of pulses incoming to this component from which component id.
   property pulses = [] of UInt64
 
-  property active_pulses = [] of UInt64
-
   # The id of this component
   property id : UInt64 = 0_u64
 
@@ -63,12 +61,17 @@ class Wireland::Component
   def initialize(@parent : Wireland::Circuit)
   end
 
-  def reset
+  def setup
   end
 
   # Has this component been pulsed this tick?
-  def pulsed?
+  def high?
     pulses.size > 0
+  end
+
+  # Has this component been pulsed this tick?
+  def low?
+    pulses.size == 0
   end
 
   # Was this component pulsed by a component with `id`?
@@ -77,7 +80,7 @@ class Wireland::Component
   end
 
   # Has this component pulsed a component with `id`
-  def has_pulsed?(id)
+  def was_high?(id)
     !!circuit[com_id].pulses[self.id]?
   end
 
@@ -116,16 +119,26 @@ class Wireland::Component
   end
 
   # Events
-  # What to do when getting a pulsed every tick
+  # What to do when getting a pulse every tick
   def on_high
   end
 
-  # What to do when not getting a pulsed every tick
+  # What to do when not getting a pulse every tick
   def on_low
+  end
+
+  # Used by active components to handle end of tick behavior. 
+  def on_tick
   end
 
   # What should be done when this part receives a new charge from a new source
   def on_pulse(from_id : UInt64)
-    pulse_out unless pulsed?
+    pulse_out unless high?
+  end
+end
+
+class Wireland::Component::Active < Wireland::Component
+  def self.active?
+    true
   end
 end

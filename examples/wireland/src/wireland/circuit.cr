@@ -5,11 +5,10 @@ class Wireland::Circuit
   alias R = Raylib
 
 
-  def self.load(filename, pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT) : Array(WC)
-    pallette.load_into_components
-
-    image = R.load_image(filename)
+  def self.load(image : Image, pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT) : Array(WC)
     raise "No file - #{filename}" if image.width <= 0
+
+    pallette.load_into_components
 
     # List of pixels that are in our pallette
     component_points = {} of WC.class => Point
@@ -49,16 +48,6 @@ class Wireland::Circuit
         component = component_class.new
         component.shape = _get_component_shape(component_points, component_class, xy, {x: image.width, y: image.height})
         components << component
-
-        if rs = component.as?(WC::RelaySwitch)
-          relay_switches << rs
-        elsif p = component.as?(Wireland::Pole)
-          poles << p
-        elsif no = component.as?(WC::NotOut)
-          not_out << no
-        elsif p = component.as?(WC::Pause)
-          pauses << p
-        end
       end
     end
 
@@ -79,10 +68,11 @@ class Wireland::Circuit
     end
 
     # Crossing
-    components.select(&.is_a?(WC::Crossing)).map(&.as(WC::Crossing)).each(&.setup)
+    components.select(&.is_a?(WC::Crossing)).each(&.setup)
     # Tunnel
-    components.select(&.is_a?(WC::Tunnel)).map(&.as(WC::Tunnel)).each(&.setup)
+    components.select(&.is_a?(WC::Tunnel)).each(&.setup)
     # Pause
+    components.select(&.is_a?(WC::Pause)).each(&.setup)
     # Relay Switch
     # Relay NO
     # Relay NC
@@ -133,16 +123,14 @@ class Wireland::Circuit
   property pallete : Wireland::Pallette = Wireland::Pallette::DEFAULT
 
   property components = [] of WC
-  property cycles = 0_u128
-  property relay_switches = [] of WC::RelaySwitch
-  property poles = [] of Wireland::RelayPole
+  property ticks = 0_u128
 
-  property not_outs = [] of WC::NotOut
-  property pauses = [] of WC::Pause
+  getter active_pulses = {} of UInt64 => Array(UInt64)
+
 
   def initialize(filename : String, @pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT)
-    # Read file in using load
-    # Set palette colors
+    image = R.load_image(filename)
+    components = load(image, @pallette)
   end
 
   def initialize(@image : R::Image, @pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT)
@@ -157,15 +145,52 @@ class Wireland::Circuit
     components[index]?
   end
 
+  def active_pulse(id, to : Array(UInt64))
+    if arr = active_pulses[id]?
+      arr.concat! to
+    else
+      active_pulses[id] = to
+    end
+  end
+
+  def active_pulse(id, to : UInt64)
+    if arr = active_pulses[id]?
+      arr << to
+    else
+      active_pulses[id] = [to]
+    end
+  end
+
   def tick
-    @cycles += 1
+    if ticks == 0
+      components.each(&.on_tick)
+      @ticks += 1
+    else
+      active_pulses.each do |from, pulses|
+        pulses.each do |to|
+          self[from].pulse_out to
+        end
+      end
+
+      active_pulses.clear
+
+      components.each do |c|
+        if c.high
+          c.on_high
+        else
+          c.on_low
+        end
+      end
+      components.each(&.on_tick)
+      components.each(&.pulses.clear)
+    end
   end
 
   def reset
-    @cycles = 0
-    @components.values.each(&.reset)
+    @ticks = 0
   end
 
   def turn_off_relay_poles
+    poles.each(&.off)
   end
 end

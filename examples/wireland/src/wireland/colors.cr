@@ -147,7 +147,7 @@ struct Wireland::Pallette
         when 15
           @output_on = _read_color(line)
         when 16
-          @output_on = _read_color(line)
+          @output_off = _read_color(line)
         when 17
           @not_in = _read_color(line)
         when 18
@@ -172,6 +172,32 @@ struct Wireland::Pallette
     end
   end
 
+  def all
+    [
+      @start,
+      @pause,
+      @wire,
+      @alt_wire,
+      @join,
+      @cross,
+      @tunnel,
+      @input_on,
+      @input_off,
+      @input_toggle_on,
+      @input_toggle_off,
+      @output_on,
+      @output_off,
+      @not_in,
+      @not_out,
+      @relay_switch,
+      @relay_no_pole,
+      @relay_nc_pole,
+      @diode_in,
+      @diode_out,
+      @gpio
+    ]
+  end
+
   private def _read_color(line) : R::Color
     color_regex = /^([1-2]{0,1}\d{0,1}\d{1}\s){2}([1-2]{0,1}\d{0,1}\d{1})$/
     match_data = color_regex.match(line)
@@ -189,6 +215,10 @@ struct Wireland::Pallette
   end
 
   def load_into_components
+    # Ensure each item is unique
+    total = all.size
+    raise "Duplicate color" if total != all.uniq.size
+
     WC::Start.color = @start
     WC::Pause.color = @pause
     WC::Wire.color = @wire

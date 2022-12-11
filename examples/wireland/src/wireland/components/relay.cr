@@ -10,9 +10,7 @@ class Wireland::Component::RelaySwitch < Wireland::Component
   getter poles = [] of Wireland::RelayPole
 
   def on_high
-    poles.each do |pole|
-      pole.on
-    end
+    poles.each(&.on)
   end
 end
 

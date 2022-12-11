@@ -14,6 +14,12 @@ class Wireland::Component::Pause < Wireland::Component::Active
   def on_low
     state_queue.queue false
   end
+
+  def on_tick
+    if state_queue.dequeue
+      parent.active_pulse(connects.dup)
+    end
+  end
   
   getter state_queue = [] of Bool
 
@@ -21,4 +27,5 @@ class Wireland::Component::Pause < Wireland::Component::Active
     @state_queue.clear
     shape.size.times { @state_queue << false }
   end
+
 end
