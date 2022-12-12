@@ -18,7 +18,7 @@ class Wireland::Component::NotOut < Wireland::Component
   end
 
   def self.output_whitelist
-    super.reject {|c| c == Wireland::Component::NotIn || c == self}
+    super.reject { |c| c == Wireland::Component::NotIn || c == self }
   end
 
   def on_tick

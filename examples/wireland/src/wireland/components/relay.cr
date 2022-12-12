@@ -53,10 +53,10 @@ class Wireland::Component::RelayNOPole < Wireland::Component
   end
 
   def self.output_whitelist
-    super.reject {|c| c == Wireland::Component::RelaySwitch || c == self}
+    super.reject { |c| c == Wireland::Component::RelaySwitch || c == self }
   end
 
-  include Wireland::RelayPole  
+  include Wireland::RelayPole
 
   def on
     @conductive = true
@@ -73,10 +73,10 @@ class Wireland::Component::RelayNCPole < Wireland::Component
   end
 
   def self.output_whitelist
-    super.reject {|c| c == Wireland::Component::RelaySwitch || c == self}
+    super.reject { |c| c == Wireland::Component::RelaySwitch || c == self }
   end
 
-  include Wireland::RelayPole 
+  include Wireland::RelayPole
 
   def on
     @conductive = false

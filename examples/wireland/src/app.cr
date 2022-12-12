@@ -3,7 +3,6 @@ require "./wireland"
 
 alias V2 = R::Vector2
 
-
 module C
   SCREEN_WIDTH  = 800
   SCREEN_HEIGHT = 450

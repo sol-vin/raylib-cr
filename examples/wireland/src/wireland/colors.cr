@@ -170,7 +170,7 @@ struct Wireland::Pallette
           @bg = _read_color(line)
         end
       end
-      raise ".pal did not have enough colors. Only had #{index-2}" if index < 25
+      raise ".pal did not have enough colors. Only had #{index - 2}" if index < 25
     end
   end
 
@@ -196,7 +196,7 @@ struct Wireland::Pallette
       @relay_nc_pole,
       @diode_in,
       @diode_out,
-      @gpio
+      @gpio,
     ]
   end
 

@@ -4,19 +4,18 @@ class Wireland::Circuit
   alias WC = Wireland::Component
   alias R = Raylib
 
-
   def load(image : R::Image, pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT) : Array(WC)
     raise "No file" if image.width <= 0
 
     pallette.load_into_components
-    
+
     # List of pixels that are in our pallette
     component_points = {} of WC.class => Array(Point)
     WC.all.each { |c| component_points[c] = [] of Point }
     image.width.times do |x|
       image.height.times do |y|
         color = R.get_image_color(image, x, y)
-        if component = WC.all.find {|c| c.color == color}
+        if component = WC.all.find { |c| c.color == color }
           component_points[component] << {x: x, y: y}
         end
       end
@@ -47,7 +46,6 @@ class Wireland::Circuit
       end
     end
 
-    
     adjacent = [
       {x: 0, y: -1},
       {x: -1, y: 0},
@@ -58,12 +56,12 @@ class Wireland::Circuit
     # Connect each of the components
     components.each do |component|
       # Select only components that are valid output destinations
-      valid_components = components.select {|c| component.class.output_whitelist.includes? c.class}
+      valid_components = components.select { |c| component.class.output_whitelist.includes? c.class }
       valid_components.each do |vc|
         # Is this component a neighbor for any point on our main component
         is_vc_neighbors = component.xy.any? do |c_point|
           vc.xy.any? do |vc_point|
-            adjacent.any? { |a_p| { x: c_point[:x] + a_p[:x], y: c_point[:y] + a_p[:y]} == vc_point } 
+            adjacent.any? { |a_p| {x: c_point[:x] + a_p[:x], y: c_point[:y] + a_p[:y]} == vc_point }
           end
         end
 
@@ -91,7 +89,7 @@ class Wireland::Circuit
     end
     shape
   end
-  
+
   # Gets a list of all adjacent neighbors of type `com` around point `xy`
   private def _get_neighbors(component_points : Hash(WC.class, Array(Point)), com : WC.class, xy : Point, max : Point) : Array(Point)
     neighbors = _make_neighborhood(xy, com, max)
@@ -99,12 +97,11 @@ class Wireland::Circuit
     # If the neighbors are empty return nothing
     return [] of Point if neighbors.empty?
 
-    component_points[com].select {|p| neighbors.includes? p}
+    component_points[com].select { |p| neighbors.includes? p }
   end
 
   # Creates a list of neighbor points around xy.
   private def _make_neighborhood(xy : Point, com : WC.class, max : Point)
-    
     diags = [
       {x: -1, y: -1},
       {x: -1, y: 1},
@@ -123,11 +120,11 @@ class Wireland::Circuit
     r_points += diags if com.allow_diags?
     r_points += adjacent if com.allow_adjacent?
 
-    r_points.map {|r_p| {x: xy[:x] + r_p[:x], y: xy[:y] + r_p[:y]}}.reject do |a_p|
+    r_points.map { |r_p| {x: xy[:x] + r_p[:x], y: xy[:y] + r_p[:y]} }.reject do |a_p|
       a_p[:x] < 0 ||
-      a_p[:y] < 0 ||
-      a_p[:x] >= max[:x] ||
-      a_p[:y] >= max[:y]
+        a_p[:y] < 0 ||
+        a_p[:x] >= max[:x] ||
+        a_p[:y] >= max[:y]
     end
   end
 
@@ -139,9 +136,8 @@ class Wireland::Circuit
   # Number of ticks that have run since the circuit started.
   property ticks = 0_u128
 
-  # List of pulses that need to 
+  # List of pulses that need to
   getter active_pulses = {} of UInt64 => Array(UInt64)
-
 
   def initialize(filename : String, @pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT)
     image = R.load_image(filename)
@@ -182,6 +178,24 @@ class Wireland::Circuit
     end
   end
 
+  def pre_tick
+    active_pulses.each do |from, pulses|
+      pulses.each do |to|
+        self[from].pulse_out to
+      end
+    end
+
+    active_pulses.clear
+  end
+
+  def post_tick
+    # Turn off all the poles, then flip them back on via on_tick where needed
+    components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
+    components.each(&.on_tick)
+    # Clear out all the pulses to start the next tick.
+    components.each(&.pulses.clear)
+  end
+
   # Main logic route for the circuit
   def tick
     # For the first tick only run on_tick to queue up any starting pulses.
@@ -189,13 +203,7 @@ class Wireland::Circuit
       components.each(&.on_tick)
       @ticks += 1
     else
-      active_pulses.each do |from, pulses|
-        pulses.each do |to|
-          self[from].pulse_out to
-        end
-      end
-
-      active_pulses.clear
+      pre_tick
 
       components.each do |c|
         if c.high?
@@ -205,11 +213,7 @@ class Wireland::Circuit
         end
       end
 
-      # Turn off all the poles, then flip them back on via on_tick where needed
-      components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
-      components.each(&.on_tick)
-      # Clear out all the pulses to start the next tick.
-      components.each(&.pulses.clear)
+      post_tick
 
       @ticks += 1
     end

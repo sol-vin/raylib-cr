@@ -2,9 +2,9 @@ class Wireland::Component::Start < Wireland::Component
   def self.allow_adjacent?
     true
   end
-  
+
   def self.output_whitelist
-    super.reject {|c| c == self}
+    super.reject { |c| c == self }
   end
 
   def on_tick

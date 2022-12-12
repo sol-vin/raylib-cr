@@ -7,9 +7,8 @@ class Wireland::Component::Wire < Wireland::Component
     true
   end
 
-  
   def self.output_whitelist
-    super.reject {|c| c == Wireland::Component::AltWire || c == self}
+    super.reject { |c| c == Wireland::Component::AltWire || c == self }
   end
 end
 
@@ -22,8 +21,7 @@ class Wireland::Component::AltWire < Wireland::Component
     true
   end
 
-  
   def self.output_whitelist
-    super.reject {|c| c == Wireland::Component::Wire || c == self}
+    super.reject { |c| c == Wireland::Component::Wire || c == self }
   end
 end

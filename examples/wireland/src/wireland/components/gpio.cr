@@ -4,6 +4,6 @@ class Wireland::Component::GPIO < Wireland::Component
   end
 
   def self.output_whitelist
-    super.reject {|c| c == self}
+    super.reject { |c| c == self }
   end
 end

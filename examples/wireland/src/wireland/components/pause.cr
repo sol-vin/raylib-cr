@@ -2,13 +2,13 @@ class Wireland::Component::Pause < Wireland::Component
   def self.active?
     true
   end
-  
+
   def self.allow_adjacent?
     true
   end
 
   def self.output_whitelist
-    super.reject {|c| c == self}
+    super.reject { |c| c == self }
   end
 
   def on_high
@@ -24,12 +24,11 @@ class Wireland::Component::Pause < Wireland::Component
       parent.active_pulse(id, connects.dup)
     end
   end
-  
+
   getter state_queue = [] of Bool
 
   def setup
     @state_queue.clear
     xy.size.times { @state_queue << false }
   end
-
 end

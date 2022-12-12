@@ -1,8 +1,7 @@
- # A wire instruction like WIRE, ALTWIRE, JOIN, ETC
+# A wire instruction like WIRE, ALTWIRE, JOIN, ETC
 class Wireland::Component
   alias R = Raylib
   alias Point = NamedTuple(x: Int32, y: Int32)
-
 
   # Holds a list of all classes inheriting this class
   class_getter all : Array(Wireland::Component.class) = [] of Wireland::Component.class
@@ -38,7 +37,7 @@ class Wireland::Component
 
   # List of `Component` classes that this component should not pulse out to.
   def self.output_whitelist : Array(Wireland::Component.class)
-    Wireland::Component.all.reject {|c| c == Wireland::Component::DiodeOut || c == Wireland::Component::NotOut}
+    Wireland::Component.all.reject { |c| c == Wireland::Component::DiodeOut || c == Wireland::Component::NotOut }
   end
 
   # Link to the parent circuit
@@ -46,7 +45,7 @@ class Wireland::Component
 
   # What this component is connected out to.
   property connects = [] of UInt64
-  
+
   # The list of pulses incoming to this component from which component id.
   property pulses = [] of UInt64
 
@@ -104,7 +103,7 @@ class Wireland::Component
       on_pulse(from_id)
     end
   end
-  
+
   def terminal?
     connects.empty?
   end
@@ -118,7 +117,7 @@ class Wireland::Component
   def on_low
   end
 
-  # Used by active components to handle end of tick behavior. 
+  # Used by active components to handle end of tick behavior.
   def on_tick
   end
 
