@@ -4,7 +4,7 @@ class Wireland::Component::NotIn < Wireland::Component
   end
 
   def self.output_whitelist : Array(Wireland::Component.class)
-    [Wireland::Component::NotOut]
+    [Wireland::Component::NotOut] of Wireland::Component.class
   end
 end
 
@@ -17,8 +17,8 @@ class Wireland::Component::NotOut < Wireland::Component
     true
   end
 
-  def self.output_whitelist : Array(Wireland::Component.class)
-    super.reject(Wireland::Component::NotIn, self)
+  def self.output_whitelist
+    super.reject {|c| c == Wireland::Component::NotIn || c == self}
   end
 
   def on_tick

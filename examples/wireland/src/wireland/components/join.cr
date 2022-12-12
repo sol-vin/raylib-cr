@@ -3,7 +3,7 @@ class Wireland::Component::Join < Wireland::Component
     true
   end
 
-  def self.output_whitelist : Array(Wireland::Component.class)
-    super.reject(self)
+  def self.output_whitelist
+    super.reject {|c| c == self}
   end
 end

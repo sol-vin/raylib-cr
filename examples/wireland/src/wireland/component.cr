@@ -37,8 +37,8 @@ class Wireland::Component
   end
 
   # List of `Component` classes that this component should not pulse out to.
-  def self.output_whitelist : Array(self.class)
-    Wireland::Component.all.reject(Wireland::Component::DiodeOut, Wireland::Component::NotOut)
+  def self.output_whitelist : Array(Wireland::Component.class)
+    Wireland::Component.all.reject {|c| c == Wireland::Component::DiodeOut || c == Wireland::Component::NotOut}
   end
 
   # Link to the parent circuit
@@ -56,6 +56,7 @@ class Wireland::Component
   # Can this component conduct in and out? Used by relay poles to turn off and on a component.
   property? conductive : Bool = true
 
+  # TODO: Remove this, we only need it for the load and setup phase, nothing else
   # List of points on the original image where this component is.
   property xy = [] of Point
 
@@ -83,12 +84,12 @@ class Wireland::Component
   def pulse_out
     connects.each do |com_id|
       # Pulse our connecting parts, but only if we haven't pulsed it already.
-      circuit[com_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
+      parent[com_id].pulse_in(self.id)
     end
   end
 
   def pulse_out(to_id : UInt64)
-    circuit[to_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
+    parent[to_id].pulse_in(self.id)
   end
 
   def pulse_in(from_id : UInt64)
@@ -96,16 +97,16 @@ class Wireland::Component
       raise "#{self.id} was pulsed by #{from_id} but it cannot pulse itself."
     end
 
-    if conductive?
+    if conductive? && !pulses.includes? from_id
       # Add pulse to list of pulses in.
       pulses << from_id
       # Run the on_new_pulse event
-      on_pulse(self, from_id)
+      on_pulse(from_id)
     end
   end
   
   def terminal?
-    connects_out.size == 0
+    connects.empty?
   end
 
   # Events
@@ -123,6 +124,6 @@ class Wireland::Component
 
   # What should be done when this part receives a new charge from a new source
   def on_pulse(from_id : UInt64)
-    pulse_out unless active? || pulses.size > 1
+    pulse_out unless self.class.active? || pulses.size > 1
   end
 end

@@ -3,7 +3,7 @@ module Wireland::DefaultColors
 
   PINK     = R::Color.new(r: 0xF6, g: 0x75, b: 0x7A, a: 0xFF)
   RED      = R::Color.new(r: 0xE4, g: 0x3B, b: 0x44, a: 0xFF)
-  DARK_RED = R::Color.new(r: 0x9E, g: 0x28, b: 0x35, a: 0xFF)
+  DARK_RED = R::Color.new(r: 0x6E, g: 0x19, b: 0x23, a: 0xFF)
 
   LIGHT_ORANGE = R::Color.new(r: 0xFF, g: 0xBF, b: 0x98, a: 0xFF)
   ORANGE       = R::Color.new(r: 0xF7, g: 0x76, b: 0x22, a: 0xFF)
@@ -232,8 +232,8 @@ struct Wireland::Pallette
     WC::Tunnel.color = @tunnel
     WC::InputOn.color = @input_on
     WC::InputOff.color = @input_off
-    WC::InputOnToggle.color = @input_on_toggle
-    WC::InputOffToggle.color = @input_off_toggle
+    WC::InputToggleOn.color = @input_toggle_on
+    WC::InputToggleOff.color = @input_toggle_off
     WC::OutputOn.color = @output_on
     WC::OutputOff.color = @output_off
     WC::NotIn.color = @not_in
@@ -243,5 +243,6 @@ struct Wireland::Pallette
     WC::RelayNCPole.color = @relay_nc_pole
     WC::DiodeIn.color = @diode_in
     WC::DiodeOut.color = @diode_out
+    WC::GPIO.color = @gpio
   end
 end

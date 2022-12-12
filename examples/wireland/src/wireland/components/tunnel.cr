@@ -5,7 +5,7 @@ class Wireland::Component::Tunnel < Wireland::Component
 
   # Reject other tunnels from direct connection, we will allow it in tunnel_directions and directly pulse out instead.
   def self.output_whitelist
-    super.reject(self)
+    super.reject {|c| c == self}
   end
 
   # Special on_pulse to send the pulse to the correct place.
@@ -15,12 +15,14 @@ class Wireland::Component::Tunnel < Wireland::Component
       pulse_out
     # If a connection is sending is a pulse, send it to the proper tunnel
     elsif connect_directions.values.includes? from_id
-      connect_directions[from_id].any? do |d|
-        if d_id = tunnel_directions.find {|k, _| k.includes? d.flip}
-          pulse_out(d_id[1])
-          true
-        else
-          false
+      if dir = connect_directions.find {|d, c_id| c_id == from_id}
+        dir[0].each do |d|
+          if d_id = tunnel_directions.find {|k, _| k.includes? d.flip}
+            pulse_out(d_id[1])
+            true
+          else
+            false
+          end
         end
       end
     end
@@ -37,14 +39,14 @@ class Wireland::Component::Tunnel < Wireland::Component
     # Find which directions connects are connected to.
     connects.each do |c|
       direction = Wireland::Direction::None
-      c.shape.each do |c_point|
+      parent[c].xy.each do |c_point|
         adjacent_directions.select { |d, a| xy[0] == { x: c_point[:x] + a[:x], y: c_point[:y] + a[:y] } }.keys.each do |d|
           direction |= d
         end
       end
 
       if direction != Wireland::Direction::None
-        connect_directions[direction] = c.id
+        connect_directions[direction] = c
       end
     end
 
@@ -55,19 +57,25 @@ class Wireland::Component::Tunnel < Wireland::Component
     end
 
     # Check which tunnels are the closest to this one for each direction
-    left_tunnels = other_tunnels.select { |t| t.xy[:x] < xy[:x] }.sort.reverse
-    right_tunnels = other_tunnels.select { |t| t.xy[:x] > xy[:x] }.sort
-    up_tunnels = other_tunnels.select { |t| t.xy[:y] < xy[:y] }.sort.reverse
-    down_tunnels = other_tunnels.select { |t| t.xy[:y] > xy[:y] }.sort
+    left_tunnels = other_tunnels.select { |t| t.xy[0][:x] < xy[0][:x] }.sort{|a,b| b.xy[0][:x] <=> a.xy[0][:x]}
+    right_tunnels = other_tunnels.select { |t| t.xy[0][:x] > xy[0][:x] }.sort{|a,b| a.xy[0][:x] <=> b.xy[0][:x]}
+    up_tunnels = other_tunnels.select { |t| t.xy[0][:y] < xy[0][:y] }.sort{|a,b| b.xy[0][:y] <=> a.xy[0][:y]}
+    down_tunnels = other_tunnels.select { |t| t.xy[0][:y] > xy[0][:y] }.sort{|a,b| a.xy[0][:y] <=> b.xy[0][:y]}
 
     # Set the tunnels to their direction
     if left_tunnel = left_tunnels[0]?
       tunnel_directions[Wireland::Direction::Left] = left_tunnel.id
-    elsif right_tunnel = right_tunnels[0]?
+    end
+
+    if right_tunnel = right_tunnels[0]?
       tunnel_directions[Wireland::Direction::Right] = right_tunnel.id
-    elsif up_tunnel = up_tunnels[0]?
+    end
+
+    if up_tunnel = up_tunnels[0]?
       tunnel_directions[Wireland::Direction::Up] = up_tunnel.id
-    elsif down_tunnel = down_tunnels[0]?
+    end
+    
+    if down_tunnel = down_tunnels[0]?
       tunnel_directions[Wireland::Direction::Down] = down_tunnel.id
     end
   end

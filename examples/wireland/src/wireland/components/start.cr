@@ -3,13 +3,13 @@ class Wireland::Component::Start < Wireland::Component
     true
   end
   
-  def self.output_whitelist : Array(Wireland::Component.class)
-    Wireland::Component.all.reject(self)
+  def self.output_whitelist
+    super.reject {|c| c == self}
   end
 
   def on_tick
-    if parent.ticks < shape.size
-      parent.active_pulse(connects.dup)
+    if parent.ticks < xy.size
+      parent.active_pulse(id, connects.dup)
     end
   end
 end

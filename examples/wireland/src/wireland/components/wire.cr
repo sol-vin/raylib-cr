@@ -8,8 +8,8 @@ class Wireland::Component::Wire < Wireland::Component
   end
 
   
-  def self.output_whitelist : Array(Wireland::Component.class)
-    Wireland::Component.all.reject(Wireland::Component::AltWire, self)
+  def self.output_whitelist
+    super.reject {|c| c == Wireland::Component::AltWire || c == self}
   end
 end
 
@@ -23,7 +23,7 @@ class Wireland::Component::AltWire < Wireland::Component
   end
 
   
-  def self.output_whitelist : Array(Wireland::Component.class)
-    Wireland::Component.all.reject(Wireland::Component::Wire, self)
+  def self.output_whitelist
+    super.reject {|c| c == Wireland::Component::Wire || c == self}
   end
 end

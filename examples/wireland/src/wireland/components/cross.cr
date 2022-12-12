@@ -13,26 +13,28 @@ class Wireland::Component::Cross < Wireland::Component
     } 
     connects.each do |c|
       direction = Wireland::Direction::None
-      c.shape.each do |c_point|
-        adjacent_directions.select { |d, a| shape.includes?({ x: c_point[:x] + a[:x], y: c_point[:y] + a[:y] }) }.keys.each do |d|
+      parent[c].xy.each do |c_point|
+        adjacent_directions.select { |d, a| xy.includes?({ x: c_point[:x] + a[:x], y: c_point[:y] + a[:y] }) }.keys.each do |d|
           direction |= d
         end
       end
 
       if direction != Wireland::Direction::None
-        directions[direction] = c.id
+        directions[direction] = c
       end
     end
   end
 
   # Special on_new_pulse to send the pulse to the correct place.
   def on_pulse(from_id : UInt64)
-    directions[from_id].any? do |d|
-      if d_id = directions.find {|k, _| k.includes? d.flip}
-        pulse_out(d_id[1])
-        true
-      else
-        false
+    if d = directions.find {|d, c_id| c_id == from_id}
+      d[0].each do |d|
+        if d_id = directions.find {|k, _| k.includes? d.flip}
+          pulse_out(d_id[1])
+          true
+        else
+          false
+        end
       end
     end
   end

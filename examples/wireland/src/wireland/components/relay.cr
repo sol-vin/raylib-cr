@@ -3,11 +3,11 @@ class Wireland::Component::RelaySwitch < Wireland::Component
     true
   end
 
-  def self.output_whitelist : Array(Wireland::Component.class, self)
+  def self.output_whitelist : Array(Wireland::Component.class)
     Wireland::Component.none
   end
 
-  getter poles = [] of Wireland::RelayPole
+  getter poles : Array(Wireland::RelayPole) = [] of Wireland::RelayPole
 
   def on_tick
     poles.each(&.on) if high?
@@ -24,8 +24,8 @@ class Wireland::Component::RelaySwitch < Wireland::Component
     all_pole_components = parent.components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::Component))
 
     neighbor_poles = all_pole_components.select do |pole_c|
-      pole_c.shape.any? do |pole_xy|
-        shape.any? do |xy|
+      pole_c.xy.any? do |pole_xy|
+        xy.any? do |xy|
           adjacent.any? do |a_point|
             pole_xy == {x: xy[:x] + a_point[:x], y: xy[:y] + a_point[:y]}
           end
@@ -33,7 +33,9 @@ class Wireland::Component::RelaySwitch < Wireland::Component
       end
     end
 
-    @poles = neighbor_poles.map(&.as(Wireland::RelayPole))
+    neighbor_poles.each do |pole|
+      @poles << pole.as(Wireland::RelayPole)
+    end
   end
 end
 
@@ -50,8 +52,8 @@ class Wireland::Component::RelayNOPole < Wireland::Component
     true
   end
 
-  def self.output_whitelist : Array(Wireland::Component.class)
-    super.reject(Wireland::Component::RelaySwitch, self)
+  def self.output_whitelist
+    super.reject {|c| c == Wireland::Component::RelaySwitch || c == self}
   end
 
   include Wireland::RelayPole  
@@ -70,8 +72,8 @@ class Wireland::Component::RelayNCPole < Wireland::Component
     true
   end
 
-  def self.output_whitelist : Array(Wireland::Component.class)
-    super.reject(Wireland::Component::RelaySwitch, self)
+  def self.output_whitelist
+    super.reject {|c| c == Wireland::Component::RelaySwitch || c == self}
   end
 
   include Wireland::RelayPole 
