@@ -8,7 +8,11 @@ class Wireland::Component::NotIn < Wireland::Component
   end
 end
 
-class Wireland::Component::NotOut < Wireland::Component::Active
+class Wireland::Component::NotOut < Wireland::Component
+  def self.active?
+    true
+  end
+
   def self.allow_adjacent?
     true
   end

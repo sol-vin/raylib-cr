@@ -1,4 +1,6 @@
-module Wireland::Pallette::DefaultColors
+module Wireland::DefaultColors
+  alias R = Raylib
+
   PINK     = R::Color.new(r: 0xF6, g: 0x75, b: 0x7A, a: 0xFF)
   RED      = R::Color.new(r: 0xE4, g: 0x3B, b: 0x44, a: 0xFF)
   DARK_RED = R::Color.new(r: 0x9E, g: 0x28, b: 0x35, a: 0xFF)
@@ -33,7 +35,7 @@ module Wireland::Pallette::DefaultColors
 end
 
 struct Wireland::Pallette
-  alias DC = Wireland::Pallette::DefaultColors
+  alias DC = Wireland::DefaultColors
   alias WC = Wireland::Component
   alias R = Raylib
 
@@ -58,41 +60,41 @@ struct Wireland::Pallette
     relay_nc_pole: DC::DARK_RED,
     diode_in: DC::GREEN,
     diode_out: DC::DARK_GREEN,
-    gpio: DC::PURPLE
+    gpio: DC::PURPLE,
     bg: DC::BLACK
   )
 
-  getter start : R::Color
-  getter pause : R::Color
-  getter wire : R::Color
-  getter alt_wire : R::Color
-  getter join : R::Color
-  getter cross : R::Color
-  getter tunnel : R::Color
-  getter input_on : R::Color
-  getter input_off : R::Color
-  getter input_toggle_on : R::Color
-  getter input_toggle_off : R::Color
-  getter output_on : R::Color
-  getter output_off : R::Color
-  getter not_in : R::Color
-  getter not_out : R::Color
-  getter relay_switch : R::Color
-  getter relay_no_pole : R::Color
-  getter relay_nc_pole : R::Color
-  getter diode_in : R::Color
-  getter diode_out : R::Color
-  getter gpio : R::Color
-  getter bg : R::Color
+  getter start : R::Color = DC::LIGHT_GREEN
+  getter pause : R::Color = DC::DARK_BLUE
+  getter wire : R::Color = DC::WHITE
+  getter alt_wire : R::Color = DC::GREY
+  getter join : R::Color = DC::DARK_BROWN
+  getter cross : R::Color = DC::BROWN
+  getter tunnel : R::Color = DC::LIGHT_ORANGE
+  getter input_on : R::Color = DC::ORANGE
+  getter input_off : R::Color = DC::DARK_ORANGE
+  getter input_toggle_on : R::Color = DC::LIGHT_PURPLE
+  getter input_toggle_off : R::Color = DC::DARK_PURPLE
+  getter output_on : R::Color = DC::YELLOW
+  getter output_off : R::Color = DC::DARK_YELLOW
+  getter not_in : R::Color = DC::LIGHT_BLUE
+  getter not_out : R::Color = DC::BLUE
+  getter relay_switch : R::Color = DC::PINK
+  getter relay_no_pole : R::Color = DC::RED
+  getter relay_nc_pole : R::Color = DC::DARK_RED
+  getter diode_in : R::Color = DC::GREEN
+  getter diode_out : R::Color = DC::DARK_GREEN
+  getter gpio : R::Color = DC::PURPLE
+  getter bg : R::Color = DC::BLACK
 
   def initialize(
     @start = DC::LIGHT_GREEN,
-    @pause = DC::LIGHT_ORANGE,
+    @pause = DC::DARK_BLUE,
     @wire = DC::WHITE,
     @alt_wire = DC::GREY,
     @join = DC::DARK_BROWN,
     @cross = DC::BROWN,
-    @tunnel = DC::DARK_BLUE,
+    @tunnel = DC::LIGHT_BROWN,
     @input_on = DC::ORANGE,
     @input_off = DC::DARK_ORANGE,
     @input_toggle_on = DC::LIGHT_PURPLE,
@@ -105,8 +107,8 @@ struct Wireland::Pallette
     @relay_no_pole = DC::RED,
     @relay_nc_pole = DC::DARK_RED,
     @diode_in = DC::GREEN,
-    @diode_out = DC::DARK_GREEN
-    @gpio = DC::PURPLE
+    @diode_out = DC::DARK_GREEN,
+    @gpio = DC::PURPLE,
     @bg = DC::BLACK
   )
   end
@@ -114,8 +116,8 @@ struct Wireland::Pallette
   def initialize(filename : String)
     File.open(filename) do |file|
       index = 0
-      while (line = file.read_line)
-        break if line.chomp.empty?
+      while (line = file.gets)
+        break if line.chomp.empty? || index == 25
         index += 1
         case index
         when 1
@@ -168,7 +170,7 @@ struct Wireland::Pallette
           @bg = _read_color(line)
         end
       end
-      raise ".pal did not have enough colors. Only had #{index-2}" if index < 24
+      raise ".pal did not have enough colors. Only had #{index-2}" if index < 25
     end
   end
 
@@ -201,14 +203,16 @@ struct Wireland::Pallette
   private def _read_color(line) : R::Color
     color_regex = /^([1-2]{0,1}\d{0,1}\d{1}\s){2}([1-2]{0,1}\d{0,1}\d{1})$/
     match_data = color_regex.match(line)
+    if md = match_data
+      if md.size == 3
+        u8s = md[0].split(" ").map(&.to_u8)
+        r = u8s[0]
+        g = u8s[1]
+        b = u8s[2]
+        raise "invalid color #{[r, g, b]} in pallette " if [r, g, b].any? { |i| i < 0 || i > 255 }
 
-    if match_data.size == 3
-      r = match_data[0].to_s.to_u8
-      g = match_data[1].to_s.to_u8
-      b = match_data[2].to_s.to_u8
-      raise "invalid color #{[r, g, b]} in pallette " if [r, g, b].any? { |i| i < 0 || i > 255 }
-
-      return R::Color.new(r: r, g: g, b: b)
+        return R::Color.new(r: r, g: g, b: b)
+      end
     end
 
     raise "Something went wrong. line was #{line} in _read_color"

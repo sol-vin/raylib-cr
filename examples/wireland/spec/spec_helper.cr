@@ -1,0 +1,7 @@
+require "spec"
+require "raylib-cr"
+require "../src/wireland/direction"
+require "../src/wireland/circuit"
+require "../src/wireland/component"
+require "../src/wireland/components/**"
+require "../src/wireland/colors"

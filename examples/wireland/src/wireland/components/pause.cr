@@ -1,4 +1,8 @@
-class Wireland::Component::Pause < Wireland::Component::Active
+class Wireland::Component::Pause < Wireland::Component
+  def self.active?
+    true
+  end
+  
   def self.allow_adjacent?
     true
   end

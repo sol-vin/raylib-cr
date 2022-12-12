@@ -10,16 +10,9 @@ class Wireland::Component::Tunnel < Wireland::Component
 
   # Special on_pulse to send the pulse to the correct place.
   def on_pulse(from_id : UInt64)
-    # If a tunnel is sending us charge, send the pulse to the proper connect
+    # If a tunnel is sending us pulse, send the pulse out to all the connects
     if tunnel_directions.values.includes? from_id
-      tunnel_directions[from_id].any? do |d|
-        if d_id = connect_directions.find {|k, _| k.includes? d.flip}
-          pulse_out(d_id[1])
-          true
-        else
-          false
-        end
-      end
+      pulse_out
     # If a connection is sending is a pulse, send it to the proper tunnel
     elsif connect_directions.values.includes? from_id
       connect_directions[from_id].any? do |d|

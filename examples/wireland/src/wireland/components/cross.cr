@@ -14,7 +14,7 @@ class Wireland::Component::Cross < Wireland::Component
     connects.each do |c|
       direction = Wireland::Direction::None
       c.shape.each do |c_point|
-        adjacent_directions.select { |d, a| shape.includes? { x: c_point[:x] + a[:x], y: c_point[:y] + a[:y] } }.keys.each do |d|
+        adjacent_directions.select { |d, a| shape.includes?({ x: c_point[:x] + a[:x], y: c_point[:y] + a[:y] }) }.keys.each do |d|
           direction |= d
         end
       end

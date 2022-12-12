@@ -9,6 +9,7 @@
 /.shards/
 *.dwarf
 /examples/*/lib/
+/examples/*/.shards/
 /examples/_build/
 
 # Libraries don't need dependency lock

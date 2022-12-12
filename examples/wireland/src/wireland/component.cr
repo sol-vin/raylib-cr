@@ -1,16 +1,17 @@
  # A wire instruction like WIRE, ALTWIRE, JOIN, ETC
 class Wireland::Component
+  alias R = Raylib
   alias Point = NamedTuple(x: Int32, y: Int32)
 
 
   # Holds a list of all classes inheriting this class
-  class_getter all : Array(Wireland::Component.class)
+  class_getter all : Array(Wireland::Component.class) = [] of Wireland::Component.class
   # Empty list for easier definition for components
   class_getter none : Array(Wireland::Component.class) = [] of Wireland::Component.class
 
   # Adds all inheriting types to the class list
   macro inherited
-    Wireland::Component.all << {{@type.id}} unless {{@type.id}} == Wireland::Component::Active
+    Wireland::Component.all << {{@type.id}}
   end
 
   # Color of the component
@@ -37,7 +38,7 @@ class Wireland::Component
 
   # List of `Component` classes that this component should not pulse out to.
   def self.output_whitelist : Array(self.class)
-    Wireland::Component.all.reject(self::DiodeOut, self::NotOut)
+    Wireland::Component.all.reject(Wireland::Component::DiodeOut, Wireland::Component::NotOut)
   end
 
   # Link to the parent circuit
@@ -79,26 +80,15 @@ class Wireland::Component
     !!pulses[id]?
   end
 
-  # Has this component pulsed a component with `id`
-  def was_high?(id)
-    !!circuit[com_id].pulses[self.id]?
-  end
-
   def pulse_out
-    if passive?
-      connects.each do |com_id|
-        # Pulse our connecting parts, but only if we haven't pulsed it already.
-        circuit[com_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
-      end
-    elsif active?
+    connects.each do |com_id|
+      # Pulse our connecting parts, but only if we haven't pulsed it already.
+      circuit[com_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
     end
   end
 
   def pulse_out(to_id : UInt64)
-    if passive?
-      circuit[to_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
-    elsif active?
-    end
+    circuit[to_id].pulse_in(self.id) unless pulsed_by?(com_id) || has_pulsed?(com_id)
   end
 
   def pulse_in(from_id : UInt64)
@@ -133,12 +123,6 @@ class Wireland::Component
 
   # What should be done when this part receives a new charge from a new source
   def on_pulse(from_id : UInt64)
-    pulse_out unless high?
-  end
-end
-
-class Wireland::Component::Active < Wireland::Component
-  def self.active?
-    true
+    pulse_out unless active? || pulses.size > 1
   end
 end

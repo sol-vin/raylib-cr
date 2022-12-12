@@ -9,8 +9,31 @@ class Wireland::Component::RelaySwitch < Wireland::Component
 
   getter poles = [] of Wireland::RelayPole
 
-  def on_high
-    poles.each(&.on)
+  def on_tick
+    poles.each(&.on) if high?
+  end
+
+  def setup
+    adjacent = [
+      {x: 0, y: -1},
+      {x: -1, y: 0},
+      {x: 0, y: 1},
+      {x: 1, y: 0},
+    ]
+
+    all_pole_components = parent.components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::Component))
+
+    neighbor_poles = all_pole_components.select do |pole_c|
+      pole_c.shape.any? do |pole_xy|
+        shape.any? do |xy|
+          adjacent.any? do |a_point|
+            pole_xy == {x: xy[:x] + a_point[:x], y: xy[:y] + a_point[:y]}
+          end
+        end
+      end
+    end
+
+    @poles = neighbor_poles.map(&.as(Wireland::RelayPole))
   end
 end
 
