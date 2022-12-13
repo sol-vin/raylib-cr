@@ -37,7 +37,7 @@ class Wireland::Component
 
   # List of `Component` classes that this component should not pulse out to.
   def self.output_whitelist : Array(Wireland::Component.class)
-    Wireland::Component.all.reject { |c| c == Wireland::Component::DiodeOut || c == Wireland::Component::NotOut }
+    Wireland::Component.all.reject { |c| c == Wireland::Component::Start || c == Wireland::Component::DiodeOut || c == Wireland::Component::NotOut }
   end
 
   # Link to the parent circuit

@@ -12,7 +12,7 @@ class Wireland::Component::Pause < Wireland::Component
   end
 
   def on_high
-    # Pause can only accept pulses from something that is not also connected to it. (one way input only) This must be DiodeOut or NotOut
+    # Pause can only accept pulses from something that is not also connected to it. (one way input only) This must be Start or DiodeOut or NotOut
     if (pulses - connects).size > 0
       state_queue << true
     else
