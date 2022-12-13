@@ -17,7 +17,7 @@ class Wireland::Component::Tunnel < Wireland::Component
     elsif connect_directions.values.includes? from_id
       if dir = connect_directions.find { |d, c_id| c_id == from_id }
         dir[0].each do |d|
-          if d_id = tunnel_directions.find { |k, _| k.includes? d.flip }
+          if d_id = tunnel_directions.find { |k, _| k.includes? d }
             pulse_out(d_id[1])
             true
           else

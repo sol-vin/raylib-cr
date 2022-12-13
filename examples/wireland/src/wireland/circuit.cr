@@ -143,11 +143,13 @@ class Wireland::Circuit
     image = R.load_image(filename)
     @components = load(image, @pallette)
     components.each(&.setup)
+    reset
   end
 
   def initialize(image : R::Image, @pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT)
     @components = load(image, pallette)
     components.each(&.setup)
+    reset
   end
 
   # Gets a component at index
@@ -186,6 +188,14 @@ class Wireland::Circuit
     end
 
     active_pulses.clear
+
+    components.each do |c|
+      if c.high?
+        c.on_high
+      else
+        c.on_low
+      end
+    end
   end
 
   def post_tick
@@ -198,29 +208,17 @@ class Wireland::Circuit
 
   # Main logic route for the circuit
   def tick
-    # For the first tick only run on_tick to queue up any starting pulses.
-    if ticks == 0
-      components.each(&.on_tick)
-      @ticks += 1
-    else
-      pre_tick
-
-      components.each do |c|
-        if c.high?
-          c.on_high
-        else
-          c.on_low
-        end
-      end
-
-      post_tick
-
-      @ticks += 1
-    end
+    @ticks += 1
+    pre_tick
+    post_tick
   end
 
   # Resets the circuit to tick 0
   def reset
     @ticks = 0
+    active_pulses.clear
+    components.each(&.pulses.clear)
+    components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
+    components.each(&.on_tick)
   end
 end
