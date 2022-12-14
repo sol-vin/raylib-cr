@@ -25,7 +25,6 @@ describe Wireland::Circuit do
 
     if pause = circuit.components.find { |c| c.is_a? WC::Pause && c.xy.size == 4 }
       pause.connects.all? do |w_c|
-        (circuit[w_c].is_a? WC::Start && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::Wire && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::AltWire && circuit[w_c].xy.size == 8)
       end.should be_true
@@ -82,6 +81,7 @@ describe Wireland::Circuit do
     end
 
     if not_out = circuit.components.find { |c| c.is_a? WC::NotOut && c.xy.size == 4 }
+      #not_out.connects.each {|i| puts "#{circuit[i].id} - #{circuit[i].class} -  #{circuit[i].connects}"}
       not_out.connects.all? do |w_c|
         (circuit[w_c].is_a? WC::RelayNOPole && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::RelaySwitch && circuit[w_c].xy.size == 4)
@@ -184,10 +184,10 @@ describe Wireland::Circuit do
 
   it "should be able to run cross-test" do
     circuit = Wireland::Circuit.new("rsrc/cross-test.png")
-    wire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? {|con| c.parent[con].is_a? WC::Wire}} 
-    wire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|con| c.parent[con].is_a? WC::DiodeIn}} 
-    altwire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? {|con| c.parent[con].is_a? WC::AltWire}} 
-    altwire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|con| c.parent[con].is_a? WC::NotIn}}
+    wire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? { |con| c.parent[con].is_a? WC::Wire }} 
+    wire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? { |con| c.parent[con].is_a? WC::DiodeIn }} 
+    altwire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? { |con| c.parent[con].is_a? WC::AltWire }} 
+    altwire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? { |con| c.parent[con].is_a? WC::NotIn }}
   
     circuit.active_pulses[wire_start.id]?.should be_truthy
     circuit.active_pulses[wire_end.id]?.should be_falsey
@@ -207,6 +207,15 @@ describe Wireland::Circuit do
     circuit.active_pulses[wire_end.id]?.should be_falsey
     circuit.active_pulses[altwire_start.id]?.should be_falsey
     circuit.active_pulses[altwire_end.id]?.should be_falsey
+  end
+
+  it "should be able to run cross-test2" do
+    circuit = Wireland::Circuit.new("rsrc/cross-test2.png")
+    detector = circuit.components.find! {|c| c.is_a? WC::Pause}
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_truthy
   end
 
   it "should be able to run tunnel-test" do
@@ -269,5 +278,109 @@ describe Wireland::Circuit do
     circuit.tick
 
     circuit.active_pulses[detector.id]?.should be_falsey
+  end
+
+  it "should be able to run notout-test" do
+    circuit = Wireland::Circuit.new("rsrc/notout-test.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Pause}
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_truthy
+  end
+
+  it "should be able to run relay-test" do
+    circuit = Wireland::Circuit.new("rsrc/relay-test.png")
+    detector_no =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    detector_nc =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
+
+    circuit.active_pulses[detector_no.id]?.should be_falsey
+    circuit.active_pulses[detector_nc.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[detector_no.id]?.should be_falsey
+    circuit.active_pulses[detector_nc.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector_no.id]?.should be_truthy
+    circuit.active_pulses[detector_nc.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[detector_no.id]?.should be_truthy
+    circuit.active_pulses[detector_nc.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[detector_no.id]?.should be_truthy
+    circuit.active_pulses[detector_nc.id]?.should be_falsey
+  end
+  
+  it "should be able to run xor-test" do
+    circuit = Wireland::Circuit.new("rsrc/xor-test.png")
+    detector_00 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::RelayNOPole}}
+    detector_01 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::RelayNCPole}}
+    detector_10 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    detector_11 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
+
+    circuit.active_pulses[detector_00.id]?.should be_falsey
+    circuit.active_pulses[detector_01.id]?.should be_falsey
+    circuit.active_pulses[detector_10.id]?.should be_falsey
+    circuit.active_pulses[detector_11.id]?.should be_falsey
+
+    circuit.tick
+    circuit.tick
+    circuit.tick
+
+    circuit.active_pulses[detector_00.id]?.should be_falsey
+    circuit.active_pulses[detector_01.id]?.should be_truthy
+    circuit.active_pulses[detector_10.id]?.should be_truthy
+    circuit.active_pulses[detector_11.id]?.should be_falsey
+  end
+
+  it "should be able to run not-test" do
+    circuit = Wireland::Circuit.new("rsrc/not-test.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Pause}
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+    
+    10.times do 
+      circuit.tick
+      circuit.active_pulses[detector.id]?.should be_truthy
+      circuit.tick
+      circuit.active_pulses[detector.id]?.should be_falsey
+    end
+  end
+
+  it "should be able to run complex-test" do
+    circuit = Wireland::Circuit.new("rsrc/complex-test.png")
+    detectors =  circuit.components.select {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn }}.sort {|a,b| a.xy[0][:x] <=> b.xy[0][:x] }
+
+    detectors.each {|d| circuit.active_pulses[d.id]?.should be_falsey}
+    7.times do
+      circuit.tick
+      circuit.active_pulses[detectors[circuit.ticks-1].id]?.should be_truthy
+      (detectors-[detectors[circuit.ticks-1]]).each {|d| circuit.active_pulses[d.id]?.should be_falsey}
+    end
+    circuit.tick
+    detectors.each {|d| circuit.active_pulses[d.id]?.should be_truthy}
+    circuit.tick
+    detectors.each {|d| circuit.active_pulses[d.id]?.should be_falsey}
   end
 end

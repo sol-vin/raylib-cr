@@ -70,7 +70,7 @@ class Wireland::Component
     pulses.size > 0
   end
 
-  # Has this component been pulsed this tick?
+  # Has this component not been pulsed this tick?
   def low?
     pulses.size == 0
   end
