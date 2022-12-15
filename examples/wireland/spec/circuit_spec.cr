@@ -16,15 +16,15 @@ describe Wireland::Circuit do
 
     if start = circuit.components.find { |c| c.is_a? WC::Start && c.xy.size == 4 }
       start.connects.all? do |w_c|
-        (circuit[w_c].is_a? WC::Pause && circuit[w_c].xy.size == 4)
+        (circuit[w_c].is_a? WC::Buffer && circuit[w_c].xy.size == 4)
       end.should be_true
     else
       # Fail
       true.should be_false
     end
 
-    if pause = circuit.components.find { |c| c.is_a? WC::Pause && c.xy.size == 4 }
-      pause.connects.all? do |w_c|
+    if buffer = circuit.components.find { |c| c.is_a? WC::Buffer && c.xy.size == 4 }
+      buffer.connects.all? do |w_c|
           (circuit[w_c].is_a? WC::Wire && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::AltWire && circuit[w_c].xy.size == 8)
       end.should be_true
@@ -35,7 +35,7 @@ describe Wireland::Circuit do
 
     if wire = circuit.components.find { |c| c.is_a? WC::Wire && c.xy.size == 4 }
       wire.connects.all? do |w_c|
-        (circuit[w_c].is_a? WC::Pause && circuit[w_c].xy.size == 4) ||
+        (circuit[w_c].is_a? WC::Buffer && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::Join && circuit[w_c].xy.size == 8)
       end.should be_true
     else
@@ -45,7 +45,7 @@ describe Wireland::Circuit do
 
     if altwire = circuit.components.find { |c| c.is_a? WC::AltWire && c.xy.size == 8 }
       altwire.connects.all? do |w_c|
-        (circuit[w_c].is_a? WC::Pause && circuit[w_c].xy.size == 4) ||
+        (circuit[w_c].is_a? WC::Buffer && circuit[w_c].xy.size == 4) ||
           (circuit[w_c].is_a? WC::Join && circuit[w_c].xy.size == 8)
       end.should be_true
     else
@@ -83,8 +83,8 @@ describe Wireland::Circuit do
     if not_out = circuit.components.find { |c| c.is_a? WC::NotOut && c.xy.size == 4 }
       #not_out.connects.each {|i| puts "#{circuit[i].id} - #{circuit[i].class} -  #{circuit[i].connects}"}
       not_out.connects.all? do |w_c|
-        (circuit[w_c].is_a? WC::RelayNOPole && circuit[w_c].xy.size == 4) ||
-          (circuit[w_c].is_a? WC::RelaySwitch && circuit[w_c].xy.size == 4)
+        (circuit[w_c].is_a? WC::NOPole && circuit[w_c].xy.size == 4) ||
+          (circuit[w_c].is_a? WC::Switch && circuit[w_c].xy.size == 4)
       end.should be_true
 
       not_out.connects.size.should eq 2
@@ -93,7 +93,7 @@ describe Wireland::Circuit do
       true.should be_false
     end
 
-    if switch = circuit.components.find { |c| c.is_a? WC::RelaySwitch && c.xy.size == 4 }.as WC::RelaySwitch
+    if switch = circuit.components.find { |c| c.is_a? WC::Switch && c.xy.size == 4 }.as WC::Switch
       switch.connects.all? do |w_c|
         (circuit[w_c].is_a? WC::Cross && circuit[w_c].xy.size == 1)
       end.should be_true
@@ -108,12 +108,12 @@ describe Wireland::Circuit do
 
     circuit.components.select(&.is_a? Wireland::RelayPole).size.should eq 3
 
-    circuit.components.any? { |c| c.is_a? WC::RelayNOPole && c.xy.size == 4 && c.terminal? }.should be_true
+    circuit.components.any? { |c| c.is_a? WC::NOPole && c.xy.size == 4 && c.terminal? }.should be_true
 
-    if no_pole = circuit.components.find { |c| c.is_a? WC::RelayNOPole && c.xy.size == 4 && c.connects.size != 0 }
+    if no_pole = circuit.components.find { |c| c.is_a? WC::NOPole && c.xy.size == 4 && c.connects.size != 0 }
       no_pole.connects.all? do |w_c|
         (circuit[w_c].is_a? WC::DiodeIn && circuit[w_c].xy.size == 4) ||
-          (circuit[w_c].is_a? WC::RelayNCPole && circuit[w_c].xy.size == 4)
+          (circuit[w_c].is_a? WC::NCPole && circuit[w_c].xy.size == 4)
       end.should be_true
 
       no_pole.connects.size.should eq 2
@@ -166,28 +166,28 @@ describe Wireland::Circuit do
   it "should be able to run pulse-test" do
     circuit = Wireland::Circuit.new("rsrc/pulse-test.png")
     start = circuit.components.find!(&.is_a? WC::Start)
-    pause = circuit.components.find!(&.is_a? WC::Pause).as(WC::Pause)
+    buffer = circuit.components.find!(&.is_a? WC::Buffer).as(WC::Buffer)
 
     circuit.active_pulses[start.id]?.should be_truthy
-    circuit.active_pulses[pause.id]?.should be_falsey
+    circuit.active_pulses[buffer.id]?.should be_falsey
 
     circuit.tick
 
     circuit.active_pulses[start.id]?.should be_falsey
-    circuit.active_pulses[pause.id]?.should be_truthy
+    circuit.active_pulses[buffer.id]?.should be_truthy
 
     circuit.tick
 
     circuit.active_pulses[start.id]?.should be_falsey
-    circuit.active_pulses[pause.id]?.should be_falsey
+    circuit.active_pulses[buffer.id]?.should be_falsey
   end
 
   it "should be able to run cross-test" do
     circuit = Wireland::Circuit.new("rsrc/cross-test.png")
     wire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? { |con| c.parent[con].is_a? WC::Wire }} 
-    wire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? { |con| c.parent[con].is_a? WC::DiodeIn }} 
+    wire_end = circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? { |con| c.parent[con].is_a? WC::DiodeIn }} 
     altwire_start = circuit.components.find! {|c| c.is_a? WC::Start && c.connects.any? { |con| c.parent[con].is_a? WC::AltWire }} 
-    altwire_end = circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? { |con| c.parent[con].is_a? WC::NotIn }}
+    altwire_end = circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? { |con| c.parent[con].is_a? WC::NotIn }}
   
     circuit.active_pulses[wire_start.id]?.should be_truthy
     circuit.active_pulses[wire_end.id]?.should be_falsey
@@ -211,7 +211,7 @@ describe Wireland::Circuit do
 
   it "should be able to run cross-test2" do
     circuit = Wireland::Circuit.new("rsrc/cross-test2.png")
-    detector = circuit.components.find! {|c| c.is_a? WC::Pause}
+    detector = circuit.components.find! {|c| c.is_a? WC::Buffer}
 
     circuit.active_pulses[detector.id]?.should be_falsey
     circuit.tick
@@ -221,68 +221,116 @@ describe Wireland::Circuit do
   it "should be able to run tunnel-test" do
     circuit = Wireland::Circuit.new("rsrc/tunnel-test.png")
     starts = circuit.components.select(&.is_a? WC::Start)
-    pauses = circuit.components.select(&.is_a? WC::Pause)
+    buffers = circuit.components.select(&.is_a? WC::Buffer)
 
     starts.each {|p| circuit.active_pulses[p.id]?.should be_truthy}
-    pauses.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
+    buffers.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
   
     circuit.tick
 
     starts.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
-    pauses.each {|p| circuit.active_pulses[p.id]?.should be_truthy}
+    buffers.each {|p| circuit.active_pulses[p.id]?.should be_truthy}
   
     circuit.tick
 
     starts.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
-    pauses.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
+    buffers.each {|p| circuit.active_pulses[p.id]?.should be_falsey}
   end
 
-  it "should be able to run pause-test" do
-    circuit = Wireland::Circuit.new("rsrc/pause-test.png")
-    pause1 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.size == 1}
-    pause2 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.size == 0}
+  it "should be able to run buffer-test" do
+    circuit = Wireland::Circuit.new("rsrc/buffer-test.png")
+    buffer1 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.size == 1}
+    buffer2 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.size == 0}
 
 
-    circuit.active_pulses[pause1.id]?.should be_falsey
-    circuit.active_pulses[pause2.id]?.should be_falsey
-
-    circuit.tick
-
-    circuit.active_pulses[pause1.id]?.should be_truthy
-    circuit.active_pulses[pause2.id]?.should be_falsey
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[pause1.id]?.should be_falsey
-    circuit.active_pulses[pause2.id]?.should be_truthy
+    circuit.active_pulses[buffer1.id]?.should be_truthy
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    
+    circuit.tick
+
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
   end
-  
-  it "should be able to run pause-test2" do
-    circuit = Wireland::Circuit.new("rsrc/pause-test2.png")
-    detector =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.size == 0}
 
-    circuit.active_pulses[detector.id]?.should be_falsey
+  it "should be able to run buffer-test2" do
+    circuit = Wireland::Circuit.new("rsrc/buffer-test2.png")
+    buffer1 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::AltWire}}
+    buffer2 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::Join}}
+    buffer3 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
+    buffer4 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    buffer5 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::Switch}}
+
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
+    
+    circuit.tick
+
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[detector.id]?.should be_truthy
+    circuit.active_pulses[buffer1.id]?.should be_truthy
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_truthy
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[detector.id]?.should be_truthy
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_truthy
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_truthy
+    circuit.active_pulses[buffer5.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[buffer1.id]?.should be_falsey
+    circuit.active_pulses[buffer2.id]?.should be_falsey
+    circuit.active_pulses[buffer3.id]?.should be_falsey
+    circuit.active_pulses[buffer4.id]?.should be_falsey
+    circuit.active_pulses[buffer5.id]?.should be_falsey
+
+    185.times {circuit.active_pulses[buffer5.id]?.should be_falsey; circuit.tick}
+    circuit.active_pulses[buffer5.id]?.should be_truthy
   end
 
   it "should be able to run notout-test" do
     circuit = Wireland::Circuit.new("rsrc/notout-test.png")
-    detector =  circuit.components.find! {|c| c.is_a? WC::Pause}
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer}
 
     circuit.active_pulses[detector.id]?.should be_falsey
 
@@ -305,8 +353,8 @@ describe Wireland::Circuit do
 
   it "should be able to run relay-test" do
     circuit = Wireland::Circuit.new("rsrc/relay-test.png")
-    detector_no =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
-    detector_nc =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
+    detector_no =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    detector_nc =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
 
     circuit.active_pulses[detector_no.id]?.should be_falsey
     circuit.active_pulses[detector_nc.id]?.should be_falsey
@@ -334,10 +382,10 @@ describe Wireland::Circuit do
   
   it "should be able to run xor-test" do
     circuit = Wireland::Circuit.new("rsrc/xor-test.png")
-    detector_00 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::RelayNOPole}}
-    detector_01 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::RelayNCPole}}
-    detector_10 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
-    detector_11 =  circuit.components.find! {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
+    detector_00 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NOPole}}
+    detector_01 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NCPole}}
+    detector_10 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    detector_11 =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn}}
 
     circuit.active_pulses[detector_00.id]?.should be_falsey
     circuit.active_pulses[detector_01.id]?.should be_falsey
@@ -356,7 +404,7 @@ describe Wireland::Circuit do
 
   it "should be able to run not-test" do
     circuit = Wireland::Circuit.new("rsrc/not-test.png")
-    detector =  circuit.components.find! {|c| c.is_a? WC::Pause}
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer}
 
     circuit.active_pulses[detector.id]?.should be_falsey
     
@@ -370,7 +418,7 @@ describe Wireland::Circuit do
 
   it "should be able to run complex-test" do
     circuit = Wireland::Circuit.new("rsrc/complex-test.png")
-    detectors =  circuit.components.select {|c| c.is_a? WC::Pause && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn }}.sort {|a,b| a.xy[0][:x] <=> b.xy[0][:x] }
+    detectors =  circuit.components.select {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn }}.sort {|a,b| a.xy[0][:x] <=> b.xy[0][:x] }
 
     detectors.each {|d| circuit.active_pulses[d.id]?.should be_falsey}
     7.times do
@@ -382,5 +430,39 @@ describe Wireland::Circuit do
     detectors.each {|d| circuit.active_pulses[d.id]?.should be_truthy}
     circuit.tick
     detectors.each {|d| circuit.active_pulses[d.id]?.should be_falsey}
+  end
+
+  it "should be able to run srlatch-test" do
+    circuit = Wireland::Circuit.new("rsrc/srlatch-test.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn}}
+    pole = circuit.components.find! {|c| c.is_a? WC::NCPole}
+    circuit.active_pulses[detector.id]?.should be_falsey
+    pole.conductive?.should be_true
+    circuit.tick
+    circuit.tick
+    circuit.tick
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_truthy
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_truthy
+    pole.conductive?.should be_false
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.tick
+    pole.conductive?.should be_true
+    circuit.active_pulses[detector.id]?.should be_truthy
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_truthy
+    pole.conductive?.should be_false
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.tick
+    pole.conductive?.should be_true
+    circuit.active_pulses[detector.id]?.should be_truthy
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_truthy
+    pole.conductive?.should be_false
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_falsey
   end
 end

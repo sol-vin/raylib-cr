@@ -1,4 +1,4 @@
-class Wireland::Component::RelaySwitch < Wireland::Component
+class Wireland::Component::Switch < Wireland::Component
   def self.allow_adjacent?
     true
   end
@@ -47,13 +47,13 @@ module Wireland::RelayPole
   end
 end
 
-class Wireland::Component::RelayNOPole < Wireland::Component
+class Wireland::Component::NOPole < Wireland::Component
   def self.allow_adjacent?
     true
   end
 
   def self.output_whitelist
-    super.reject { |c| c == Wireland::Component::RelaySwitch || c == self }
+    super.reject { |c| c == Wireland::Component::Switch || c == self }
   end
 
   include Wireland::RelayPole
@@ -67,13 +67,13 @@ class Wireland::Component::RelayNOPole < Wireland::Component
   end
 end
 
-class Wireland::Component::RelayNCPole < Wireland::Component
+class Wireland::Component::NCPole < Wireland::Component
   def self.allow_adjacent?
     true
   end
 
   def self.output_whitelist
-    super.reject { |c| c == Wireland::Component::RelaySwitch || c == self }
+    super.reject { |c| c == Wireland::Component::Switch || c == self }
   end
 
   include Wireland::RelayPole

@@ -41,7 +41,7 @@ struct Wireland::Pallette
 
   DEFAULT = Wireland::Pallette.new(
     start: DC::LIGHT_GREEN,
-    pause: DC::DARK_BLUE,
+    buffer: DC::DARK_BLUE,
     wire: DC::WHITE,
     alt_wire: DC::GREY,
     join: DC::DARK_BROWN,
@@ -55,9 +55,9 @@ struct Wireland::Pallette
     output_off: DC::DARK_YELLOW,
     not_in: DC::LIGHT_BLUE,
     not_out: DC::BLUE,
-    relay_switch: DC::PINK,
-    relay_no_pole: DC::RED,
-    relay_nc_pole: DC::DARK_RED,
+    switch: DC::PINK,
+    no_pole: DC::RED,
+    nc_pole: DC::DARK_RED,
     diode_in: DC::GREEN,
     diode_out: DC::DARK_GREEN,
     gpio: DC::PURPLE,
@@ -65,7 +65,7 @@ struct Wireland::Pallette
   )
 
   getter start : R::Color = DC::LIGHT_GREEN
-  getter pause : R::Color = DC::DARK_BLUE
+  getter buffer : R::Color = DC::DARK_BLUE
   getter wire : R::Color = DC::WHITE
   getter alt_wire : R::Color = DC::GREY
   getter join : R::Color = DC::DARK_BROWN
@@ -79,9 +79,9 @@ struct Wireland::Pallette
   getter output_off : R::Color = DC::DARK_YELLOW
   getter not_in : R::Color = DC::LIGHT_BLUE
   getter not_out : R::Color = DC::BLUE
-  getter relay_switch : R::Color = DC::PINK
-  getter relay_no_pole : R::Color = DC::RED
-  getter relay_nc_pole : R::Color = DC::DARK_RED
+  getter switch : R::Color = DC::PINK
+  getter no_pole : R::Color = DC::RED
+  getter nc_pole : R::Color = DC::DARK_RED
   getter diode_in : R::Color = DC::GREEN
   getter diode_out : R::Color = DC::DARK_GREEN
   getter gpio : R::Color = DC::PURPLE
@@ -89,7 +89,7 @@ struct Wireland::Pallette
 
   def initialize(
     @start = DC::LIGHT_GREEN,
-    @pause = DC::DARK_BLUE,
+    @buffer = DC::DARK_BLUE,
     @wire = DC::WHITE,
     @alt_wire = DC::GREY,
     @join = DC::DARK_BROWN,
@@ -103,9 +103,9 @@ struct Wireland::Pallette
     @output_off = DC::DARK_YELLOW,
     @not_in = DC::LIGHT_BLUE,
     @not_out = DC::BLUE,
-    @relay_switch = DC::PINK,
-    @relay_no_pole = DC::RED,
-    @relay_nc_pole = DC::DARK_RED,
+    @switch = DC::PINK,
+    @no_pole = DC::RED,
+    @nc_pole = DC::DARK_RED,
     @diode_in = DC::GREEN,
     @diode_out = DC::DARK_GREEN,
     @gpio = DC::PURPLE,
@@ -127,7 +127,7 @@ struct Wireland::Pallette
         when 4
           @start = _read_color(line)
         when 5
-          @pause = _read_color(line)
+          @buffer = _read_color(line)
         when 6
           @wire = _read_color(line)
         when 7
@@ -155,11 +155,11 @@ struct Wireland::Pallette
         when 18
           @not_out = _read_color(line)
         when 19
-          @relay_switch = _read_color(line)
+          @switch = _read_color(line)
         when 20
-          @relay_no_pole = _read_color(line)
+          @no_pole = _read_color(line)
         when 21
-          @relay_nc_pole = _read_color(line)
+          @nc_pole = _read_color(line)
         when 22
           @diode_in = _read_color(line)
         when 23
@@ -177,7 +177,7 @@ struct Wireland::Pallette
   def all
     [
       @start,
-      @pause,
+      @buffer,
       @wire,
       @alt_wire,
       @join,
@@ -191,9 +191,9 @@ struct Wireland::Pallette
       @output_off,
       @not_in,
       @not_out,
-      @relay_switch,
-      @relay_no_pole,
-      @relay_nc_pole,
+      @switch,
+      @no_pole,
+      @nc_pole,
       @diode_in,
       @diode_out,
       @gpio,
@@ -224,7 +224,7 @@ struct Wireland::Pallette
     raise "Duplicate color" if total != all.uniq.size
 
     WC::Start.color = @start
-    WC::Pause.color = @pause
+    WC::Buffer.color = @buffer
     WC::Wire.color = @wire
     WC::AltWire.color = @alt_wire
     WC::Join.color = @join
@@ -238,9 +238,9 @@ struct Wireland::Pallette
     WC::OutputOff.color = @output_off
     WC::NotIn.color = @not_in
     WC::NotOut.color = @not_out
-    WC::RelaySwitch.color = @relay_switch
-    WC::RelayNOPole.color = @relay_no_pole
-    WC::RelayNCPole.color = @relay_nc_pole
+    WC::Switch.color = @switch
+    WC::NOPole.color = @no_pole
+    WC::NCPole.color = @nc_pole
     WC::DiodeIn.color = @diode_in
     WC::DiodeOut.color = @diode_out
     WC::GPIO.color = @gpio

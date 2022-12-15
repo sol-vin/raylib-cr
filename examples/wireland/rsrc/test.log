@@ -1,11 +1,11 @@
-[#<Wireland::Component::RelayNOPole:0x23957d15040
+[#<Wireland::Component::NOPole:0x23957d15040
   @conductive=true,
   @connects=[],
   @id=14,
   
   @pulses=[],
   @xy=[{x: 13, y: 2}, {x: 13, y: 3}, {x: 14, y: 2}, {x: 14, y: 3}]>,
- #<Wireland::Component::RelayNOPole:0x23957d15000
+ #<Wireland::Component::NOPole:0x23957d15000
   @conductive=true,
   @connects=[4, 16],
   @id=15,
