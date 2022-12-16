@@ -465,4 +465,44 @@ describe Wireland::Circuit do
     circuit.tick
     circuit.active_pulses[detector.id]?.should be_falsey
   end
+
+  it "should be able to run pole-test" do
+    circuit = Wireland::Circuit.new("rsrc/pole-test.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer}
+    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.tick
+    circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.tick # Extra tick to make sure the switches turn on for the NOPole
+    circuit.active_pulses[detector.id]?.should be_truthy
+  end
+
+  it "should be able to run tunnel-test2" do
+    circuit = Wireland::Circuit.new("rsrc/tunnel-test2.png")
+    good_detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn} }
+    bad_detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn} }
+
+    circuit.active_pulses[good_detector.id]?.should be_falsey
+    circuit.active_pulses[bad_detector.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[good_detector.id]?.should be_truthy
+    circuit.active_pulses[bad_detector.id]?.should be_falsey
+  end
+
+  it "should be able to run tick-elongator" do
+    circuit = Wireland::Circuit.new("rsrc/tick-elongator.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn} }
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+    
+    169.times do
+      circuit.tick
+
+      circuit.active_pulses[detector.id]?.should be_truthy
+    end
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+  end
 end

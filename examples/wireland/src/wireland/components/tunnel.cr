@@ -36,8 +36,13 @@ class Wireland::Component::Tunnel < Wireland::Component
       Wireland::Direction::Right => {x: 1, y: 0},
     }
 
+    
+    one_way_connections = parent.components.select(&.is_a?(WC::Start | WC::DiodeOut | WC::NotOut)).select do |c|
+      c.connects.includes? self.id
+    end.map(&.id)
+
     # Find which directions connects are connected to.
-    connects.each do |c|
+    (one_way_connections+connects).each do |c|
       direction = Wireland::Direction::None
       parent[c].xy.each do |c_point|
         adjacent_directions.select { |d, a| xy[0] == {x: c_point[:x] + a[:x], y: c_point[:y] + a[:y]} }.keys.each do |d|
