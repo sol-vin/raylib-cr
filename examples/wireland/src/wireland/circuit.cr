@@ -38,7 +38,7 @@ class Wireland::Circuit
           id += 1
         else
           component = component_class.new self
-          component.xy = _get_component_shape(component_points, component_class, xy, {x: image.width, y: image.height})
+          component.xy = _get_component_shape(component_points, component_class, xy)
           component.id = id
           components << component
           id += 1
@@ -72,8 +72,16 @@ class Wireland::Circuit
     components
   end
 
+  private def _get_tunnel_neighbors(component_points : Hash(WC.class, Array(Point)), xy : Point) : Array(Point)
+    new_points = component_points[WC::Tunnel].select do |point|
+      xy != point && (xy[:x] == point[:x] || xy[:y] == point[:y])
+    end
+
+    new_points
+  end
+
   # Goes through the hash of component points to find the shape of an individual component from a starting point `xy`
-  private def _get_component_shape(component_points : Hash(WC.class, Array(Point)), com : WC.class, xy : Point, max : Point) : Array(Point)
+  private def _get_component_shape(component_points : Hash(WC.class, Array(Point)), com : WC.class, xy : Point) : Array(Point)
     shape = [] of Point
     neighbors = [xy]
     shape.concat neighbors
@@ -81,18 +89,21 @@ class Wireland::Circuit
     until neighbors.empty?
       shape.concat(
         neighbors = neighbors.map do |n|
-          _get_neighbors(component_points, com, n, max)
+          ns = _get_neighbors(component_points, com, n)
+          ns.concat(_get_tunnel_neighbors component_points, n) if com == WC::Tunnel
+          ns
         end.flatten.uniq!.reject do |n|
           shape.includes? n
         end
       )
     end
+
     shape
   end
 
   # Gets a list of all adjacent neighbors of type `com` around point `xy`
-  private def _get_neighbors(component_points : Hash(WC.class, Array(Point)), com : WC.class, xy : Point, max : Point) : Array(Point)
-    neighbors = _make_neighborhood(xy, com, max)
+  private def _get_neighbors(component_points : Hash(WC.class, Array(Point)), com : WC.class, xy : Point) : Array(Point)
+    neighbors = _make_neighborhood(xy, com)
 
     # If the neighbors are empty return nothing
     return [] of Point if neighbors.empty?
@@ -101,7 +112,7 @@ class Wireland::Circuit
   end
 
   # Creates a list of neighbor points around xy.
-  private def _make_neighborhood(xy : Point, com : WC.class, max : Point)
+  private def _make_neighborhood(xy : Point, com : WC.class)
     diags = [
       {x: -1, y: -1},
       {x: -1, y: 1},
@@ -120,12 +131,7 @@ class Wireland::Circuit
     r_points += diags if com.allow_diags?
     r_points += adjacent if com.allow_adjacent?
 
-    r_points.map { |r_p| {x: xy[:x] + r_p[:x], y: xy[:y] + r_p[:y]} }.reject do |a_p|
-      a_p[:x] < 0 ||
-        a_p[:y] < 0 ||
-        a_p[:x] >= max[:x] ||
-        a_p[:y] >= max[:y]
-    end
+    r_points.map { |r_p| {x: xy[:x] + r_p[:x], y: xy[:y] + r_p[:y]} }
   end
 
   # Palette of colors that will be loaded into our component classes.

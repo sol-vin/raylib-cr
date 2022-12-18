@@ -3,7 +3,7 @@ require "./spec_helper"
 describe Wireland::Circuit do
   it "should be able to read a file in" do
     circuit = Wireland::Circuit.new("rsrc/count-test.png")
-    circuit.components.size.should eq 27
+    circuit.components.size.should eq 24
   end
 
   it "should be able to read a file in" do
@@ -143,24 +143,10 @@ describe Wireland::Circuit do
     # Tunnel test
 
     # Find middle tunnel
-    m_t = circuit.components.select { |t| t.is_a?(WC::Tunnel) }.map(&.as(WC::Tunnel)).find do |t|
-      t.connect_directions.size == 1 && t.connect_directions.keys[0] == Wireland::Direction::All
-    end
+    tunnel = circuit.components.find!(&.is_a?(WC::Tunnel))
+    tunnel.xy.size.should eq 9
+    tunnel.connects.size.should eq 13
 
-    m_t.should be_truthy
-
-    if middle_tunnel = m_t
-      middle_tunnel.connect_directions.size.should eq 1
-      middle_tunnel.tunnel_directions.size.should eq 4
-
-      corner_tunnels = circuit.components.select { |c| c.is_a? WC::Tunnel }.map(&.as(WC::Tunnel)).select { |t| t.tunnel_directions.size == 2 }
-      corner_tunnels.size.should eq 4
-      corner_tunnels.each { |t| t.connects.size.should eq 2; t.connect_directions.size.should eq 2 }
-
-      side_tunnels = circuit.components.select { |c| c.is_a? WC::Tunnel }.map(&.as(WC::Tunnel)).select { |t| t.tunnel_directions.size == 3 }
-      side_tunnels.size.should eq 4
-      side_tunnels.each { |t| t.connects.size.should eq 2; t.connect_directions.size.should eq 2 }
-    end
   end
 
   it "should be able to run pulse-test" do
@@ -478,16 +464,17 @@ describe Wireland::Circuit do
 
   it "should be able to run tunnel-test2" do
     circuit = Wireland::Circuit.new("rsrc/tunnel-test2.png")
-    good_detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::DiodeIn} }
-    bad_detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn} }
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn} }
 
-    circuit.active_pulses[good_detector.id]?.should be_falsey
-    circuit.active_pulses[bad_detector.id]?.should be_falsey
+    circuit.active_pulses[detector.id]?.should be_falsey
 
     circuit.tick
 
-    circuit.active_pulses[good_detector.id]?.should be_truthy
-    circuit.active_pulses[bad_detector.id]?.should be_falsey
+    circuit.active_pulses[detector.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_falsey
   end
 
   it "should be able to run tick-elongator" do
@@ -504,5 +491,22 @@ describe Wireland::Circuit do
     circuit.tick
 
     circuit.active_pulses[detector.id]?.should be_falsey
+  end
+
+  
+  it "should be able to run tick-elongator-safe" do
+    circuit = Wireland::Circuit.new("rsrc/tick-elongator-safe.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer && c.connects.any? {|c_id| circuit[c_id].is_a? WC::NotIn} }
+
+    100.times do
+      circuit.active_pulses[detector.id]?.should be_falsey
+
+      21.times do
+        circuit.tick
+
+        circuit.active_pulses[detector.id]?.should be_truthy
+      end
+      circuit.tick
+    end
   end
 end
