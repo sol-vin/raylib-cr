@@ -391,14 +391,18 @@ describe Wireland::Circuit do
   it "should be able to run not-test" do
     circuit = Wireland::Circuit.new("rsrc/not-test.png")
     detector =  circuit.components.find! {|c| c.is_a? WC::Buffer}
+    not =  circuit.components.find! {|c| c.is_a? WC::NotOut}
 
     circuit.active_pulses[detector.id]?.should be_falsey
+    circuit.active_pulses[not.id]?.should be_truthy
     
     10.times do 
       circuit.tick
       circuit.active_pulses[detector.id]?.should be_truthy
+      circuit.active_pulses[not.id]?.should be_falsey
       circuit.tick
       circuit.active_pulses[detector.id]?.should be_falsey
+      circuit.active_pulses[not.id]?.should be_truthy
     end
   end
 
@@ -508,5 +512,96 @@ describe Wireland::Circuit do
       end
       circuit.tick
     end
+  end
+
+  it "should be able to run cross-test3" do
+    circuit = Wireland::Circuit.new("rsrc/cross-test3.png")
+    detector =  circuit.components.find! {|c| c.is_a? WC::Buffer}
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_truthy
+
+    circuit.tick
+
+    circuit.active_pulses[detector.id]?.should be_falsey
+  end
+
+  it "should be able to run io-test" do
+    circuit = Wireland::Circuit.new("rsrc/io-test.png")
+    i_t_on = circuit.components.find!{|c| c.is_a?(WC::InputToggleOn)}.as(WC::InputToggleOn)
+    i_t_on_out_on = circuit.components.find!{|c| c.is_a?(WC::OutputOn) && c.xy.size == 9}.as(WC::OutputOn)
+    i_t_on_out_off = circuit.components.find!{|c| c.is_a?(WC::OutputOff) && c.xy.size == 9}.as(WC::OutputOff)
+
+    i_t_off = circuit.components.find!{|c| c.is_a?(WC::InputToggleOff)}.as(WC::InputToggleOff)
+    i_t_off_out_on = circuit.components.find!{|c| c.is_a?(WC::OutputOn) && c.xy.size == 8}.as(WC::OutputOn)
+    i_t_off_out_off = circuit.components.find!{|c| c.is_a?(WC::OutputOff) && c.xy.size == 8}.as(WC::OutputOff)
+
+    i_on = circuit.components.find!{|c| c.is_a?(WC::InputOn)}.as(WC::InputOn)
+    i_on_out_on = circuit.components.find!{|c| c.is_a?(WC::OutputOn) && c.xy.size == 7}.as(WC::OutputOn)
+    i_on_out_off = circuit.components.find!{|c| c.is_a?(WC::OutputOff) && c.xy.size == 7}.as(WC::OutputOff)
+
+    i_off = circuit.components.find!{|c| c.is_a?(WC::InputOff)}.as(WC::InputOff)
+    i_off_out_on = circuit.components.find!{|c| c.is_a?(WC::OutputOn) && c.xy.size == 6}.as(WC::OutputOn)
+    i_off_out_off = circuit.components.find!{|c| c.is_a?(WC::OutputOff) && c.xy.size == 6}.as(WC::OutputOff)
+
+    i_t_on.on?.should be_true
+    circuit.active_pulses[i_t_on.id]?.should be_truthy
+    i_t_off.on?.should be_false
+    i_on.on?.should be_false
+    circuit.active_pulses[i_on.id]?.should be_truthy
+    i_off.on?.should be_false
+
+    circuit.tick
+
+    i_t_on.on?.should be_true
+    circuit.active_pulses[i_t_on.id]?.should be_truthy
+    i_t_off.on?.should be_false
+    i_on.on?.should be_false
+    circuit.active_pulses[i_on.id]?.should be_falsey
+    i_off.on?.should be_false
+
+    circuit.tick
+
+    i_t_on.on?.should be_true
+    circuit.active_pulses[i_t_on.id]?.should be_truthy
+    i_t_off.on?.should be_false
+    i_on.on?.should be_false
+    circuit.active_pulses[i_on.id]?.should be_falsey
+    i_off.on?.should be_false
+
+    i_on.on
+    i_off.on
+
+    circuit.tick
+    circuit.active_pulses[i_on.id]?.should be_truthy
+    circuit.active_pulses[i_off.id]?.should be_truthy
+
+    circuit.tick
+    circuit.active_pulses[i_on.id]?.should be_falsey
+    circuit.active_pulses[i_off.id]?.should be_falsey
+
+    i_t_on.off
+    circuit.tick
+    circuit.active_pulses[i_t_on.id]?.should be_falsey
+
+    circuit.tick
+    circuit.active_pulses[i_t_on.id]?.should be_falsey
+
+    i_t_on.on
+
+    circuit.tick
+    circuit.active_pulses[i_t_on.id]?.should be_truthy
+
+    i_t_on_out_on.on?.should be_false
+    i_t_on_out_off.on?.should be_false
+
+
+    circuit.tick
+    circuit.active_pulses[i_t_on.id]?.should be_truthy
+    i_t_on_out_on.on?.should be_true
+    i_t_on_out_off.on?.should be_true
   end
 end
