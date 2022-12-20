@@ -6,7 +6,7 @@ authors:
 
 targets:
   app:
-    main: src/wireland.cr
+    main: src/app.cr
 
 dependencies:
   raylib-cr:

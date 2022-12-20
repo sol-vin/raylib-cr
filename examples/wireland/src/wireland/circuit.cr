@@ -135,7 +135,7 @@ class Wireland::Circuit
   end
 
   # Palette of colors that will be loaded into our component classes.
-  property pallete : Wireland::Pallette = Wireland::Pallette::DEFAULT
+  property pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT
 
   # List of all components in this circuit
   property components = [] of WC
@@ -145,9 +145,22 @@ class Wireland::Circuit
   # List of pulses that need to
   getter active_pulses = {} of UInt64 => Array(UInt64)
 
+  def initialize
+  end
+
+  def initialize(filename : String, pallette_file : String)
+    @pallette = Wireland::Pallette.new(pallette_file)
+    image = R.load_image(filename)
+    @components = load(image, @pallette)
+    R.unload_image image
+    components.each(&.setup)
+    reset
+  end
+
   def initialize(filename : String, @pallette : Wireland::Pallette = Wireland::Pallette::DEFAULT)
     image = R.load_image(filename)
     @components = load(image, @pallette)
+    R.unload_image image
     components.each(&.setup)
     reset
   end

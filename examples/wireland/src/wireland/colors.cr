@@ -117,60 +117,64 @@ struct Wireland::Pallette
     File.open(filename) do |file|
       index = 0
       while (line = file.gets)
-        break if line.chomp.empty? || index == 25
+        break if line.chomp.empty? || index == 26
         index += 1
         case index
         when 1
           raise "Not a .pal file :(" unless line =~ /^JASC-PAL$/
         when 2
           raise "Not a .pal file :(" unless line =~ /^0100$/
+        when 3
+          # number of colors
         when 4
-          @start = _read_color(line)
+          # blank color
         when 5
-          @buffer = _read_color(line)
+          @start = _read_color(line)
         when 6
-          @wire = _read_color(line)
+          @buffer = _read_color(line)
         when 7
-          @alt_wire = _read_color(line)
+          @wire = _read_color(line)
         when 8
-          @join = _read_color(line)
+          @alt_wire = _read_color(line)
         when 9
-          @cross = _read_color(line)
+          @join = _read_color(line)
         when 10
-          @tunnel = _read_color(line)
+          @cross = _read_color(line)
         when 11
-          @input_on = _read_color(line)
+          @tunnel = _read_color(line)
         when 12
-          @input_off = _read_color(line)
+          @input_on = _read_color(line)
         when 13
-          @input_toggle_on = _read_color(line)
+          @input_off = _read_color(line)
         when 14
-          @input_toggle_off = _read_color(line)
+          @input_toggle_on = _read_color(line)
         when 15
-          @output_on = _read_color(line)
+          @input_toggle_off = _read_color(line)
         when 16
-          @output_off = _read_color(line)
+          @output_on = _read_color(line)
         when 17
-          @not_in = _read_color(line)
+          @output_off = _read_color(line)
         when 18
-          @not_out = _read_color(line)
+          @not_in = _read_color(line)
         when 19
-          @switch = _read_color(line)
+          @not_out = _read_color(line)
         when 20
-          @no_pole = _read_color(line)
+          @switch = _read_color(line)
         when 21
-          @nc_pole = _read_color(line)
+          @no_pole = _read_color(line)
         when 22
-          @diode_in = _read_color(line)
+          @nc_pole = _read_color(line)
         when 23
-          @diode_out = _read_color(line)
+          @diode_in = _read_color(line)
         when 24
-          @gpio = _read_color(line)
+          @diode_out = _read_color(line)
         when 25
+          @gpio = _read_color(line)
+        when 26
           @bg = _read_color(line)
         end
       end
-      raise ".pal did not have enough colors. Only had #{index - 2}" if index < 25
+      raise ".pal did not have enough colors. Only had #{index - 2}" if index < 26
     end
   end
 
@@ -196,7 +200,7 @@ struct Wireland::Pallette
       @nc_pole,
       @diode_in,
       @diode_out,
-      @gpio,
+      @gpio
     ]
   end
 
@@ -211,7 +215,7 @@ struct Wireland::Pallette
         b = u8s[2]
         raise "invalid color #{[r, g, b]} in pallette " if [r, g, b].any? { |i| i < 0 || i > 255 }
 
-        return R::Color.new(r: r, g: g, b: b)
+        return R::Color.new(r: r, g: g, b: b, a: 255)
       end
     end
 
