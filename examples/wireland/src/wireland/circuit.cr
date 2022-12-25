@@ -90,7 +90,7 @@ class Wireland::Circuit
       shape.concat(
         neighbors = neighbors.map do |n|
           ns = _get_neighbors(component_points, com, n)
-          ns.concat(_get_tunnel_neighbors component_points, n) if com == WC::Tunnel
+          ns.concat(_get_tunnel_neighbors(component_points, n)) if com == WC::Tunnel
           ns
         end.flatten.uniq!.reject do |n|
           shape.includes? n

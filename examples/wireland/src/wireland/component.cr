@@ -63,7 +63,6 @@ class Wireland::Component
   # Can this component conduct in and out? Used by relay poles to turn off and on a component.
   property? conductive : Bool = true
 
-  # TODO: Remove this, we only need it for the load and setup phase, nothing else
   # List of points on the original image where this component is.
   property xy = [] of Point
 
