@@ -23,7 +23,7 @@ module Wireland::App
 
     module Zoom
       # Smallest zoom possible
-      LIMIT_LOWER = 0.2_f32
+      LIMIT_LOWER = 0.11_f32
       # Largest zoom possible
       LIMIT_UPPER = 5.0_f32
       # Unit to move zoom by
@@ -49,9 +49,6 @@ module Wireland::App
   @@camera.offset.y = Screen::HEIGHT/2
 
   @@previous_camera_mouse_drag_pos = V2.zero
-
-  @@fade = 0.0
-  @@fade_up = false
 
   @@show_help = false
   @@show_pulses = false
@@ -193,6 +190,7 @@ module Wireland::App
 
       if R.key_released?(Keys::RESET)
         @@circuit.reset
+        @@last_active_pulses = @@circuit.active_pulses.keys
       end
     end
   end
@@ -216,46 +214,39 @@ module Wireland::App
       R.begin_mode_2d @@camera
       if is_circuit_loaded?
         R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
+        @@circuit.components.each do |c|
+          if (@@show_pulses && (c.high? || @@last_active_pulses.includes? c.id)) || c.is_a?(Wireland::RelayPole)
+            t_b = @@component_textures[c.id]
+            bounds = R::Rectangle.new(
+              x: t_b[:bounds].x * Scale::CIRCUIT,
+              y: t_b[:bounds].y * Scale::CIRCUIT,
+              width: t_b[:bounds].width * Scale::CIRCUIT,
+              height: t_b[:bounds].height * Scale::CIRCUIT
+            )
+            color = R::Color.new
 
-        if @@show_pulses
-          # if @@fade_up
-          #   @@fade += 0.1
-          # else
-          #   @@fade -= 0.1
-          # end
-
-          # if @@fade > 1.0
-          #   @@fade = 1.0
-          #   @@fade_up = false
-          # elsif @@fade < 0.5
-          #   @@fade = 0.5
-          #   @@fade_up = true
-          # end
-          
-          @@circuit.components.each do |c|
-            if c.high? || @@last_active_pulses.includes? c.id
-              t_b = @@component_textures[c.id]
-              bounds = R::Rectangle.new(
-                x: t_b[:bounds].x * Scale::CIRCUIT,
-                y: t_b[:bounds].y * Scale::CIRCUIT,
-                width: t_b[:bounds].width * Scale::CIRCUIT,
-                height: t_b[:bounds].height * Scale::CIRCUIT
-              )
-              color = R::Color.new
-
-              if @@last_active_pulses.includes? c.id
-                color = R::MAGENTA
-              else
-                color = R::RED
-              end
-
-              R.draw_texture_ex(
-                t_b[:render], 
-                V2.new(x:bounds.x-@@circuit_texture.width/2, y: bounds.y-@@circuit_texture.height/2), 
-                0, 
-                Scale::CIRCUIT, 
-                R.fade(color, 1.0))
+            if @@last_active_pulses.includes? c.id
+              color = R::MAGENTA
+            else
+              color = R::RED
             end
+
+            if pole = c.as?(Wireland::RelayPole)
+              if !pole.conductive?
+                color = @@pallette.bg
+              elsif c.high?
+                color = R::RED
+              else
+                color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
+              end
+            end
+
+            R.draw_texture_ex(
+              t_b[:render], 
+              V2.new(x:bounds.x-@@circuit_texture.width/2, y: bounds.y-@@circuit_texture.height/2), 
+              0, 
+              Scale::CIRCUIT, 
+              color)
           end
         end
       end

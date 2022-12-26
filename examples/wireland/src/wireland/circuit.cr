@@ -240,6 +240,7 @@ class Wireland::Circuit
   def reset
     @ticks = 0
     active_pulses.clear
+    components.select(&.is_a?(WC::Buffer)).each(&.setup)
     components.each(&.pulses.clear)
     components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
     components.each(&.on_tick)
