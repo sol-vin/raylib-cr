@@ -14,7 +14,7 @@ module Wireland::App
   alias W = Wireland
 
   module Scale
-    CIRCUIT = 1.0
+    CIRCUIT = 10.0
   end
 
   module Screen
@@ -23,12 +23,19 @@ module Wireland::App
 
     module Zoom
       # Smallest zoom possible
-      LIMIT_LOWER = 5.0_f32
+      LIMIT_LOWER = 0.2_f32
       # Largest zoom possible
-      LIMIT_UPPER = 50.0_f32
+      LIMIT_UPPER = 5.0_f32
       # Unit to move zoom by
-      UNIT = 0.5
+      UNIT = 0.1
     end
+  end
+
+  module Keys
+    HELP = R::KeyboardKey::Slash
+    PULSES = R::KeyboardKey::Q
+    TICK = R::KeyboardKey::Space
+    RESET = R::KeyboardKey::R
   end
 
   @@pallette = W::Pallette::DEFAULT
@@ -42,6 +49,14 @@ module Wireland::App
   @@camera.offset.y = Screen::HEIGHT/2
 
   @@previous_camera_mouse_drag_pos = V2.zero
+
+  @@fade = 0.0
+  @@fade_up = false
+
+  @@show_help = false
+  @@show_pulses = false
+  
+  @@last_active_pulses = [] of UInt64
 
   def self.is_circuit_loaded?
     !(@@circuit_texture.width == 0 && @@circuit_texture.height == 0)
@@ -68,6 +83,8 @@ module Wireland::App
         @@circuit = W::Circuit.new(circuit_file, @@pallette)
         R.unload_texture(@@circuit_texture) if is_circuit_loaded?
         @@circuit_texture = R.load_texture(circuit_file)
+
+        @@last_active_pulses = @@circuit.active_pulses.keys
 
         if !@@component_textures.empty?
           @@component_textures.each { |t| R.unload_texture(t[:render]) }
@@ -152,6 +169,34 @@ module Wireland::App
     end
   end
 
+  def self.handle_keys
+    if is_circuit_loaded?
+      if R.key_released?(Keys::HELP)
+        @@show_help = !@@show_help
+      end
+
+      if R.key_released?(Keys::PULSES)
+        @@show_pulses = !@@show_pulses
+        @@fade = 1.0
+      end
+
+      if R.key_released?(Keys::TICK)
+        if @@circuit.ticks != 0
+          @@circuit.post_tick
+        end
+
+        @@last_active_pulses = @@circuit.active_pulses.keys
+
+        @@circuit.increase_ticks
+        @@circuit.pre_tick
+      end
+
+      if R.key_released?(Keys::RESET)
+        @@circuit.reset
+      end
+    end
+  end
+
   def self.run
     R.init_window(Screen::WIDTH, Screen::HEIGHT, "wireland")
     R.set_target_fps(60)
@@ -161,6 +206,8 @@ module Wireland::App
 
       handle_camera_mouse
 
+      handle_keys
+
       R.begin_drawing
       R.clear_background(@@pallette.bg)
       if !is_circuit_loaded?
@@ -168,15 +215,48 @@ module Wireland::App
       end
       R.begin_mode_2d @@camera
       if is_circuit_loaded?
-        R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, 1, R::WHITE)
+        R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
 
-        @@component_textures.each do |t_b|
-          R.draw_texture_ex(
-            t_b[:render], 
-            V2.new(x: t_b[:bounds].x-@@circuit_texture.width/2, y: t_b[:bounds].y-@@circuit_texture.height/2), 
-            0, 
-            1, 
-            R::RED)
+        if @@show_pulses
+          # if @@fade_up
+          #   @@fade += 0.1
+          # else
+          #   @@fade -= 0.1
+          # end
+
+          # if @@fade > 1.0
+          #   @@fade = 1.0
+          #   @@fade_up = false
+          # elsif @@fade < 0.5
+          #   @@fade = 0.5
+          #   @@fade_up = true
+          # end
+          
+          @@circuit.components.each do |c|
+            if c.high? || @@last_active_pulses.includes? c.id
+              t_b = @@component_textures[c.id]
+              bounds = R::Rectangle.new(
+                x: t_b[:bounds].x * Scale::CIRCUIT,
+                y: t_b[:bounds].y * Scale::CIRCUIT,
+                width: t_b[:bounds].width * Scale::CIRCUIT,
+                height: t_b[:bounds].height * Scale::CIRCUIT
+              )
+              color = R::Color.new
+
+              if @@last_active_pulses.includes? c.id
+                color = R::MAGENTA
+              else
+                color = R::RED
+              end
+
+              R.draw_texture_ex(
+                t_b[:render], 
+                V2.new(x:bounds.x-@@circuit_texture.width/2, y: bounds.y-@@circuit_texture.height/2), 
+                0, 
+                Scale::CIRCUIT, 
+                R.fade(color, 1.0))
+            end
+          end
         end
       end
       R.end_mode_2d

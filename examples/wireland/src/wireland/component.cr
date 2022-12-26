@@ -39,6 +39,7 @@ class Wireland::Component
   def self.output_whitelist : Array(Wireland::Component.class)
     Wireland::Component.all.reject do |c| 
       c == Wireland::Component::Start || 
+      c == Wireland::Component::Buffer || 
       c == Wireland::Component::DiodeOut || 
       c == Wireland::Component::NotOut ||
       c == Wireland::Component::InputOn || 

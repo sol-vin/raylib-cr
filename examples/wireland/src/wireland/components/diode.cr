@@ -14,8 +14,6 @@ class Wireland::Component::DiodeOut < Wireland::Component
   end
 
   def self.output_whitelist : Array(Wireland::Component.class)
-    super.reject do |c| 
-      c == Wireland::Component::DiodeIn
-    end
+    [super.reject {|c| c == Wireland::Component::DiodeIn}, Wireland::Component::Buffer].flatten
   end
 end

@@ -225,9 +225,13 @@ class Wireland::Circuit
     components.each(&.pulses.clear)
   end
 
+  def increase_ticks
+    @ticks += 1
+  end
+
   # Main logic route for the circuit
   def tick
-    @ticks += 1
+    increase_ticks
     pre_tick
     post_tick
   end

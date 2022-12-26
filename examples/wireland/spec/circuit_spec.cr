@@ -145,8 +145,7 @@ describe Wireland::Circuit do
     # Find middle tunnel
     tunnel = circuit.components.find!(&.is_a?(WC::Tunnel))
     tunnel.xy.size.should eq 9
-    tunnel.connects.size.should eq 13
-
+    tunnel.connects.size.should eq 10
   end
 
   it "should be able to run pulse-test" do
