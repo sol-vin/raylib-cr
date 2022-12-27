@@ -220,6 +220,8 @@ class Wireland::Circuit
   def post_tick
     # Turn off all the poles, then flip them back on via on_tick where needed
     components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
+    components.select(&.is_a?(WC::InputOff)).map(&.as(WC::InputOff)).each(&.off)
+    components.select(&.is_a?(WC::InputOn)).map(&.as(WC::InputOn)).each(&.off)
     components.each(&.on_tick)
     # Clear out all the pulses to start the next tick.
     components.each(&.pulses.clear)

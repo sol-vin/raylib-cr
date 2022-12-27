@@ -245,6 +245,10 @@ module Wireland::App
 
             if io = c.as?(Wireland::IO)
               color = io.color
+
+              if @@show_pulses && @@last_active_pulses.includes? c.id
+                color = R::MAGENTA
+              end
             end
 
             R.draw_texture_ex(
