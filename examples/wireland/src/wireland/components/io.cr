@@ -29,14 +29,12 @@ class Wireland::Component::InputOn < Wireland::Component
 
   include Wireland::IO
 
-  @on = true 
+  @on = true
   
   def on_tick
     if on?
       parent.active_pulse(id, connects)
     end
-
-    @on = false
   end
 
   def color
@@ -59,8 +57,6 @@ class Wireland::Component::InputOff < Wireland::Component
     if on?
       parent.active_pulse(id, connects)
     end
-
-    @on = false
   end
 
   

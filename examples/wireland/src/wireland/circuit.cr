@@ -243,6 +243,12 @@ class Wireland::Circuit
     components.select(&.is_a?(WC::Buffer)).each(&.setup)
     components.each(&.pulses.clear)
     components.select(&.is_a?(Wireland::RelayPole)).map(&.as(Wireland::RelayPole)).each(&.off)
+    components.select(&.is_a?(WC::InputOff)).map(&.as(WC::InputOff)).each(&.off)
+    components.select(&.is_a?(WC::InputOn)).map(&.as(WC::InputOn)).each(&.on)
+    components.select(&.is_a?(WC::InputToggleOff)).map(&.as(WC::InputToggleOff)).each(&.off)
+    components.select(&.is_a?(WC::InputToggleOn)).map(&.as(WC::InputToggleOn)).each(&.on)
+    components.select(&.is_a?(WC::OutputOff)).map(&.as(WC::OutputOff)).each(&.off)
+    components.select(&.is_a?(WC::OutputOn)).map(&.as(WC::OutputOn)).each(&.on)
     components.each(&.on_tick)
   end
 end

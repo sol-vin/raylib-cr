@@ -12,6 +12,7 @@ module Wireland::App
   alias R = Raylib
   alias V2 = R::Vector2
   alias W = Wireland
+  alias WC = Wireland::Component
 
   module Scale
     CIRCUIT = 10.0
@@ -214,8 +215,9 @@ module Wireland::App
       R.begin_mode_2d @@camera
       if is_circuit_loaded?
         R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
+
         @@circuit.components.each do |c|
-          if (@@show_pulses && (c.high? || @@last_active_pulses.includes? c.id)) || c.is_a?(Wireland::RelayPole)
+          if (@@show_pulses && (c.high? || @@last_active_pulses.includes? c.id)) || c.is_a?(Wireland::RelayPole) || c.is_a?(Wireland::IO)
             t_b = @@component_textures[c.id]
             bounds = R::Rectangle.new(
               x: t_b[:bounds].x * Scale::CIRCUIT,
@@ -239,6 +241,10 @@ module Wireland::App
               else
                 color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
               end
+            end
+
+            if io = c.as?(Wireland::IO)
+              color = io.color
             end
 
             R.draw_texture_ex(

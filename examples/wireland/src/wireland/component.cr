@@ -73,6 +73,10 @@ class Wireland::Component
   def setup
   end
 
+  def color : R::Color
+    self.class.color
+  end
+
   # Has this component been pulsed this tick?
   def high?
     pulses.size > 0
