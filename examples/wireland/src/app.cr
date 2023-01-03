@@ -55,6 +55,8 @@ module Wireland::App
   @@show_pulses = false
   
   @@last_active_pulses = [] of UInt64
+  @@last_pulses = [] of UInt64
+
 
   def self.is_circuit_loaded?
     !(@@circuit_texture.width == 0 && @@circuit_texture.height == 0)
@@ -179,19 +181,26 @@ module Wireland::App
       end
 
       if R.key_released?(Keys::TICK)
-        if @@circuit.ticks != 0
-          @@circuit.post_tick
-        end
-
         @@last_active_pulses = @@circuit.active_pulses.keys
-
         @@circuit.increase_ticks
         @@circuit.pre_tick
+
+        @@last_pulses = @@circuit.components.select(&.high?).map(&.id)
+        @@circuit.post_tick
+        @@last_active_pulses.reject! do |c| 
+          if @@circuit[c].is_a?(Wireland::IO)
+            io = @@circuit[c].as(Wireland::IO)
+            io.off?
+          else
+            false
+          end
+        end
       end
 
       if R.key_released?(Keys::RESET)
         @@circuit.reset
         @@last_active_pulses = @@circuit.active_pulses.keys
+        @@last_pulses.clear
       end
     end
   end
@@ -217,7 +226,7 @@ module Wireland::App
         R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
 
         @@circuit.components.each do |c|
-          if (@@show_pulses && (c.high? || @@last_active_pulses.includes? c.id)) || c.is_a?(Wireland::RelayPole) || c.is_a?(Wireland::IO)
+          if (@@show_pulses && (@@last_pulses.includes?(c.id) || @@last_active_pulses.includes?(c.id))) || c.is_a?(Wireland::RelayPole) || c.is_a?(Wireland::IO)
             t_b = @@component_textures[c.id]
             bounds = R::Rectangle.new(
               x: t_b[:bounds].x * Scale::CIRCUIT,
@@ -229,7 +238,7 @@ module Wireland::App
 
             if @@last_active_pulses.includes? c.id
               color = R::MAGENTA
-            else
+            elsif @@last_pulses.includes? c.id
               color = R::RED
             end
 
