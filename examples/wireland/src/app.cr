@@ -33,10 +33,10 @@ module Wireland::App
   end
 
   module Keys
-    HELP = R::KeyboardKey::Slash
+    HELP   = R::KeyboardKey::Slash
     PULSES = R::KeyboardKey::Q
-    TICK = R::KeyboardKey::Space
-    RESET = R::KeyboardKey::R
+    TICK   = R::KeyboardKey::Space
+    RESET  = R::KeyboardKey::R
   end
 
   @@pallette = W::Pallette::DEFAULT
@@ -53,7 +53,7 @@ module Wireland::App
 
   @@show_help = false
   @@show_pulses = false
-  
+
   @@last_active_pulses = [] of UInt64
   @@last_pulses = [] of UInt64
 
@@ -96,7 +96,7 @@ module Wireland::App
         if !@@component_textures.empty?
           @@component_textures.each { |t| R.unload_texture(t[:render]) }
         end
-        
+
         # Map the component textures by getting the bounds and creating a texture for it.
         @@component_textures = @@circuit.components.map do |c|
           x_sort = c.xy.sort { |a, b| a[:x] <=> b[:x] }
@@ -204,9 +204,9 @@ module Wireland::App
 
         @@circuit.mid_tick
         @@last_pulses = @@circuit.components.select(&.high?).map(&.id)
-        
+
         @@circuit.post_tick
-        @@last_active_pulses.reject! do |c| 
+        @@last_active_pulses.reject! do |c|
           if @@circuit[c].is_a?(Wireland::IO)
             io = @@circuit[c].as(Wireland::IO)
             io.off?
@@ -230,12 +230,22 @@ module Wireland::App
       screen_mouse.x = R.get_mouse_x
       screen_mouse.y = R.get_mouse_y
 
-      world_mouse = R.get_screen_to_world_2d(screen_mouse, @@camera)/Scale::CIRCUIT
-      pixel_mouse = {x: world_mouse.x.to_i+2, y: world_mouse.y.to_i+1}
+      world_mouse = R.get_screen_to_world_2d(screen_mouse, @@camera)
 
-      if clicked_io = @@circuit.components.select(&.is_a?(Wireland::IO)).find {|io| io.xy.includes? pixel_mouse}
-        io = clicked_io.as(Wireland::IO)
-        io.toggle
+      clicked_io = @@circuit.components.select(&.is_a?(WC::InputOn | WC::InputOff | WC::InputToggleOn | WC::InputToggleOff)).find do |io|
+        io.xy.any? do |xy|
+          min_xy = {x: xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2, y: xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2}
+          max_xy = {x: xy[:x] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.width/2, y: xy[:y] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.height/2}
+
+          world_mouse.x > min_xy[:x] &&
+          world_mouse.y > min_xy[:y] &&
+          world_mouse.x < max_xy[:x] &&
+          world_mouse.y < max_xy[:y]
+        end
+      end
+
+      if clicked_io
+        clicked_io.as(Wireland::IO).toggle
       end
     end
   end
@@ -243,8 +253,6 @@ module Wireland::App
   def self.run
     R.init_window(Screen::WIDTH, Screen::HEIGHT, "wireland")
     R.set_target_fps(60)
-
-    
 
     until R.close_window?
       handle_dropped_files
@@ -298,10 +306,10 @@ module Wireland::App
             end
 
             R.draw_texture_ex(
-              t_b[:render], 
-              V2.new(x:bounds.x-@@circuit_texture.width/2, y: bounds.y-@@circuit_texture.height/2), 
-              0, 
-              Scale::CIRCUIT, 
+              t_b[:render],
+              V2.new(x: bounds.x - @@circuit_texture.width/2, y: bounds.y - @@circuit_texture.height/2),
+              0,
+              Scale::CIRCUIT,
               color)
           end
         end
