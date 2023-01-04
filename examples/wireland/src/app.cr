@@ -90,7 +90,9 @@ module Wireland::App
         R.unload_texture(@@circuit_texture) if is_circuit_loaded?
         @@circuit_texture = R.load_texture(circuit_file)
 
+        @@circuit.reset
         @@last_active_pulses = @@circuit.active_pulses.keys
+        @@last_pulses.clear
 
         # Release component textures if not empty.
         if !@@component_textures.empty?
