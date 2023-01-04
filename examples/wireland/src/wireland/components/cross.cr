@@ -13,7 +13,7 @@ class Wireland::Component::Cross < Wireland::Component
       Wireland::Direction::Right => {x: 1, y: 0},
     }
 
-    one_way_connections = parent.components.select(&.is_a?(WC::Start | WC::DiodeOut | WC::NotOut)).select do |c|
+    one_way_connections = parent.components.select(&.is_a?(WC::Start | WC::Buffer | WC::DiodeOut | WC::NotOut)).select do |c|
       c.connects.includes? self.id
     end.map(&.id)
 
@@ -43,7 +43,7 @@ class Wireland::Component::Cross < Wireland::Component
         end
       end
     else
-      raise "Unknown Direction from id #{from_id}"
+      raise "Unknown Direction from id #{from_id} which is a #{parent[from_id]}"
     end
   end
 end
