@@ -200,12 +200,17 @@ class Wireland::Circuit
   end
 
   def pre_tick
+    inputs = components.select(&.is_a?(WC::InputOn | WC::InputOff | WC::InputToggleOn | WC::InputToggleOff)).map(&.as(Wireland::IO))
+    inputs.select(&.on?).each { |i| active_pulse(i.id, i.connects) }
+
     active_pulses.each do |from, pulses|
       pulses.each do |to|
         self[from].pulse_out to
       end
     end
+  end
 
+  def mid_tick
     active_pulses.clear
 
     components.each do |c|
@@ -235,6 +240,7 @@ class Wireland::Circuit
   def tick
     increase_ticks
     pre_tick
+    mid_tick
     post_tick
   end
 

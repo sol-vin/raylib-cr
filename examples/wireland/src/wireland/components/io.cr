@@ -17,6 +17,10 @@ module Wireland::IO
     @on = false
   end
 
+  def toggle
+    @on = !@on
+  end
+
   def color : R::Color
     R::Color.new
   end
@@ -31,11 +35,11 @@ class Wireland::Component::InputOn < Wireland::Component
 
   @on = true
   
-  def on_tick
-    if on?
-      parent.active_pulse(id, connects)
-    end
-  end
+  # def on_tick
+  #   if on?
+  #     parent.active_pulse(id, connects)
+  #   end
+  # end
 
   def color
     if on?
@@ -53,11 +57,11 @@ class Wireland::Component::InputOff < Wireland::Component
 
   include Wireland::IO
 
-  def on_tick
-    if on?
-      parent.active_pulse(id, connects)
-    end
-  end
+  # def on_tick
+  #   if on?
+  #     parent.active_pulse(id, connects)
+  #   end
+  # end
 
   
   def color
@@ -78,11 +82,11 @@ class Wireland::Component::InputToggleOn < Wireland::Component
 
   @on = true 
   
-  def on_tick
-    if on?
-      parent.active_pulse(id, connects)
-    end
-  end
+  # def on_tick
+  #   if on?
+  #     parent.active_pulse(id, connects)
+  #   end
+  # end
 
   
   def color
@@ -101,11 +105,11 @@ class Wireland::Component::InputToggleOff < Wireland::Component
 
   include Wireland::IO
   
-  def on_tick
-    if on?
-      parent.active_pulse(id, connects)
-    end
-  end
+  # def on_tick
+  #   if on?
+  #     parent.active_pulse(id, connects)
+  #   end
+  # end
 
   def color
     if on?

@@ -57,25 +57,31 @@ module Wireland::App
   @@last_active_pulses = [] of UInt64
   @@last_pulses = [] of UInt64
 
-
+  # Checks to see if the circuit texture is loaded.
   def self.is_circuit_loaded?
     !(@@circuit_texture.width == 0 && @@circuit_texture.height == 0)
   end
 
+  # Handles when files are dropped into the window, specifically .pal and .png files.
   def self.handle_dropped_files
     if R.file_dropped?
       dropped_files = R.load_dropped_files
+      # Go through all the files dropped
       files = [] of String
       dropped_files.count.times do |i|
         files << String.new dropped_files.paths[i]
       end
+      # Unload the files afterwards
       R.unload_dropped_files(dropped_files)
 
+      # Find the first palette file
       if pallette_file = files.find { |f| /\.pal$/ =~ f }
         @@pallette = W::Pallette.new(pallette_file)
       end
 
+      # Find the first png file
       if circuit_file = files.find { |f| /\.png$/ =~ f }
+        # Load the file into texture memory.
         @@camera.zoom = Screen::Zoom::LIMIT_LOWER
         @@camera.target.x = 0
         @@camera.target.y = 0
@@ -86,10 +92,12 @@ module Wireland::App
 
         @@last_active_pulses = @@circuit.active_pulses.keys
 
+        # Release component textures if not empty.
         if !@@component_textures.empty?
           @@component_textures.each { |t| R.unload_texture(t[:render]) }
         end
         
+        # Map the component textures by getting the bounds and creating a texture for it.
         @@component_textures = @@circuit.components.map do |c|
           x_sort = c.xy.sort { |a, b| a[:x] <=> b[:x] }
           y_sort = c.xy.sort { |a, b| a[:y] <=> b[:y] }
@@ -106,11 +114,13 @@ module Wireland::App
             height: max_y - min_y + 1
           )
 
+          # Load a render texture to draw to
           render_texture = R.load_render_texture(bounds.width, bounds.height)
 
           R.begin_texture_mode(render_texture)
           R.clear_background(R::BLACK)
 
+          # Draw stuff we want in white
           c.xy.each do |xy|
             R.draw_rectangle(xy[:x] - min_x, xy[:y] - min_y, 1, 1, R::WHITE)
           end
@@ -130,14 +140,18 @@ module Wireland::App
           R.unload_image(image)
           R.unload_render_texture(render_texture)
 
+          # Finished package
           {render: texture, bounds: bounds}
         end
       end
     end
   end
 
+  # Handles how the mouse moves the camera
   def self.handle_camera_mouse
+    # Only go if the circuit is loaded
     if is_circuit_loaded?
+      # Do the zoom stuff for MWheel
       mouse_wheel = R.get_mouse_wheel_move * Screen::Zoom::UNIT
       if !mouse_wheel.zero?
         new_zoom = @@camera.zoom + mouse_wheel
@@ -150,6 +164,7 @@ module Wireland::App
         end
       end
 
+      # Translate cursor coords
       screen_mouse = V2.new
       screen_mouse.x = R.get_mouse_x
       screen_mouse.y = R.get_mouse_y
@@ -169,6 +184,7 @@ module Wireland::App
     end
   end
 
+  # Handles what keys do when pressed.
   def self.handle_keys
     if is_circuit_loaded?
       if R.key_released?(Keys::HELP)
@@ -181,11 +197,14 @@ module Wireland::App
       end
 
       if R.key_released?(Keys::TICK)
-        @@last_active_pulses = @@circuit.active_pulses.keys
         @@circuit.increase_ticks
         @@circuit.pre_tick
 
+        @@last_active_pulses = @@circuit.active_pulses.keys
+
+        @@circuit.mid_tick
         @@last_pulses = @@circuit.components.select(&.high?).map(&.id)
+        
         @@circuit.post_tick
         @@last_active_pulses.reject! do |c| 
           if @@circuit[c].is_a?(Wireland::IO)
@@ -205,14 +224,34 @@ module Wireland::App
     end
   end
 
+  def self.handle_io_mouse
+    if R.mouse_button_released?(R::MouseButton::Right)
+      screen_mouse = V2.new
+      screen_mouse.x = R.get_mouse_x
+      screen_mouse.y = R.get_mouse_y
+
+      world_mouse = R.get_screen_to_world_2d(screen_mouse, @@camera)/Scale::CIRCUIT
+      pixel_mouse = {x: world_mouse.x.to_i+2, y: world_mouse.y.to_i+1}
+
+      if clicked_io = @@circuit.components.select(&.is_a?(Wireland::IO)).find {|io| io.xy.includes? pixel_mouse}
+        io = clicked_io.as(Wireland::IO)
+        io.toggle
+      end
+    end
+  end
+
   def self.run
     R.init_window(Screen::WIDTH, Screen::HEIGHT, "wireland")
     R.set_target_fps(60)
+
+    
 
     until R.close_window?
       handle_dropped_files
 
       handle_camera_mouse
+
+      handle_io_mouse
 
       handle_keys
 
@@ -238,6 +277,8 @@ module Wireland::App
 
             if @@last_active_pulses.includes? c.id
               color = R::MAGENTA
+            elsif @@circuit.active_pulses.keys.includes? c.id
+              color = R::BLUE
             elsif @@last_pulses.includes? c.id
               color = R::RED
             end
@@ -254,10 +295,6 @@ module Wireland::App
 
             if io = c.as?(Wireland::IO)
               color = io.color
-
-              if @@show_pulses && @@last_active_pulses.includes? c.id
-                color = R::MAGENTA
-              end
             end
 
             R.draw_texture_ex(
