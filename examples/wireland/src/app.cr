@@ -39,6 +39,13 @@ module Wireland::App
     RESET  = R::KeyboardKey::R
   end
 
+  module Colors
+    HIGH = R::GREEN
+    ACTIVE_PULSE = R::RED
+    WILL_ACTIVE_PULSE = R::BLUE
+    IS_AND_WILL_ACTIVE_PULSE = R::MAGENTA
+  end
+
   @@pallette = W::Pallette::DEFAULT
   @@circuit = W::Circuit.new
   @@circuit_texture = R::Texture.new
@@ -56,6 +63,14 @@ module Wireland::App
 
   @@last_active_pulses = [] of UInt64
   @@last_pulses = [] of UInt64
+
+  def self.reset
+    @@circuit.reset
+    @@circuit.pre_tick
+
+    @@last_active_pulses.clear
+    @@last_pulses.clear
+  end
 
   # Checks to see if the circuit texture is loaded.
   def self.is_circuit_loaded?
@@ -90,9 +105,8 @@ module Wireland::App
         R.unload_texture(@@circuit_texture) if is_circuit_loaded?
         @@circuit_texture = R.load_texture(circuit_file)
 
-        @@circuit.reset
-        @@last_active_pulses = @@circuit.active_pulses.keys
-        @@last_pulses.clear
+        reset
+
 
         # Release component textures if not empty.
         if !@@component_textures.empty?
@@ -200,7 +214,8 @@ module Wireland::App
 
       if R.key_released?(Keys::TICK)
         @@circuit.increase_ticks
-        @@circuit.pre_tick
+        @@circuit.pre_tick unless @@circuit.ticks == 1
+
 
         @@last_active_pulses = @@circuit.active_pulses.keys
 
@@ -219,9 +234,7 @@ module Wireland::App
       end
 
       if R.key_released?(Keys::RESET)
-        @@circuit.reset
-        @@last_active_pulses = @@circuit.active_pulses.keys
-        @@last_pulses.clear
+        reset
       end
     end
   end
@@ -275,7 +288,15 @@ module Wireland::App
         R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
 
         @@circuit.components.each do |c|
-          if (@@show_pulses && (@@last_pulses.includes?(c.id) || @@last_active_pulses.includes?(c.id))) || c.is_a?(Wireland::RelayPole) || c.is_a?(Wireland::IO)
+          if (@@show_pulses && (
+                @@last_pulses.includes?(c.id) || 
+                @@last_active_pulses.includes?(c.id) || 
+                @@circuit.active_pulses.keys.includes?(c.id)
+              ) || 
+              c.is_a?(Wireland::RelayPole) || 
+              c.is_a?(Wireland::IO)
+            )
+
             t_b = @@component_textures[c.id]
             bounds = R::Rectangle.new(
               x: t_b[:bounds].x * Scale::CIRCUIT,
@@ -285,19 +306,21 @@ module Wireland::App
             )
             color = R::Color.new
 
-            if @@last_active_pulses.includes? c.id
-              color = R::MAGENTA
-            elsif @@circuit.active_pulses.keys.includes? c.id
-              color = R::BLUE
+            if @@circuit.active_pulses.keys.includes?(c.id) && @@last_active_pulses.includes?(c.id)
+              color = Colors::IS_AND_WILL_ACTIVE_PULSE
+            elsif @@last_active_pulses.includes? c.id
+              color = Colors::ACTIVE_PULSE
+            elsif @@circuit.active_pulses.keys.includes?(c.id)
+              color = Colors::WILL_ACTIVE_PULSE
             elsif @@last_pulses.includes? c.id
-              color = R::RED
+              color = Colors::HIGH
             end
 
             if pole = c.as?(Wireland::RelayPole)
               if !pole.conductive?
                 color = @@pallette.bg
-              elsif c.high?
-                color = R::RED
+              elsif @@show_pulses && @@last_pulses.includes?(c.id)
+                color = Colors::HIGH
               else
                 color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
               end
