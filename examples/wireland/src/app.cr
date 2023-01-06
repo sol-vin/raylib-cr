@@ -214,7 +214,7 @@ module Wireland::App
 
       if R.key_released?(Keys::TICK)
         @@circuit.increase_ticks
-        @@circuit.pre_tick unless @@circuit.ticks == 1
+        @@circuit.pre_tick
 
 
         @@last_active_pulses = @@circuit.active_pulses.keys
