@@ -113,6 +113,8 @@ module Wireland::App
           @@component_textures.each { |t| R.unload_texture(t[:render]) }
         end
 
+        last_component_id = @@circuit.components.sort { |a,b| b.id <=> a.id }[0].id
+
         # Map the component textures by getting the bounds and creating a texture for it.
         @@component_textures = @@circuit.components.map do |c|
           x_sort = c.xy.sort { |a, b| a[:x] <=> b[:x] }
@@ -129,6 +131,14 @@ module Wireland::App
             width: max_x - min_x + 1,
             height: max_y - min_y + 1
           )
+          R.begin_drawing
+          R.clear_background(@@pallette.bg)
+          loading_text = "Loading!"
+          loading_text_size = R.measure_text(loading_text, 30)/2
+          loading_text_size = 30
+          R.draw_text(loading_text, Screen::WIDTH/2 - loading_text_size, Screen::HEIGHT/2 - loading_text_size/2, loading_text_size, @@pallette.wire)
+          R.draw_rectangle(0,Screen::HEIGHT-Screen::HEIGHT/10, ((1.0 - ((last_component_id - c.id)/last_component_id)) * Screen::WIDTH).to_i, Screen::HEIGHT/10-Screen::HEIGHT/20, @@pallette.wire)
+          R.end_drawing
 
           # Load a render texture to draw to
           render_texture = R.load_render_texture(bounds.width, bounds.height)
@@ -214,7 +224,7 @@ module Wireland::App
 
       if R.key_released?(Keys::TICK)
         @@circuit.increase_ticks
-        @@circuit.pre_tick unless @@circuit.ticks == 1
+        @@circuit.pre_tick
 
 
         @@last_active_pulses = @@circuit.active_pulses.keys
