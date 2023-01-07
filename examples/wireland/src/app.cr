@@ -66,7 +66,7 @@ module Wireland::App
 
   def self.reset
     @@circuit.reset
-    @@circuit.pre_tick
+    @@circuit.pulse_inputs
 
     @@last_active_pulses.clear
     @@last_pulses.clear
@@ -224,6 +224,7 @@ module Wireland::App
 
       if R.key_released?(Keys::TICK)
         @@circuit.increase_ticks
+        @@circuit.pulse_inputs
         @@circuit.pre_tick
 
 

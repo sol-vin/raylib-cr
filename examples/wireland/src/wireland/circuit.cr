@@ -199,10 +199,14 @@ class Wireland::Circuit
     end
   end
 
-  def pre_tick
+  def pulse_inputs
     inputs = components.select(&.is_a?(WC::InputOn | WC::InputOff | WC::InputToggleOn | WC::InputToggleOff)).map(&.as(Wireland::IO))
     inputs.select(&.on?).each { |i| active_pulse(i.id, i.connects) }
+    off_inputs = inputs.select(&.off?).map(&.id)
+    @active_pulses.reject!{|c| off_inputs.includes? c}
+  end
 
+  def pre_tick
     active_pulses.each do |from, pulses|
       pulses.each do |to|
         self[from].pulse_out to
@@ -239,6 +243,7 @@ class Wireland::Circuit
   # Main logic route for the circuit
   def tick
     increase_ticks
+    pulse_inputs
     pre_tick
     mid_tick
     post_tick
