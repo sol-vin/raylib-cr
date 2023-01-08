@@ -43,7 +43,7 @@ module Wireland::App
 
   module Colors
     HIGH                     = R::GREEN
-    ACTIVE_PULSE             = R::RED
+    WILL_LOSE_ACTIVE_PULSE   = R::RED
     WILL_ACTIVE_PULSE        = R::SKYBLUE
     IS_AND_WILL_ACTIVE_PULSE = R::MAGENTA
   end
@@ -129,7 +129,8 @@ module Wireland::App
         width = Math.max(width, box[:x] + box[:width])
 
         if box[:width] == space[:width] && box[:height] == space[:height]
-          spaces[space_i] = spaces.pop if space_i < spaces.size
+          last = spaces.pop
+          spaces << last if space_i < spaces.size
         elsif box[:height] == space[:height]
           spaces[space_i] = {
             x:      space[:x] + box[:width],
@@ -331,14 +332,6 @@ module Wireland::App
         @@last_pulses = @@circuit.components.select(&.high?).map(&.id)
 
         @@circuit.post_tick
-        @@last_active_pulses.reject! do |c|
-          if @@circuit[c].is_a?(Wireland::IO)
-            io = @@circuit[c].as(Wireland::IO)
-            io.off?
-          else
-            false
-          end
-        end
       end
 
       if R.key_released?(Keys::RESET)
@@ -408,8 +401,8 @@ module Wireland::App
 
             if @@circuit.active_pulses.keys.includes?(c.id) && @@last_active_pulses.includes?(c.id)
               color = Colors::IS_AND_WILL_ACTIVE_PULSE
-            elsif @@last_active_pulses.includes? c.id
-              color = Colors::ACTIVE_PULSE
+            elsif @@last_active_pulses.includes?(c.id)
+              color = Colors::WILL_LOSE_ACTIVE_PULSE
             elsif @@circuit.active_pulses.keys.includes?(c.id)
               color = Colors::WILL_ACTIVE_PULSE
             elsif @@last_pulses.includes? c.id
@@ -419,13 +412,22 @@ module Wireland::App
             if c.is_a?(Wireland::IO | Wireland::RelayPole)
               special_color = R::Color.new
               if pole = c.as?(Wireland::RelayPole)
-                if !pole.conductive?
+                if !c.conductive?
                   special_color = @@pallette.bg
                 else
                   special_color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
                 end
-              elsif io = c.as?(Wireland::IO)
+              else
+                io = c.as(Wireland::IO)
                 special_color = io.color
+
+                if io.on? && @@last_active_pulses.includes?(c.id)
+                  color = Colors::IS_AND_WILL_ACTIVE_PULSE
+                elsif io.on?
+                  color = Colors::WILL_ACTIVE_PULSE
+                elsif io.off? && (@@last_active_pulses.includes?(c.id) || @@circuit.active_pulses.keys.includes?(c.id))
+                  color = Colors::WILL_LOSE_ACTIVE_PULSE
+                end
               end
 
               c.xy.each do |xy|
