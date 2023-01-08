@@ -91,7 +91,7 @@ class Wireland::Component
   def pulsed_by?(id)
     !!pulses[id]?
   end
-
+  
   def pulse_out
     connects.each do |com_id|
       # Pulse our connecting parts, but only if we haven't pulsed it already.

@@ -245,7 +245,7 @@ module Wireland::App
         R.clear_background(R::BLACK)
         @@circuit.components.each do |c|
           c.xy.each do |xy|
-            R.draw_rectangle_lines(
+            R.draw_rectangle(
               @@component_atlas[c.id][:x] + ((xy[:x] * Scale::CIRCUIT) - @@component_bounds[c.id][:x]) + 1,
               @@component_atlas[c.id][:y] + ((xy[:y] * Scale::CIRCUIT) - @@component_bounds[c.id][:y]) + 1,
               Scale::CIRCUIT - 2,
@@ -416,6 +416,203 @@ module Wireland::App
     end
   end
 
+  def self.draw_circuit
+    R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
+  end
+
+  def self.draw_components
+    @@circuit.components.each do |c|
+      if (@@show_pulses && (
+           @@last_pulses.includes?(c.id) ||
+           @@last_active_pulses.includes?(c.id) ||
+           @@circuit.active_pulses.keys.includes?(c.id)
+         ) ||
+         c.is_a?(Wireland::RelayPole) ||
+         c.is_a?(Wireland::IO)
+           )
+        color = R::Color.new
+
+        if @@circuit.active_pulses.keys.includes?(c.id) && @@last_active_pulses.includes?(c.id)
+          color = Colors::IS_AND_WILL_ACTIVE_PULSE
+        elsif @@last_active_pulses.includes?(c.id)
+          color = Colors::WILL_LOSE_ACTIVE_PULSE
+        elsif @@circuit.active_pulses.keys.includes?(c.id)
+          color = Colors::WILL_ACTIVE_PULSE
+        elsif @@last_pulses.includes? c.id
+          color = Colors::HIGH
+        end
+
+        if c.is_a?(Wireland::IO | Wireland::RelayPole)
+          special_color = R::Color.new
+          if c.is_a?(WC::InputOff | WC::InputOn | WC::InputToggleOff | WC::InputToggleOn)
+            io = c.as(Wireland::IO)
+            special_color = io.color
+
+            if io.on? && @@last_active_pulses.includes?(c.id)
+              color = Colors::IS_AND_WILL_ACTIVE_PULSE
+            elsif io.on?
+              color = Colors::WILL_ACTIVE_PULSE
+            elsif io.off? && (@@last_active_pulses.includes?(c.id) || @@circuit.active_pulses.keys.includes?(c.id))
+              color = Colors::WILL_LOSE_ACTIVE_PULSE
+            end
+          elsif c.is_a?(Wireland::IO)
+            io = c.as(Wireland::IO)
+            special_color = io.color
+          end
+
+          c.xy.each do |xy|
+            R.draw_rectangle(
+              xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
+              xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
+              Scale::CIRCUIT,
+              Scale::CIRCUIT,
+              special_color
+            )
+          end
+
+          if c.is_a?(Wireland::RelayPole) && !c.conductive?
+            c.xy.each do |xy|
+              R.draw_rectangle(
+                xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2 + 1,
+                xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2 + 1,
+                Scale::CIRCUIT - 2,
+                Scale::CIRCUIT - 2,
+                @@pallette.bg
+              )
+            end
+          end
+        end
+        if @@show_pulses && !@@solid_pulses
+          R.draw_texture_rec(
+            @@component_texture,
+            R::Rectangle.new(
+              x: @@component_atlas[c.id][:x],
+              y: @@component_atlas[c.id][:y],
+              width: @@component_atlas[c.id][:width],
+              height: @@component_atlas[c.id][:height],
+            ),
+            V2.new(x: @@component_bounds[c.id][:x] - @@circuit_texture.width/2, y: @@component_bounds[c.id][:y] - @@circuit_texture.height/2),
+            color
+          )
+        elsif @@show_pulses
+          c.xy.each do |xy|
+            R.draw_rectangle(
+              xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
+              xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
+              Scale::CIRCUIT,
+              Scale::CIRCUIT,
+              color
+            )
+          end
+        end
+      end
+    end
+  end
+
+  def self.draw_info
+    if info_id = @@info_id
+      width = Screen::WIDTH/2
+      height = Screen::HEIGHT/2
+
+      rect = {
+        x:      width/2,
+        y:      height/2,
+        width:  width,
+        height: height,
+      }
+
+      R.draw_rectangle(
+        rect[:x],
+        rect[:y],
+        width,
+        height,
+        @@pallette.wire
+      )
+
+      center_x = Screen::WIDTH/2
+
+      text = "#{@@circuit[info_id].class.to_s.split("::").last}"
+      text_size = 40
+      text_length = R.measure_text(text, text_size)
+      R.draw_text(
+        text,
+        center_x - text_length/2,
+        rect[:y] + 10,
+        text_size,
+        @@pallette.bg
+      )
+
+      text = "ID: #{@@info_id}"
+      text_size = 25
+      text_length = R.measure_text(text, text_size)
+      R.draw_text(
+        text,
+        rect[:x] + 30,
+        rect[:y] + 50,
+        text_size,
+        @@pallette.bg
+      )
+
+      text = "HIGH: #{@@last_pulses.includes? info_id}"
+      text_size = 25
+      text_length = R.measure_text(text, text_size)
+      R.draw_text(
+        text,
+        rect[:x] + 30,
+        rect[:y] + 50 + (text_size + 10),
+        text_size,
+        @@pallette.bg
+      )
+
+      if @@circuit[info_id].is_a?(Wireland::IO)
+        io = @@circuit[info_id].as(Wireland::IO)
+        text = "ON: #{io.on?}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50 + (text_size + 10) * 2,
+          text_size,
+          @@pallette.bg
+        )
+      elsif @@circuit[info_id].is_a?(Wireland::RelayPole)
+        text = "CONDUCTIVE: #{@@circuit[info_id].conductive?}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50 + (text_size + 10) * 2,
+          text_size,
+          @@pallette.bg
+        )
+      elsif @@circuit[info_id].class.active?
+        text = "ACTIVE: #{@@last_active_pulses.includes?(info_id)}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50 + (text_size + 10)*2,
+          text_size,
+          @@pallette.bg
+        )
+
+        text = "WILL ACTIVE: #{@@circuit.active_pulses.keys.includes?(info_id)}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50 + (text_size + 10)*3,
+          text_size,
+          @@pallette.bg
+        )
+      end
+    end
+  end
+
   def self.run
     R.init_window(Screen::WIDTH, Screen::HEIGHT, "wireland")
     R.set_target_fps(60)
@@ -440,180 +637,12 @@ module Wireland::App
       end
       R.begin_mode_2d @@camera
       if is_circuit_loaded?
-        R.draw_texture_ex(@@circuit_texture, V2.new(x: -@@circuit_texture.width/2, y: -@@circuit_texture.height/2), 0, Scale::CIRCUIT, R::WHITE)
+        draw_circuit
 
-        @@circuit.components.each do |c|
-          if (@@show_pulses && (
-               @@last_pulses.includes?(c.id) ||
-               @@last_active_pulses.includes?(c.id) ||
-               @@circuit.active_pulses.keys.includes?(c.id)
-             ) ||
-             c.is_a?(Wireland::RelayPole) ||
-             c.is_a?(Wireland::IO)
-               )
-            color = R::Color.new
-
-            if @@circuit.active_pulses.keys.includes?(c.id) && @@last_active_pulses.includes?(c.id)
-              color = Colors::IS_AND_WILL_ACTIVE_PULSE
-            elsif @@last_active_pulses.includes?(c.id)
-              color = Colors::WILL_LOSE_ACTIVE_PULSE
-            elsif @@circuit.active_pulses.keys.includes?(c.id)
-              color = Colors::WILL_ACTIVE_PULSE
-            elsif @@last_pulses.includes? c.id
-              color = Colors::HIGH
-            end
-
-            if c.is_a?(Wireland::IO | Wireland::RelayPole)
-              special_color = R::Color.new
-              if pole = c.as?(Wireland::RelayPole)
-                if !c.conductive?
-                  special_color = @@pallette.bg
-                else
-                  special_color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
-                end
-              elsif c.is_a?(WC::InputOff | WC::InputOn | WC::InputToggleOff | WC::InputToggleOn)
-                io = c.as(Wireland::IO)
-                special_color = io.color
-
-                if io.on? && @@last_active_pulses.includes?(c.id)
-                  color = Colors::IS_AND_WILL_ACTIVE_PULSE
-                elsif io.on?
-                  color = Colors::WILL_ACTIVE_PULSE
-                elsif io.off? && (@@last_active_pulses.includes?(c.id) || @@circuit.active_pulses.keys.includes?(c.id))
-                  color = Colors::WILL_LOSE_ACTIVE_PULSE
-                end
-              else
-                io = c.as(Wireland::IO)
-                special_color = io.color
-              end
-
-              c.xy.each do |xy|
-                R.draw_rectangle(
-                  xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
-                  xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
-                  Scale::CIRCUIT,
-                  Scale::CIRCUIT,
-                  special_color
-                )
-              end
-            end
-            if @@show_pulses && !@@solid_pulses
-              R.draw_texture_rec(
-                @@component_texture,
-                R::Rectangle.new(
-                  x: @@component_atlas[c.id][:x],
-                  y: @@component_atlas[c.id][:y],
-                  width: @@component_atlas[c.id][:width],
-                  height: @@component_atlas[c.id][:height],
-                ),
-                V2.new(x: @@component_bounds[c.id][:x] - @@circuit_texture.width/2, y: @@component_bounds[c.id][:y] - @@circuit_texture.height/2),
-                color
-              )
-            elsif @@show_pulses
-              c.xy.each do |xy|
-                R.draw_rectangle(
-                  xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
-                  xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
-                  Scale::CIRCUIT,
-                  Scale::CIRCUIT,
-                  color
-                )
-              end
-            end
-          end
-        end
+        draw_components
       end
       R.end_mode_2d
-      if info_id = @@info_id
-        width = Screen::WIDTH/2
-        height = Screen::HEIGHT/2
-
-        rect = {
-          x:      width/2,
-          y:      height/2,
-          width:  width,
-          height: height,
-        }
-
-        R.draw_rectangle(
-          rect[:x],
-          rect[:y],
-          width,
-          height,
-          @@pallette.wire
-        )
-
-        center_x = Screen::WIDTH/2
-
-        text = "#{@@circuit[info_id].class.to_s.split("::").last}"
-        text_size = 40
-        text_length = R.measure_text(text, text_size)
-        R.draw_text(
-          text,
-          center_x - text_length/2,
-          rect[:y] + 10,
-          text_size,
-          @@pallette.bg
-        )
-
-        text = "ID: #{@@circuit[info_id].id}"
-        text_size = 25
-        text_length = R.measure_text(text, text_size)
-        R.draw_text(
-          text,
-          rect[:x] + 30,
-          rect[:y] + 50,
-          text_size,
-          @@pallette.bg
-        )
-
-        text = "HIGH: #{@@circuit[info_id].high?}"
-        text_size = 25
-        text_length = R.measure_text(text, text_size)
-        R.draw_text(
-          text,
-          rect[:x] + 30,
-          rect[:y] + 50 + (text_size + 10),
-          text_size,
-          @@pallette.bg
-        )
-
-        if @@circuit[info_id].is_a?(Wireland::IO)
-          io = @@circuit[info_id].as(Wireland::IO)
-          text = "ON: #{io.on?}"
-          text_size = 25
-          text_length = R.measure_text(text, text_size)
-          R.draw_text(
-            text,
-            rect[:x] + 30,
-            rect[:y] + 50 + (text_size + 10) * 2,
-            text_size,
-            @@pallette.bg
-          )
-        else
-          text = "ACTIVE: #{@@last_active_pulses.includes?(info_id)}"
-          text_size = 25
-          text_length = R.measure_text(text, text_size)
-          R.draw_text(
-            text,
-            rect[:x] + 30,
-            rect[:y] + 50 + (text_size + 10)*2,
-            text_size,
-            @@pallette.bg
-          )
-
-          text = "WILL ACTIVE: #{@@circuit.active_pulses.keys.includes?(info_id)}"
-          text_size = 25
-          text_length = R.measure_text(text, text_size)
-          R.draw_text(
-            text,
-            rect[:x] + 30,
-            rect[:y] + 50 + (text_size + 10)*3,
-            text_size,
-            @@pallette.bg
-          )
-        end
-      end
+      draw_info
 
       R.end_drawing
     end
