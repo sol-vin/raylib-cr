@@ -35,10 +35,17 @@ module Wireland::App
   end
 
   module Keys
-    HELP   = R::KeyboardKey::Slash
-    PULSES = R::KeyboardKey::Q
-    TICK   = R::KeyboardKey::Space
-    RESET  = R::KeyboardKey::R
+    HELP         = R::KeyboardKey::Slash
+    PULSES       = R::KeyboardKey::Q
+    SOLID_PULSES = R::KeyboardKey::W
+    TICK         = R::KeyboardKey::Space
+    RESET        = R::KeyboardKey::R
+  end
+
+  module Mouse
+    CAMERA   = R::MouseButton::Middle
+    INTERACT = R::MouseButton::Left
+    INFO     = R::MouseButton::Right
   end
 
   module Colors
@@ -65,6 +72,9 @@ module Wireland::App
 
   @@show_help = false
   @@show_pulses = false
+  @@solid_pulses = false
+
+  @@info_id : UInt64? = nil
 
   @@last_active_pulses = [] of UInt64
   @@last_pulses = [] of UInt64
@@ -82,6 +92,7 @@ module Wireland::App
     !(@@circuit_texture.width == 0 && @@circuit_texture.height == 0)
   end
 
+  # Adapted from https://github.com/mapbox/potpack/blob/main/index.js
   private def self._pack_boxes(boxes : Array(Rectangle))
     area = 0
     max_width = 0
@@ -242,8 +253,16 @@ module Wireland::App
               R::WHITE
             )
           end
+          R.set_window_title("wireland #{((1.0 - ((@@circuit.last_id - c.id)/@@circuit.last_id)) * 100).floor}%")
         end
         R.end_texture_mode
+        delimit = ""
+        {% if flag?(:windows) %}
+          delimit = "\\"
+        {% else %}
+          delimit = "/"
+        {% end %}
+        R.set_window_title("wireland #{circuit_file.split(delimit).last}")
 
         # Make an image out of our render texture
         image = R.load_image_from_texture(render_texture.texture)
@@ -261,16 +280,16 @@ module Wireland::App
     end
   end
 
-  private def self._draw_loading_screen(current_id)
-    R.begin_drawing
-    R.clear_background(@@pallette.bg)
-    loading_text = "Loading!"
-    loading_text_size = R.measure_text(loading_text, 30)/2
-    loading_text_size = 30
-    R.draw_text(loading_text, Screen::WIDTH/2 - loading_text_size, Screen::HEIGHT/2 - loading_text_size/2, loading_text_size, @@pallette.wire)
-    R.draw_rectangle(0, Screen::HEIGHT - Screen::HEIGHT/10, ((1.0 - ((@@circuit.last_id - current_id)/@@circuit.last_id)) * Screen::WIDTH).to_i, Screen::HEIGHT/10 - Screen::HEIGHT/20, @@pallette.wire)
-    R.end_drawing
-  end
+  # private def self._draw_loading_screen(current_id)
+  #   R.begin_drawing
+  #   R.clear_background(@@pallette.bg)
+  #   loading_text = "Loading!"
+  #   loading_text_size = R.measure_text(loading_text, 30)/2
+  #   loading_text_size = 30
+  #   R.draw_text(loading_text, Screen::WIDTH/2 - loading_text_size, Screen::HEIGHT/2 - loading_text_size/2, loading_text_size, @@pallette.wire)
+  #   R.draw_rectangle(0, Screen::HEIGHT - Screen::HEIGHT/10, ((1.0 - ((@@circuit.last_id - current_id)/@@circuit.last_id)) * Screen::WIDTH).to_i, Screen::HEIGHT/10 - Screen::HEIGHT/20, @@pallette.wire)
+  #   R.end_drawing
+  # end
 
   # Handles how the mouse moves the camera
   def self.handle_camera_mouse
@@ -296,16 +315,44 @@ module Wireland::App
 
       world_mouse = R.get_screen_to_world_2d(screen_mouse, @@camera)
 
-      if R.mouse_button_pressed?(R::MouseButton::Left)
+      if R.mouse_button_pressed?(Mouse::CAMERA)
         @@previous_camera_mouse_drag_pos = screen_mouse
-      elsif R.mouse_button_down?(R::MouseButton::Left)
+      elsif R.mouse_button_down?(Mouse::CAMERA)
         @@camera.target = @@camera.target - ((screen_mouse - @@previous_camera_mouse_drag_pos) * 1/@@camera.zoom)
 
         @@previous_camera_mouse_drag_pos = screen_mouse
-      elsif R.mouse_button_released?(R::MouseButton::Left)
+      elsif R.mouse_button_released?(Mouse::CAMERA)
         @@previous_camera_mouse_drag_pos.x = 0
         @@previous_camera_mouse_drag_pos.y = 0
       end
+    end
+  end
+
+  def self.handle_info
+    if @@info_id.nil? && R.mouse_button_released?(Mouse::INFO)
+      screen_mouse = V2.new
+      screen_mouse.x = R.get_mouse_x
+      screen_mouse.y = R.get_mouse_y
+
+      world_mouse = R.get_screen_to_world_2d(screen_mouse, @@camera)
+
+      clicked = @@circuit.components.find do |c|
+        c.xy.any? do |xy|
+          min_xy = {x: xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2, y: xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2}
+          max_xy = {x: xy[:x] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.width/2, y: xy[:y] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.height/2}
+
+          world_mouse.x > min_xy[:x] &&
+            world_mouse.y > min_xy[:y] &&
+            world_mouse.x < max_xy[:x] &&
+            world_mouse.y < max_xy[:y]
+        end
+      end
+
+      if clicked
+        @@info_id = clicked.id
+      end
+    elsif [Mouse::CAMERA, Mouse::INTERACT, Mouse::INFO].any? { |mb| R.mouse_button_released?(mb) }
+      @@info_id = nil
     end
   end
 
@@ -318,7 +365,10 @@ module Wireland::App
 
       if R.key_released?(Keys::PULSES)
         @@show_pulses = !@@show_pulses
-        @@fade = 1.0
+      end
+
+      if R.key_released?(Keys::SOLID_PULSES)
+        @@solid_pulses = !@@solid_pulses
       end
 
       if R.key_released?(Keys::TICK)
@@ -341,7 +391,7 @@ module Wireland::App
   end
 
   def self.handle_io_mouse
-    if R.mouse_button_released?(R::MouseButton::Right)
+    if R.mouse_button_released?(Mouse::INTERACT)
       screen_mouse = V2.new
       screen_mouse.x = R.get_mouse_x
       screen_mouse.y = R.get_mouse_y
@@ -371,13 +421,17 @@ module Wireland::App
     R.set_target_fps(60)
 
     until R.close_window?
-      handle_dropped_files
+      if @@info_id.nil?
+        handle_dropped_files
 
-      handle_camera_mouse
+        handle_camera_mouse
 
-      handle_io_mouse
+        handle_io_mouse
 
-      handle_keys
+        handle_keys
+      end
+
+      handle_info
 
       R.begin_drawing
       R.clear_background(@@pallette.bg)
@@ -417,7 +471,7 @@ module Wireland::App
                 else
                   special_color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
                 end
-              else
+              elsif c.is_a?(WC::InputOff | WC::InputOn | WC::InputToggleOff | WC::InputToggleOn)
                 io = c.as(Wireland::IO)
                 special_color = io.color
 
@@ -428,6 +482,9 @@ module Wireland::App
                 elsif io.off? && (@@last_active_pulses.includes?(c.id) || @@circuit.active_pulses.keys.includes?(c.id))
                   color = Colors::WILL_LOSE_ACTIVE_PULSE
                 end
+              else
+                io = c.as(Wireland::IO)
+                special_color = io.color
               end
 
               c.xy.each do |xy|
@@ -440,7 +497,7 @@ module Wireland::App
                 )
               end
             end
-            if @@show_pulses
+            if @@show_pulses && !@@solid_pulses
               R.draw_texture_rec(
                 @@component_texture,
                 R::Rectangle.new(
@@ -452,11 +509,112 @@ module Wireland::App
                 V2.new(x: @@component_bounds[c.id][:x] - @@circuit_texture.width/2, y: @@component_bounds[c.id][:y] - @@circuit_texture.height/2),
                 color
               )
+            elsif @@show_pulses
+              c.xy.each do |xy|
+                R.draw_rectangle(
+                  xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
+                  xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
+                  Scale::CIRCUIT,
+                  Scale::CIRCUIT,
+                  color
+                )
+              end
             end
           end
         end
       end
       R.end_mode_2d
+      if info_id = @@info_id
+        width = Screen::WIDTH/2
+        height = Screen::HEIGHT/2
+
+        rect = {
+          x:      width/2,
+          y:      height/2,
+          width:  width,
+          height: height,
+        }
+
+        R.draw_rectangle(
+          rect[:x],
+          rect[:y],
+          width,
+          height,
+          @@pallette.wire
+        )
+
+        center_x = Screen::WIDTH/2
+
+        text = "#{@@circuit[info_id].class.to_s.split("::").last}"
+        text_size = 40
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          center_x - text_length/2,
+          rect[:y] + 10,
+          text_size,
+          @@pallette.bg
+        )
+
+        text = "ID: #{@@circuit[info_id].id}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50,
+          text_size,
+          @@pallette.bg
+        )
+
+        text = "HIGH: #{@@circuit[info_id].high?}"
+        text_size = 25
+        text_length = R.measure_text(text, text_size)
+        R.draw_text(
+          text,
+          rect[:x] + 30,
+          rect[:y] + 50 + (text_size + 10),
+          text_size,
+          @@pallette.bg
+        )
+
+        if @@circuit[info_id].is_a?(Wireland::IO)
+          io = @@circuit[info_id].as(Wireland::IO)
+          text = "ON: #{io.on?}"
+          text_size = 25
+          text_length = R.measure_text(text, text_size)
+          R.draw_text(
+            text,
+            rect[:x] + 30,
+            rect[:y] + 50 + (text_size + 10) * 2,
+            text_size,
+            @@pallette.bg
+          )
+        else
+          text = "ACTIVE: #{@@last_active_pulses.includes?(info_id)}"
+          text_size = 25
+          text_length = R.measure_text(text, text_size)
+          R.draw_text(
+            text,
+            rect[:x] + 30,
+            rect[:y] + 50 + (text_size + 10)*2,
+            text_size,
+            @@pallette.bg
+          )
+
+          text = "WILL ACTIVE: #{@@circuit.active_pulses.keys.includes?(info_id)}"
+          text_size = 25
+          text_length = R.measure_text(text, text_size)
+          R.draw_text(
+            text,
+            rect[:x] + 30,
+            rect[:y] + 50 + (text_size + 10)*3,
+            text_size,
+            @@pallette.bg
+          )
+        end
+      end
+
       R.end_drawing
     end
 
