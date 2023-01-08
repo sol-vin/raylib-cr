@@ -68,6 +68,7 @@ class Wireland::Circuit
         component.connects << vc.id if is_vc_neighbors && vc.id != component.id
       end
     end
+    @last_id = components.sort { |a,b| b.id <=> a.id }[0].id
     # Setup all the components. Cross, Tunnel, etc
     components
   end
@@ -141,6 +142,8 @@ class Wireland::Circuit
   property components = [] of WC
   # Number of ticks that have run since the circuit started.
   property ticks = 0_u128
+
+  getter last_id = 0_u64
 
   # List of pulses that need to
   getter active_pulses = {} of UInt64 => Array(UInt64)

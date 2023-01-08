@@ -14,8 +14,10 @@ module Wireland::App
   alias W = Wireland
   alias WC = Wireland::Component
 
+  alias Rectangle = NamedTuple(x: Int32, y: Int32, width: Int32, height: Int32)
+
   module Scale
-    CIRCUIT = 10.0
+    CIRCUIT = 5.0
   end
 
   module Screen
@@ -40,16 +42,19 @@ module Wireland::App
   end
 
   module Colors
-    HIGH = R::GREEN
-    ACTIVE_PULSE = R::RED
-    WILL_ACTIVE_PULSE = R::BLUE
+    HIGH                     = R::GREEN
+    ACTIVE_PULSE             = R::RED
+    WILL_ACTIVE_PULSE        = R::SKYBLUE
     IS_AND_WILL_ACTIVE_PULSE = R::MAGENTA
   end
 
   @@pallette = W::Pallette::DEFAULT
   @@circuit = W::Circuit.new
   @@circuit_texture = R::Texture.new
-  @@component_textures = [] of NamedTuple(render: R::Texture2D, bounds: R::Rectangle)
+
+  @@component_texture = R::Texture.new
+  @@component_atlas = Array(Rectangle).new
+  @@component_bounds = Array(Rectangle).new
 
   @@camera = R::Camera2D.new
   @@camera.zoom = Screen::Zoom::LIMIT_LOWER
@@ -75,6 +80,98 @@ module Wireland::App
   # Checks to see if the circuit texture is loaded.
   def self.is_circuit_loaded?
     !(@@circuit_texture.width == 0 && @@circuit_texture.height == 0)
+  end
+
+  private def self._pack_boxes(boxes : Array(Rectangle))
+    area = 0
+    max_width = 0
+
+    atlas_boxes = boxes.map_with_index do |box, i|
+      area += box[:width] * box[:height]
+      max_width = Math.max(box[:width], max_width)
+      {bounds: box, id: i}
+    end
+
+    atlas_boxes.sort! { |a, b| b[:bounds][:height] <=> a[:bounds][:width] }
+    atlas_boxes.map! do |a_b|
+      {
+        bounds: {
+          x:      0,
+          y:      0,
+          width:  a_b[:bounds][:width],
+          height: a_b[:bounds][:height],
+        },
+
+        id: a_b[:id],
+      }
+    end
+
+    start_width = Math.max((Math.sqrt(area / 0.95)).ceil, max_width)
+    spaces = [{x: 0, y: 0, width: start_width, height: Int32::MAX}]
+
+    width = 0
+    height = 0
+
+    atlas = atlas_boxes.map do |a_b|
+      box = a_b[:bounds]
+      (spaces.size - 1).downto(0) do |space_i|
+        space = spaces[space_i]
+        next if (box[:width] > space[:width] || box[:height] > space[:height])
+
+        box = {
+          x:      space[:x],
+          y:      space[:y],
+          width:  box[:width],
+          height: box[:height],
+        }
+
+        height = Math.max(height, box[:y] + box[:height])
+        width = Math.max(width, box[:x] + box[:width])
+
+        if box[:width] == space[:width] && box[:height] == space[:height]
+          spaces[space_i] = spaces.pop if space_i < spaces.size
+        elsif box[:height] == space[:height]
+          spaces[space_i] = {
+            x:      space[:x] + box[:width],
+            y:      space[:y],
+            width:  space[:width] - box[:width],
+            height: space[:height],
+          }
+        elsif box[:width] == space[:width]
+          spaces[space_i] = {
+            x:      space[:x],
+            y:      space[:y] + box[:height],
+            width:  space[:width],
+            height: space[:height] - box[:height],
+          }
+        else
+          spaces << {
+            x:      space[:x] + box[:width],
+            y:      space[:y],
+            width:  space[:width] - box[:width],
+            height: box[:height],
+          }
+
+          spaces[space_i] = {
+            x:      space[:x],
+            y:      space[:y] + box[:height],
+            width:  space[:width],
+            height: space[:height] - box[:height],
+          }
+        end
+        break
+      end
+      {
+        bounds: box,
+        id:     a_b[:id],
+      }
+    end.sort do |a, b|
+      a[:id] <=> b[:id]
+    end.map do |a_b|
+      a_b[:bounds]
+    end
+
+    {atlas: atlas, width: width, height: height}
   end
 
   # Handles when files are dropped into the window, specifically .pal and .png files.
@@ -107,16 +204,10 @@ module Wireland::App
 
         reset
 
-
-        # Release component textures if not empty.
-        if !@@component_textures.empty?
-          @@component_textures.each { |t| R.unload_texture(t[:render]) }
-        end
-
-        last_component_id = @@circuit.components.sort { |a,b| b.id <=> a.id }[0].id
+        R.unload_texture(@@component_texture) if @@component_texture.width != 0 && @@component_texture.height != 0
 
         # Map the component textures by getting the bounds and creating a texture for it.
-        @@component_textures = @@circuit.components.map do |c|
+        @@component_bounds = @@circuit.components.map do |c|
           x_sort = c.xy.sort { |a, b| a[:x] <=> b[:x] }
           y_sort = c.xy.sort { |a, b| a[:y] <=> b[:y] }
 
@@ -125,52 +216,59 @@ module Wireland::App
           min_y = y_sort[0][:y]
           max_y = y_sort.last[:y]
 
-          bounds = R::Rectangle.new(
-            x: min_x,
-            y: min_y,
-            width: max_x - min_x + 1,
-            height: max_y - min_y + 1
-          )
-          R.begin_drawing
-          R.clear_background(@@pallette.bg)
-          loading_text = "Loading!"
-          loading_text_size = R.measure_text(loading_text, 30)/2
-          loading_text_size = 30
-          R.draw_text(loading_text, Screen::WIDTH/2 - loading_text_size, Screen::HEIGHT/2 - loading_text_size/2, loading_text_size, @@pallette.wire)
-          R.draw_rectangle(0,Screen::HEIGHT-Screen::HEIGHT/10, ((1.0 - ((last_component_id - c.id)/last_component_id)) * Screen::WIDTH).to_i, Screen::HEIGHT/10-Screen::HEIGHT/20, @@pallette.wire)
-          R.end_drawing
-
-          # Load a render texture to draw to
-          render_texture = R.load_render_texture(bounds.width, bounds.height)
-
-          R.begin_texture_mode(render_texture)
-          R.clear_background(R::BLACK)
-
-          # Draw stuff we want in white
-          c.xy.each do |xy|
-            R.draw_rectangle(xy[:x] - min_x, xy[:y] - min_y, 1, 1, R::WHITE)
-          end
-
-          R.end_texture_mode
-
-          # Make an image out of our render texture
-          image = R.load_image_from_texture(render_texture.texture)
-
-          # Replace the color black with transparency
-          R.image_color_replace(pointerof(image), R::BLACK, R::Color.new(r: 0_u8, g: 0_u8, b: 0_u8, a: 0_u8))
-          R.image_flip_vertical(pointerof(image))
-          # Reload the texture from the image
-          texture = R.load_texture_from_image(image)
-
-          # Clean up the old data
-          R.unload_image(image)
-          R.unload_render_texture(render_texture)
-
-          # Finished package
-          {render: texture, bounds: bounds}
+          bounds = {
+            x:      (min_x * Scale::CIRCUIT).to_i,
+            y:      (min_y * Scale::CIRCUIT).to_i,
+            width:  ((max_x - min_x + 1) * Scale::CIRCUIT).to_i,
+            height: ((max_y - min_y + 1) * Scale::CIRCUIT).to_i,
+          }
+          bounds
         end
+
+        atlas = _pack_boxes(@@component_bounds)
+        @@component_atlas = atlas[:atlas]
+        render_texture = R.load_render_texture(atlas[:width], atlas[:height])
+
+        R.begin_texture_mode(render_texture)
+        R.clear_background(R::BLACK)
+        @@circuit.components.each do |c|
+          c.xy.each do |xy|
+            R.draw_rectangle_lines(
+              @@component_atlas[c.id][:x] + ((xy[:x] * Scale::CIRCUIT) - @@component_bounds[c.id][:x]) + 1,
+              @@component_atlas[c.id][:y] + ((xy[:y] * Scale::CIRCUIT) - @@component_bounds[c.id][:y]) + 1,
+              Scale::CIRCUIT - 2,
+              Scale::CIRCUIT - 2,
+              R::WHITE
+            )
+          end
+        end
+        R.end_texture_mode
+
+        # Make an image out of our render texture
+        image = R.load_image_from_texture(render_texture.texture)
+
+        # Replace the color black with transparency
+        R.image_color_replace(pointerof(image), R::BLACK, R::Color.new(r: 0_u8, g: 0_u8, b: 0_u8, a: 0_u8))
+        R.image_flip_vertical(pointerof(image))
+        # Reload the texture from the image
+        @@component_texture = R.load_texture_from_image(image)
+
+        # Clean up the old data
+        R.unload_image(image)
+        R.unload_render_texture(render_texture)
       end
     end
+  end
+
+  private def self._draw_loading_screen(current_id)
+    R.begin_drawing
+    R.clear_background(@@pallette.bg)
+    loading_text = "Loading!"
+    loading_text_size = R.measure_text(loading_text, 30)/2
+    loading_text_size = 30
+    R.draw_text(loading_text, Screen::WIDTH/2 - loading_text_size, Screen::HEIGHT/2 - loading_text_size/2, loading_text_size, @@pallette.wire)
+    R.draw_rectangle(0, Screen::HEIGHT - Screen::HEIGHT/10, ((1.0 - ((@@circuit.last_id - current_id)/@@circuit.last_id)) * Screen::WIDTH).to_i, Screen::HEIGHT/10 - Screen::HEIGHT/20, @@pallette.wire)
+    R.end_drawing
   end
 
   # Handles how the mouse moves the camera
@@ -227,7 +325,6 @@ module Wireland::App
         @@circuit.pulse_inputs
         @@circuit.pre_tick
 
-
         @@last_active_pulses = @@circuit.active_pulses.keys
 
         @@circuit.mid_tick
@@ -264,9 +361,9 @@ module Wireland::App
           max_xy = {x: xy[:x] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.width/2, y: xy[:y] * Scale::CIRCUIT + Scale::CIRCUIT - @@circuit_texture.height/2}
 
           world_mouse.x > min_xy[:x] &&
-          world_mouse.y > min_xy[:y] &&
-          world_mouse.x < max_xy[:x] &&
-          world_mouse.y < max_xy[:y]
+            world_mouse.y > min_xy[:y] &&
+            world_mouse.x < max_xy[:x] &&
+            world_mouse.y < max_xy[:y]
         end
       end
 
@@ -300,21 +397,13 @@ module Wireland::App
 
         @@circuit.components.each do |c|
           if (@@show_pulses && (
-                @@last_pulses.includes?(c.id) || 
-                @@last_active_pulses.includes?(c.id) || 
-                @@circuit.active_pulses.keys.includes?(c.id)
-              ) || 
-              c.is_a?(Wireland::RelayPole) || 
-              c.is_a?(Wireland::IO)
-            )
-
-            t_b = @@component_textures[c.id]
-            bounds = R::Rectangle.new(
-              x: t_b[:bounds].x * Scale::CIRCUIT,
-              y: t_b[:bounds].y * Scale::CIRCUIT,
-              width: t_b[:bounds].width * Scale::CIRCUIT,
-              height: t_b[:bounds].height * Scale::CIRCUIT
-            )
+               @@last_pulses.includes?(c.id) ||
+               @@last_active_pulses.includes?(c.id) ||
+               @@circuit.active_pulses.keys.includes?(c.id)
+             ) ||
+             c.is_a?(Wireland::RelayPole) ||
+             c.is_a?(Wireland::IO)
+               )
             color = R::Color.new
 
             if @@circuit.active_pulses.keys.includes?(c.id) && @@last_active_pulses.includes?(c.id)
@@ -327,26 +416,41 @@ module Wireland::App
               color = Colors::HIGH
             end
 
-            if pole = c.as?(Wireland::RelayPole)
-              if !pole.conductive?
-                color = @@pallette.bg
-              elsif @@show_pulses && @@last_pulses.includes?(c.id)
-                color = Colors::HIGH
-              else
-                color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
+            if c.is_a?(Wireland::IO | Wireland::RelayPole)
+              special_color = R::Color.new
+              if pole = c.as?(Wireland::RelayPole)
+                if !pole.conductive?
+                  special_color = @@pallette.bg
+                else
+                  special_color = R::Color.new(r: 0, g: 0, b: 0, a: 0)
+                end
+              elsif io = c.as?(Wireland::IO)
+                special_color = io.color
+              end
+
+              c.xy.each do |xy|
+                R.draw_rectangle(
+                  xy[:x] * Scale::CIRCUIT - @@circuit_texture.width/2,
+                  xy[:y] * Scale::CIRCUIT - @@circuit_texture.height/2,
+                  Scale::CIRCUIT,
+                  Scale::CIRCUIT,
+                  special_color
+                )
               end
             end
-
-            if io = c.as?(Wireland::IO)
-              color = io.color
+            if @@show_pulses
+              R.draw_texture_rec(
+                @@component_texture,
+                R::Rectangle.new(
+                  x: @@component_atlas[c.id][:x],
+                  y: @@component_atlas[c.id][:y],
+                  width: @@component_atlas[c.id][:width],
+                  height: @@component_atlas[c.id][:height],
+                ),
+                V2.new(x: @@component_bounds[c.id][:x] - @@circuit_texture.width/2, y: @@component_bounds[c.id][:y] - @@circuit_texture.height/2),
+                color
+              )
             end
-
-            R.draw_texture_ex(
-              t_b[:render],
-              V2.new(x: bounds.x - @@circuit_texture.width/2, y: bounds.y - @@circuit_texture.height/2),
-              0,
-              Scale::CIRCUIT,
-              color)
           end
         end
       end
@@ -355,9 +459,7 @@ module Wireland::App
     end
 
     R.unload_texture(@@circuit_texture) if is_circuit_loaded?
-    @@component_textures.each do |t_b|
-      R.unload_texture(t_b[:render])
-    end
+    R.unload_texture(@@component_texture) if @@component_texture.width != 0
 
     R.close_window
   end
