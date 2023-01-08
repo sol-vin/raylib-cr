@@ -1,7 +1,7 @@
 
 # Created by https://www.gitignore.io/api/crystal,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=crystal,visualstudiocode
-*.c linguist-detectable=false
+
 
 
 ### Crystal ###
