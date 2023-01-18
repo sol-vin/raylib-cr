@@ -1,6 +1,6 @@
 @[Link("raylib")]
 lib Raylib
-  VERSION = "4.5-dev (7e7939e)"
+  VERSION = "4.5-dev (62f63f9)"
   PI      =    3.141592653589793
   DEG2RAD = 0.017453292519943295
   RAD2DEG =    57.29577951308232
@@ -900,6 +900,7 @@ lib Raylib
   fun image_alpha_clear = ImageAlphaClear(image : Image*, color : Color, threshold : LibC::Float)
   fun image_alpha_mask = ImageAlphaMask(image : Image*, alpha_mask : Image)
   fun image_alpha_premultiply = ImageAlphaPremultiply(image : Image*)
+  fun image_blur_gaussian = ImageBlurGaussian(image : Image*, blur_size : LibC::Int)
   fun image_resize = ImageResize(image : Image*, new_width : LibC::Int, new_height : LibC::Int)
   fun image_resize_nn = ImageResizeNN(image : Image*, new_width : LibC::Int, new_height : LibC::Int)
   fun image_resize_canvas = ImageResizeCanvas(image : Image*, new_width : LibC::Int, new_height : LibC::Int, offset_x : LibC::Int, offset_y : LibC::Int, fill : Color)
@@ -953,17 +954,17 @@ lib Raylib
   fun draw_texture_v = DrawTextureV(texture : Texture2D, position : Vector2, tint : Color)
   fun draw_texture_ex = DrawTextureEx(texture : Texture2D, position : Vector2, rotation : LibC::Float, scale : LibC::Float, tint : Color)
   fun draw_texture_rec = DrawTextureRec(texture : Texture2D, source : Rectangle, position : Vector2, tint : Color)
-  fun draw_texture_quad = DrawTextureQuad(texture : Texture2D, tiling : Vector2, offset : Vector2, quad : Rectangle, tint : Color)
-  fun draw_texture_tiled = DrawTextureTiled(texture : Texture2D, source : Rectangle, dest : Rectangle, origin : Vector2, rotation : LibC::Float, scale : LibC::Float, tint : Color)
   fun draw_texture_pro = DrawTexturePro(texture : Texture2D, source : Rectangle, dest : Rectangle, origin : Vector2, rotation : LibC::Float, tint : Color)
   fun draw_texture_n_patch = DrawTextureNPatch(texture : Texture2D, n_patch_info : NPatchInfo, dest : Rectangle, origin : Vector2, rotation : LibC::Float, tint : Color)
-  fun draw_texture_poly = DrawTexturePoly(texture : Texture2D, center : Vector2, points : Vector2*, texcoords : Vector2*, point_count : LibC::Int, tint : Color)
   fun fade = Fade(color : Color, alpha : LibC::Float) : Color
   fun color_to_int = ColorToInt(color : Color) : LibC::Int
   fun color_normalize = ColorNormalize(color : Color) : Vector4
   fun color_from_normalized = ColorFromNormalized(normalized : Vector4) : Color
   fun color_to_hsv = ColorToHSV(color : Color) : Vector3
   fun color_from_hsv = ColorFromHSV(hue : LibC::Float, saturation : LibC::Float, value : LibC::Float) : Color
+  fun color_tint = ColorTint(color : Color, tint : Color) : Color
+  fun color_brightness = ColorBrightness(color : Color, factor : LibC::Float) : Color
+  fun color_contrast = ColorContrast(color : Color, contrast : LibC::Float) : Color
   fun color_alpha = ColorAlpha(color : Color, alpha : LibC::Float) : Color
   fun color_alpha_blend = ColorAlphaBlend(dst : Color, src : Color, tint : Color) : Color
   fun get_color = GetColor(hex_value : LibC::UInt) : Color
@@ -1026,8 +1027,6 @@ lib Raylib
   fun draw_cube_v = DrawCubeV(position : Vector3, size : Vector3, color : Color)
   fun draw_cube_wires = DrawCubeWires(position : Vector3, width : LibC::Float, height : LibC::Float, length : LibC::Float, color : Color)
   fun draw_cube_wires_v = DrawCubeWiresV(position : Vector3, size : Vector3, color : Color)
-  fun draw_cube_texture = DrawCubeTexture(texture : Texture2D, position : Vector3, width : LibC::Float, height : LibC::Float, length : LibC::Float, color : Color)
-  fun draw_cube_texture_rec = DrawCubeTextureRec(texture : Texture2D, source : Rectangle, position : Vector3, width : LibC::Float, height : LibC::Float, length : LibC::Float, color : Color)
   fun draw_sphere = DrawSphere(center_pos : Vector3, radius : LibC::Float, color : Color)
   fun draw_sphere_ex = DrawSphereEx(center_pos : Vector3, radius : LibC::Float, rings : LibC::Int, slices : LibC::Int, color : Color)
   fun draw_sphere_wires = DrawSphereWires(center_pos : Vector3, radius : LibC::Float, rings : LibC::Int, slices : LibC::Int, color : Color)
