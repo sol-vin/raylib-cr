@@ -573,7 +573,7 @@ lib Raylib
     material_count : LibC::Int
     meshes : Mesh*
     materials : Material*
-    mesh_material : LibC::Int
+    mesh_material : LibC::Int*
     bone_count : LibC::Int
     bones : BoneInfo*
     bind_pose : Transform*
