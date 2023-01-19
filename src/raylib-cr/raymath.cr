@@ -249,27 +249,27 @@ struct Raylib::Vector3
   end
 
   def self.unit_x : Raylib::Vector3
-    Raylib::Vector2.new(x: 1, y: 0, z: 0)
+    Raylib::Vector3.new(x: 1, y: 0, z: 0)
   end
 
   def self.unit_y : Raylib::Vector3
-    Raylib::Vector2.new(x: 0, y: 1, z: 0)
+    Raylib::Vector3.new(x: 0, y: 1, z: 0)
   end
 
   def self.unit_z : Raylib::Vector3
-    Raylib::Vector2.new(x: 0, y: 0, z: 1)
+    Raylib::Vector3.new(x: 0, y: 0, z: 1)
   end
 
   def self.zero_x : Raylib::Vector3
-    Raylib::Vector2.new(x: 0, y: 1, z: 1)
+    Raylib::Vector3.new(x: 0, y: 1, z: 1)
   end
 
   def self.zero_y : Raylib::Vector3
-    Raylib::Vector2.new(x: 1, y: 0, z: 1)
+    Raylib::Vector3.new(x: 1, y: 0, z: 1)
   end
 
   def self.zero_z : Raylib::Vector3
-    Raylib::Vector2.new(x: 1, y: 1, z: 0)
+    Raylib::Vector3.new(x: 1, y: 1, z: 0)
   end
 
   def add(v2 : Raylib::Vector3) : Raylib::Vector3

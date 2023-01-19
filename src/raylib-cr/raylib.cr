@@ -592,7 +592,7 @@ lib Raylib
   end
 
   struct RayCollision
-    hit : Bool
+    hit? : Bool
     distance : LibC::Float
     point : Vector3
     normal : Vector3
