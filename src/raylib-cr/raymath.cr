@@ -120,6 +120,14 @@ struct Raylib::Vector2
     Raylib::Vector2.new(x: 0, y: 1)
   end
 
+  def self.zero_x : Raylib::Vector2
+    Raylib::Vector2.new(x: 0, y: 1)
+  end
+
+  def self.zero_y : Raylib::Vector2
+    Raylib::Vector2.new(x: 1, y: 0)
+  end
+
   def add(v2 : Raylib::Vector2) : Raylib::Vector2
     Raymath.vector2_add(self, v2)
   end
@@ -250,6 +258,18 @@ struct Raylib::Vector3
 
   def self.unit_z : Raylib::Vector3
     Raylib::Vector2.new(x: 0, y: 0, z: 1)
+  end
+
+  def self.zero_x : Raylib::Vector3
+    Raylib::Vector2.new(x: 0, y: 1, z: 1)
+  end
+
+  def self.zero_y : Raylib::Vector3
+    Raylib::Vector2.new(x: 1, y: 0, z: 1)
+  end
+
+  def self.zero_z : Raylib::Vector3
+    Raylib::Vector2.new(x: 1, y: 1, z: 0)
   end
 
   def add(v2 : Raylib::Vector3) : Raylib::Vector3
