@@ -216,48 +216,48 @@ until R.close_window?
     dirty_lights = true if l.update
   end
 
+  screen_texture_rect_flipped = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: -R.get_screen_height)
+  screen_texture_rect = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: R.get_screen_height)
 
   if dirty_lights
     R.begin_texture_mode(light_mask)
     R.clear_background(R::BLACK)
     RLGL.set_blend_factors(C::SRC_ALPHA, C::SRC_ALPHA, C::MIN)
     RLGL.set_blend_mode(R::BlendMode::Custom)
-    screen_texture_rect_flipped = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: -R.get_screen_height)
-    screen_texture_rect = R::Rectangle.new(x: 0, y: 0, width: R.get_screen_width, height: R.get_screen_height)
-
+    
     Lights.lights.each do |l|
       R.draw_texture_rec(l.mask.texture, screen_texture_rect_flipped, V2.zero, R::WHITE) if l.active?
     end
     RLGL.draw_render_batch_active
     RLGL.set_blend_mode(R::BlendMode::Alpha)
     R.end_texture_mode
-
-    R.begin_drawing
-    R.clear_background(R::BLACK)
-    R.draw_texture_rec(bg_texture, screen_texture_rect, V2.zero, R::WHITE)
-    R.draw_texture_rec(light_mask.texture, screen_texture_rect_flipped, V2.zero, R.color_alpha(R::WHITE, show_lines ? 0.75_f32 : 1.0_f32))
-
-    Lights.lights.each do |l|
-      R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW  : R::WHITE) if l.active?
-    end
-
-    if show_lines
-      Lights[0].shadow_count.times do |s|
-        R.draw_triangle_fan(Lights[0].shadows[s].vertices.to_unsafe, Shadow::VERTICES, R::DARKPURPLE)
-      end
-
-      Boxes.boxes.each do |box|
-        R.draw_rectangle_rec(box, R::PURPLE) if R.check_collision_recs?(box, Lights[0].bounds)
-        R.draw_rectangle_lines(box.x, box.y, box.width, box.height, R::DARKBLUE)
-      end
-      R.draw_text("(F1) Hide Shadow Volumes", 10, 50, 10, R::GREEN)
-    else
-      R.draw_text("(F1) Show Shadow Volumes", 10, 50, 10, R::RED)
-    end
-
-    R.end_drawing
-
   end
+
+  
+  R.clear_background(R::BLACK)
+  R.draw_texture_rec(bg_texture, screen_texture_rect, V2.zero, R::WHITE)
+  R.draw_texture_rec(light_mask.texture, screen_texture_rect_flipped, V2.zero, R.color_alpha(R::WHITE, show_lines ? 0.75_f32 : 1.0_f32))
+
+  Lights.lights.each do |l|
+    R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW  : R::WHITE) if l.active?
+  end
+
+  if show_lines
+    Lights[0].shadow_count.times do |s|
+      R.draw_triangle_fan(Lights[0].shadows[s].vertices.to_unsafe, Shadow::VERTICES, R::DARKPURPLE)
+    end
+
+    Boxes.boxes.each do |box|
+      R.draw_rectangle_rec(box, R::PURPLE) if R.check_collision_recs?(box, Lights[0].bounds)
+      R.draw_rectangle_lines(box.x, box.y, box.width, box.height, R::DARKBLUE)
+    end
+    R.draw_text("(F1) Hide Shadow Volumes", 10, 50, 10, R::GREEN)
+  else
+    R.draw_text("(F1) Show Shadow Volumes", 10, 50, 10, R::RED)
+  end
+
+  R.end_drawing
+
 end
 
 R.unload_texture(bg_texture)

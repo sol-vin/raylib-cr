@@ -41,6 +41,7 @@ if ($name -eq $null) {
   Build-Example -Name "collisionarea" -Debug $debug
   Build-Example -Name "rlgl_solar_system" -Debug $debug
   Build-Example -Name "shapes" -Debug $debug
+  Build-Example -Name "shapes_top_down_lights" -Debug $debug
   Build-Example -Name "smooth_pixel_perfect_camera" -Debug $debug
   Build-Example -Name "three_d_camera_mode" -Debug $debug
   Build-Example -Name "sound_test" -Debug $debug
