@@ -8,6 +8,7 @@ lib Raylib
   alias Camera = Camera3D
   alias TextureCubemap = Texture2D
 
+  @[Flags]
   enum ConfigFlags
     VSyncHint              = 0x00000040
     FullscreenMode         = 0x00000002
@@ -573,7 +574,7 @@ lib Raylib
     material_count : LibC::Int
     meshes : Mesh*
     materials : Material*
-    mesh_material : LibC::Int*
+    mesh_material : LibC::Int
     bone_count : LibC::Int
     bones : BoneInfo*
     bind_pose : Transform*
@@ -592,7 +593,7 @@ lib Raylib
   end
 
   struct RayCollision
-    hit? : Bool
+    hit : Bool
     distance : LibC::Float
     point : Vector3
     normal : Vector3
@@ -643,9 +644,9 @@ lib Raylib
   fun window_focused? = IsWindowFocused : Bool
   fun window_resized? = IsWindowResized : Bool
   fun window_fullscreen? = IsWindowFullscreen : Bool
-  fun window_state? = IsWindowState(flag : LibC::UInt) : Bool
-  fun set_window_state = SetWindowState(flag : LibC::UInt)
-  fun clear_window_state = ClearWindowState(flag : LibC::UInt)
+  fun window_state? = IsWindowState(flag : ConfigFlags) : Bool
+  fun set_window_state = SetWindowState(flag : ConfigFlags)
+  fun clear_window_state = ClearWindowState(flag : ConfigFlags)
   fun toggle_fullscreen = ToggleFullscreen
   fun maximize_window = MaximizeWindow
   fun minimize_window = MinimizeWindow
