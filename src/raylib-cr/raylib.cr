@@ -1,3 +1,10 @@
+{% if flag?(:darwin) %}
+  @[Link(framework: "OpenGL")]
+  @[Link(framework: "OpenAL")]
+  @[Link(framework: "Cocoa")]
+  @[Link(framework: "IOKit")]
+{% end %}
+
 @[Link("raylib")]
 lib Raylib
   VERSION = "4.5-dev (62f63f9)"

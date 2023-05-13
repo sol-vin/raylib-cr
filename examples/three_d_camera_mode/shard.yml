@@ -9,7 +9,7 @@ targets:
     main: src/three_d_camera_mode.cr
 dependencies:
   raylib-cr:
-    github: sol-vin/raylib-cr
+    path: ../../
 
 crystal: 1.6.1
 
