@@ -9,7 +9,7 @@ targets:
     main: src/rlglsoloarsystem.cr
 dependencies:
   raylib-cr:
-    github: sol-vin/raylib-cr
+    path: ../../
 crystal: 1.6.1
 
 license: MIT

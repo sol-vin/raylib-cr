@@ -10,7 +10,7 @@ targets:
 
 dependencies:
   raylib-cr:
-    github: sol-vin/raylib-cr
+    path: ../../
 
 crystal: 1.6.1
 
