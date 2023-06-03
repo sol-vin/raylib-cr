@@ -30,9 +30,11 @@ dependencies:
 5. Get programming!
 
 ### Windows
-1. Install crystal with `scoop install crystal`
-2. Copy `./rsrc/native/windows/raylib` to `C:\raylib`
-3. Run in powershell
+
+1. Follow the instructions at https://github.com/neatorobito/scoop-crystal to add the crystal-preview bucket to scoop
+2. Install crystal with `scoop install crystal`
+3. Copy `./rsrc/native/windows/raylib` to `C:\raylib`
+4. Run in powershell
 ```powershell
 $env:LIB="${env:LIB};C:\raylib\lib"
 $env:PATH="${env:PATH};C:\raylib\lib"
@@ -45,14 +47,14 @@ Run in cmd
 set PATH=%PATH%;C:\raylib\lib
 set LIB=%LIB%;C:\raylib\lib
 ```
-4. Go back to your project directory. Add `raylib-cr` to your `shard.yml`:
+5. Go back to your project directory. Add `raylib-cr` to your `shard.yml`:
 ```yml
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
 ```
-5. Run `mkdir lib && cd lib && git clone https://github.com/sol-vin/raylib-cr`
-6. Get programming!
+6. Run `mkdir lib && cd lib && git clone https://github.com/sol-vin/raylib-cr`
+7. Get programming!
 
 # Usage Example
 
