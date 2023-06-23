@@ -7,7 +7,7 @@
 
 @[Link("raylib")]
 lib Raylib
-  VERSION = "4.5-dev (62f63f9)"
+  VERSION = "4.6-dev (5e1a81555ca130e2c6544add0e2391a8763e7e2a)"
   PI      =    3.141592653589793
   DEG2RAD = 0.017453292519943295
   RAD2DEG =    57.29577951308232
@@ -592,6 +592,7 @@ lib Raylib
     frame_count : LibC::Int
     bones : BoneInfo*
     frame_poses : Transform**
+    name : StaticArray(LibC::Char, 32)
   end
 
   struct Ray
@@ -659,6 +660,8 @@ lib Raylib
   fun minimize_window = MinimizeWindow
   fun restore_window = RestoreWindow
   fun set_window_icon = SetWindowIcon(image : Image)
+  fun set_window_icons = SetWindowIcons(images : Image*, count : LibC::Int)
+
   fun set_window_title = SetWindowTitle(title : LibC::Char*)
   fun set_window_position = SetWindowPosition(x : LibC::Int, y : LibC::Int)
   fun set_window_monitor = SetWindowMonitor(monitor : LibC::Int)
@@ -719,6 +722,7 @@ lib Raylib
 
   fun load_shader = LoadShader(vs_file_name : LibC::Char*, fs_file_name : LibC::Char*) : Shader
   fun load_shader_from_memory = LoadShaderFromMemory(vs_code : LibC::Char*, fs_code : LibC::Char*) : Shader
+  fun shader_ready? = IsShaderReady(shader : Shader) : Bool
   fun get_shader_location = GetShaderLocation(shader : Shader, uniform_name : LibC::Char*) : LibC::Int
   fun get_shader_location_attrib = GetShaderLocationAttrib(shader : Shader, attrib_name : LibC::Char*) : LibC::Int
   fun set_shader_value = SetShaderValue(shader : Shader, loc_index : LibC::Int, value : Void*, uniform_type : LibC::Int)
@@ -824,12 +828,9 @@ lib Raylib
   fun get_gesture_drag_angle = GetGestureDragAngle : LibC::Float
   fun get_gesture_pinch_vector = GetGesturePinchVector : Vector2
   fun get_gesture_pinch_angle = GetGesturePinchAngle : LibC::Float
-  fun set_camera_mode = SetCameraMode(camera : Camera, mode : LibC::Int)
-  fun update_camera = UpdateCamera(camera : Camera*)
-  fun set_camera_pan_control = SetCameraPanControl(key_pan : LibC::Int)
-  fun set_camera_alt_control = SetCameraAltControl(key_alt : LibC::Int)
-  fun set_camera_smooth_zoom_control = SetCameraSmoothZoomControl(key_smooth_zoom : LibC::Int)
-  fun set_camera_move_controls = SetCameraMoveControls(key_front : LibC::Int, key_back : LibC::Int, key_right : LibC::Int, key_left : LibC::Int, key_up : LibC::Int, key_down : LibC::Int)
+  fun update_camera = UpdateCamera(camera : Camera*, mode : CameraMode)
+  fun update_camera_pro = UpdateCameraPro(camera : Camera*, movement : Vector3, rotation : Vector3, zoom : LibC::Float)
+
   fun set_shapes_texture = SetShapesTexture(texture : Texture2D, source : Rectangle)
   fun draw_pixel = DrawPixel(pos_x : LibC::Int, pos_y : LibC::Int, color : Color)
   fun draw_pixel_v = DrawPixelV(position : Vector2, color : Color)
@@ -884,12 +885,15 @@ lib Raylib
   fun load_image_from_memory = LoadImageFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int) : Image
   fun load_image_from_texture = LoadImageFromTexture(texture : Texture2D) : Image
   fun load_image_from_screen = LoadImageFromScreen : Image
+  fun image_ready? = IsImageReady(image : Image) : Bool
   fun unload_image = UnloadImage(image : Image)
   fun export_image? = ExportImage(image : Image, file_name : LibC::Char*) : Bool
+  fun export_image_to_memory = ExportImageToMemory(image : Image, filetype : LibC::Char*, filesize : LibC::UChar*, datasize : LibC::Int) : LibC::UChar*
   fun export_image_as_code? = ExportImageAsCode(image : Image, file_name : LibC::Char*) : Bool
   fun gen_image_color = GenImageColor(width : LibC::Int, height : LibC::Int, color : Color) : Image
-  fun gen_image_gradient_v = GenImageGradientV(width : LibC::Int, height : LibC::Int, top : Color, bottom : Color) : Image
-  fun gen_image_gradient_h = GenImageGradientH(width : LibC::Int, height : LibC::Int, left : Color, right : Color) : Image
+  fun gen_image_gradient_linear = GenImageGradientLinear(width : LibC::Int, height : LibC::Int, direction : LibC::Int, start_color : Color, end_color : Color) : Image
+  fun gen_image_gradient_square = GenImageGradientSquare(width : LibC::Float, height : LibC::Float, density : LibC::Float, inner : Color, outer : Color) : Image
+
   fun gen_image_gradient_radial = GenImageGradientRadial(width : LibC::Int, height : LibC::Int, density : LibC::Float, inner : Color, outer : Color) : Image
   fun gen_image_checked = GenImageChecked(width : LibC::Int, height : LibC::Int, checks_x : LibC::Int, checks_y : LibC::Int, col1 : Color, col2 : Color) : Image
   fun gen_image_white_noise = GenImageWhiteNoise(width : LibC::Int, height : LibC::Int, factor : LibC::Float) : Image
@@ -916,6 +920,7 @@ lib Raylib
   fun image_dither = ImageDither(image : Image*, r_bpp : LibC::Int, g_bpp : LibC::Int, b_bpp : LibC::Int, a_bpp : LibC::Int)
   fun image_flip_vertical = ImageFlipVertical(image : Image*)
   fun image_flip_horizontal = ImageFlipHorizontal(image : Image*)
+  fun image_rotate = ImageRotate(image : Image*, degrees : LibC::Int)
   fun image_rotate_cw = ImageRotateCW(image : Image*)
   fun image_rotate_ccw = ImageRotateCCW(image : Image*)
   fun image_color_tint = ImageColorTint(image : Image*, color : Color)
@@ -951,7 +956,9 @@ lib Raylib
   fun load_texture_from_image = LoadTextureFromImage(image : Image) : Texture2D
   fun load_texture_cubemap = LoadTextureCubemap(image : Image, layout : LibC::Int) : TextureCubemap
   fun load_render_texture = LoadRenderTexture(width : LibC::Int, height : LibC::Int) : RenderTexture2D
+  fun texture_ready? = IsTextureReady(texture : Texture2D) : Bool
   fun unload_texture = UnloadTexture(texture : Texture2D)
+  fun render_texture_ready? = IsRenderTextureReady(render_texture : RenderTexture2D) : Bool
   fun unload_render_texture = UnloadRenderTexture(target : RenderTexture2D)
   fun update_texture = UpdateTexture(texture : Texture2D, pixels : Void*)
   fun update_texture_rec = UpdateTextureRec(texture : Texture2D, rec : Rectangle, pixels : Void*)
@@ -984,6 +991,7 @@ lib Raylib
   fun load_font_ex = LoadFontEx(file_name : LibC::Char*, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int) : Font
   fun load_font_from_image = LoadFontFromImage(image : Image, key : Color, first_char : LibC::Int) : Font
   fun load_font_from_memory = LoadFontFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int) : Font
+  fun font_ready? = IsFontReady(font : Font) : Bool
   fun load_font_data = LoadFontData(file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int, type : LibC::Int) : GlyphInfo*
   fun gen_image_font_atlas = GenImageFontAtlas(chars : GlyphInfo*, recs : Rectangle**, glyph_count : LibC::Int, font_size : LibC::Int, padding : LibC::Int, pack_method : LibC::Int) : Image
   fun unload_font_data = UnloadFontData(chars : GlyphInfo*, glyph_count : LibC::Int)
@@ -1049,6 +1057,7 @@ lib Raylib
   fun draw_grid = DrawGrid(slices : LibC::Int, spacing : LibC::Float)
   fun load_model = LoadModel(file_name : LibC::Char*) : Model
   fun load_model_from_mesh = LoadModelFromMesh(mesh : Mesh) : Model
+  fun model_ready? = IsModelReady(model : Model) : Bool
   fun unload_model = UnloadModel(model : Model)
   fun unload_model_keep_meshes = UnloadModelKeepMeshes(model : Model)
   fun get_model_bounding_box = GetModelBoundingBox(model : Model) : BoundingBox
@@ -1081,6 +1090,7 @@ lib Raylib
   fun gen_mesh_cubicmap = GenMeshCubicmap(cubicmap : Image, cube_size : Vector3) : Mesh
   fun load_materials = LoadMaterials(file_name : LibC::Char*, material_count : LibC::Int*) : Material*
   fun load_material_default = LoadMaterialDefault : Material
+  fun material_ready? = IsMaterialReady(material : Material) : Bool
   fun unload_material = UnloadMaterial(material : Material)
   fun set_material_texture = SetMaterialTexture(material : Material*, map_type : LibC::Int, texture : Texture2D)
   fun set_model_mesh_material = SetModelMeshMaterial(model : Model*, mesh_id : LibC::Int, material_id : LibC::Int)

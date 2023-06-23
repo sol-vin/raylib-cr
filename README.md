@@ -9,11 +9,12 @@ matricies, and quaternions.
 # Supported platforms
 
 These platforms are supported out of the box and are linked statically
-1. `x86_64-linux-gnu` = 64-bit Linux
-2. `x86_64-windows` = 64-bit Windows
+1. 64-bit Linux
+2. 64-bit Windows
+3. Mac OS
 
 Hopefully soon
-3. Raspberry PI
+4. Raspberry PI
 
 # Installation
 
@@ -74,6 +75,8 @@ end
 
 Raylib.close_window
 ```
+
+TODO: WRITE BUILD EXAMPLE DOCS
 
 # Contributing
 

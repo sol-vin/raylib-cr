@@ -113,9 +113,11 @@ lib RAudio
   fun audio_device_ready? = IsAudioDeviceReady : Bool
   fun set_master_volume = SetMasterVolume(volume : LibC::Float)
   fun load_wave = LoadWave(file_name : LibC::Char*) : Wave
+  fun wave_ready? = IsWaveReady(wave : Wave) : Bool
   fun load_wave_from_memory = LoadWaveFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int) : Wave
   fun load_sound = LoadSound(file_name : LibC::Char*) : Sound
   fun load_sound_from_wave = LoadSoundFromWave(wave : Wave) : Sound
+  fun sound_ready? = IsSoundReady(sound : Sound) : Bool
   fun update_sound = UpdateSound(sound : Sound, data : Void*, sample_count : LibC::Int)
   fun unload_wave = UnloadWave(wave : Wave)
   fun unload_sound = UnloadSound(sound : Sound)
@@ -125,9 +127,6 @@ lib RAudio
   fun stop_sound = StopSound(sound : Sound)
   fun pause_sound = PauseSound(sound : Sound)
   fun resume_sound = ResumeSound(sound : Sound)
-  fun play_sound_multi = PlaySoundMulti(sound : Sound)
-  fun stop_sound_multi = StopSoundMulti
-  fun get_sounds_playing = GetSoundsPlaying : LibC::Int
   fun sound_playing? = IsSoundPlaying(sound : Sound) : Bool
   fun set_sound_volume = SetSoundVolume(sound : Sound, volume : LibC::Float)
   fun set_sound_pitch = SetSoundPitch(sound : Sound, pitch : LibC::Float)
@@ -139,6 +138,7 @@ lib RAudio
   fun unload_wave_samples = UnloadWaveSamples(samples : LibC::Float*)
   fun load_music_stream = LoadMusicStream(file_name : LibC::Char*) : Music
   fun load_music_stream_from_memory = LoadMusicStreamFromMemory(file_type : LibC::Char*, data : LibC::UChar*, data_size : LibC::Int) : Music
+  fun music_ready? = IsMusicReady(music : Music) : Bool
   fun unload_music_stream = UnloadMusicStream(music : Music)
   fun play_music_stream = PlayMusicStream(music : Music)
   fun music_stream_playing? = IsMusicStreamPlaying(music : Music) : Bool
@@ -153,6 +153,7 @@ lib RAudio
   fun get_music_time_length = GetMusicTimeLength(music : Music) : LibC::Float
   fun get_music_time_played = GetMusicTimePlayed(music : Music) : LibC::Float
   fun load_audio_stream = LoadAudioStream(sample_rate : LibC::UInt, sample_size : LibC::UInt, channels : LibC::UInt) : AudioStream
+  fun audio_stream_ready? = IsAudioStreamReady(stream : AudioStream) : Bool
   fun unload_audio_stream = UnloadAudioStream(stream : AudioStream)
   fun update_audio_stream = UpdateAudioStream(stream : AudioStream, data : Void*, frame_count : LibC::Int)
   fun audio_stream_processed? = IsAudioStreamProcessed(stream : AudioStream) : Bool
@@ -170,4 +171,6 @@ lib RAudio
   fun set_audio_stream_callback = SetAudioStreamCallback(stream : AudioStream, callback : AudioCallback)
   fun attach_audio_stream_processor = AttachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
   fun detach_audio_stream_processor = DetachAudioStreamProcessor(stream : AudioStream, processor : AudioCallback)
+  fun attach_audio_mixed_processor = AttachAudioMixedProcessor(processor : AudioCallback)
+  fun detach_audio_mixed_processor = DetachAudioMixedProcessor(processor : AudioCallback)
 end

@@ -15,6 +15,7 @@ lib Raymath
   fun vector2_dot_product = Vector2DotProduct(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_distance = Vector2Distance(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_angle = Vector2Angle(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
+  fun vector2_line_angle = Vector2Angle(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_scale = Vector2Scale(v : Raylib::Vector2, scale : LibC::Float) : Raylib::Vector2
   fun vector2_multiply = Vector2Multiply(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : Raylib::Vector2
   fun vector2_negate = Vector2Negate(v : Raylib::Vector2) : Raylib::Vector2
@@ -162,6 +163,10 @@ struct Raylib::Vector2
 
   def angle(v2 : Raylib::Vector2) : LibC::Float
     Raymath.vector2_angle(self, v2)
+  end
+
+  def line_angle(v2 : Raylib::Vector2) : LibC::Float
+    Raymath.vector2_line_angle(self, v2)
   end
 
   def scale(scale : Number) : Raylib::Vector2

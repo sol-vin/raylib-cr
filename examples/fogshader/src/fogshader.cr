@@ -13,7 +13,6 @@ camera = Rl::Camera3D.new(
   target: Vec3.new(x:30),
   position: Vec3.new(y:8),
   projection: Rl::CameraProjection::Perspective)
-Rl.set_camera_mode camera, Rl::CameraMode::Orbital
 
 fog = Rl.load_shader "rsrc/shd/fog.vs","rsrc/shd/fog.fs"
 fog_color = [1_f32,1_f32,1_f32,1_f32]
@@ -33,7 +32,7 @@ model.materials[0] = m
 view_loc = Rl.get_shader_location fog,"viewPos"
 
 until Rl.close_window?
-  Rl.update_camera pointerof(camera)
+  Rl.update_camera pointerof(camera), Rl::CameraMode::Orbital
 
   pos = [camera.position.x,camera.position.y,camera.position.z]
   Rl.set_shader_value fog, view_loc, pos, Rl::ShaderUniformDataType::Vec3
