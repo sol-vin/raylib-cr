@@ -8,6 +8,8 @@ Rl.init_window(100, 100, "Sound Test")
 RAudio.init_audio_device
 Rl.set_target_fps(60)
 
+# puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + MiniAudioHelpers.ma_data_converter_size.to_s
+
 sound = RAudio.load_sound("rsrc/marmapurr.mp3")
 until Rl.close_window?
 
