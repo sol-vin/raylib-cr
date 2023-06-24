@@ -2,25 +2,11 @@
 lib RAudio
   alias AudioCallback = Proc(Void*, LibC::UInt)
 
+
   {% begin %}
-  # MINIAUDIO DUMMY STRUCTS
-  struct MADataConverter
-    data : StaticArray(UInt8, {{run("./miniaudio_fix/ma_data_converter_size")}})
-  end
-
-  struct MAContext
-    data : StaticArray(UInt8, {{run("./miniaudio_fix/ma_context_size")}})
-  end
-
-  struct MADevice
-    data : StaticArray(UInt8, {{run("./miniaudio_fix/ma_device_size")}})
-  end
-
-  struct MAMutex
-    data : StaticArray(UInt8, {{run("./miniaudio_fix/ma_mutex_size")}})
-  end
-  # END DUMMY
+  {{ run "./miniaudio_fix/ma_sizes" }}
   {% end %}
+
 
   struct Wave
     frame_count : LibC::UInt
