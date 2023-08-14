@@ -16,13 +16,11 @@ FileUtils.cd("examples") do
     FileUtils.cd(path) do
       `shards install`
       output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr`
+      file = "../_build/#{name}"
       {% if flag?(:windows) %}
         file = "../_build/#{name}.exe"
       {% end %}
 
-      {% if flag?(:linux) %}
-        file = "../_build/#{name}"
-      {% end %}
       unless File.exists?(file)
         puts output
         puts
