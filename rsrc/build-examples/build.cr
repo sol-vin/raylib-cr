@@ -27,7 +27,11 @@ FileUtils.cd("examples") do
         puts "Could not find #{FileUtils.pwd}/_build/#{name}.exe"
         exit(1)
       end 
-      FileUtils.rm("../_build/#{name}.pdb")
+      begin
+        FileUtils.rm("../_build/#{name}.pdb")
+      rescue
+      end
+      
       begin
         FileUtils.cp_r("./rsrc", "../_build/rsrc")
       rescue
