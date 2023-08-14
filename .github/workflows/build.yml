@@ -12,9 +12,9 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: Compile miniaudiohelpers.o
-        run: gcc -c -fPIC lib/raylib-cr/rsrc/miniaudio-tests/miniaudiohelpers.c -o lib/raylib-cr/rsrc/miniaudio-tests/miniaudiohelpers.o
+        run: gcc -c -fPIC rsrc/miniaudio-tests/miniaudiohelpers.c -o rsrc/miniaudio-tests/miniaudiohelpers.o
       - name: Compile libminiaudiohelpers.so
-        run: sudo gcc lib/raylib-cr/rsrc/miniaudio-tests/miniaudiohelpers.o -shared -o /usr/local/lib/libminiaudiohelpers.so -lm
+        run: sudo gcc rsrc/miniaudio-tests/miniaudiohelpers.o -shared -o /usr/local/lib/libminiaudiohelpers.so -lm
       - name: Install miniaudiohelpers 1
         run: sudo cp /usr/local/lib/libminiaudiohelpers.so /usr/lib/libminiaudiohelpers.so
       - name: Install miniaudiohelpers 2
