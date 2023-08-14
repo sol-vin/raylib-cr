@@ -1,8 +1,11 @@
 require "file_utils"
 
-FileUtils.cd("examples") do 
+FileUtils.cd("examples") do
   puts "BUILDING EXAMPLE FROM #{FileUtils.pwd}"
-  FileUtils.rm_r("_build")
+  begin
+    FileUtils.rm_r("_build")
+  rescue
+  end
   FileUtils.mkdir_p("_build/rsrc")
   Dir.entries(FileUtils.pwd).each do |name|
     path = Path[name]
