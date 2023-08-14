@@ -15,9 +15,11 @@ FileUtils.cd("examples") do
 
     FileUtils.cd(path) do
       `shards install`
-      `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr`
+      output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr`
       unless File.exists?("../_build/#{name}.exe")
-        puts "Could not find #{Dir.pwd}/_build/#{name}.exe"
+        puts output
+        puts
+        puts "Could not find #{FileUtils.pwd}/_build/#{name}.exe"
         exit(1)
       end 
       FileUtils.rm("../_build/#{name}.pdb")
