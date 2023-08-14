@@ -1,0 +1,6 @@
+version: 2.0
+shards:
+  raylib-cr:
+    path: ../../
+    version: 0.9
+
