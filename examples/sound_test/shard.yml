@@ -7,7 +7,10 @@ authors:
 targets:
   main:
     main: src/sound_test.cr
-
+dependencies:
+  raylib-cr:
+    path: ../../
+    
 crystal: 1.6.1
 
 license: MIT
