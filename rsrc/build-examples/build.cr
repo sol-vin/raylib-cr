@@ -1,5 +1,7 @@
 require "file_utils"
 
+
+
 FileUtils.cd("examples") do
   puts "BUILDING EXAMPLE FROM #{FileUtils.pwd}"
   begin
@@ -15,7 +17,9 @@ FileUtils.cd("examples") do
 
     FileUtils.cd(path) do
       `shards install`
+
       output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr`
+
       file = "../_build/#{name}"
       {% if flag?(:windows) %}
         file = "../_build/#{name}.exe"

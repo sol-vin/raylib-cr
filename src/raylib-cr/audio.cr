@@ -105,10 +105,12 @@ lib RAudio
   fun load_wave_from_memory = LoadWaveFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int) : Wave
   fun load_sound = LoadSound(file_name : LibC::Char*) : Sound
   fun load_sound_from_wave = LoadSoundFromWave(wave : Wave) : Sound
+  fun load_sound_alias = LoadSoundAlias(sound : Sound) : Sound
   fun sound_ready? = IsSoundReady(sound : Sound) : Bool
   fun update_sound = UpdateSound(sound : Sound, data : Void*, sample_count : LibC::Int)
   fun unload_wave = UnloadWave(wave : Wave)
   fun unload_sound = UnloadSound(sound : Sound)
+  fun unload_sound_alias = UnloadSoundAlias(sound : Sound)
   fun export_wave? = ExportWave(wave : Wave, file_name : LibC::Char*) : Bool
   fun export_wave_as_code? = ExportWaveAsCode(wave : Wave, file_name : LibC::Char*) : Bool
   fun play_sound = PlaySound(sound : Sound)

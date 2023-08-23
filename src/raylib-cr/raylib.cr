@@ -7,7 +7,7 @@
 
 @[Link("raylib")]
 lib Raylib
-  VERSION = "4.6-dev (5e1a81555ca130e2c6544add0e2391a8763e7e2a)"
+  VERSION = "4.6-dev"
   PI      =    3.141592653589793
   DEG2RAD = 0.017453292519943295
   RAD2DEG =    57.29577951308232
@@ -17,21 +17,22 @@ lib Raylib
 
   @[Flags]
   enum ConfigFlags
-    VSyncHint              = 0x00000040
-    FullscreenMode         = 0x00000002
-    WindowResizable        = 0x00000004
-    WindowUndecorated      = 0x00000008
-    WindowHidden           = 0x00000080
-    WindowMinimized        = 0x00000200
-    WindowMaximized        = 0x00000400
-    WindowUnfocused        = 0x00000800
-    WindowTopmost          = 0x00001000
-    WindowAlwaysRun        = 0x00000100
-    WindowTransparent      = 0x00000010
-    WindowHighdpi          = 0x00002000
-    WindowMousePassthrough = 0x00004000
-    MSAA4xHint             = 0x00000020
-    InterlacedHint         = 0x00010000
+    VSyncHint                    = 0x00000040
+    FullscreenMode               = 0x00000002
+    WindowResizable              = 0x00000004
+    WindowUndecorated            = 0x00000008
+    WindowHidden                 = 0x00000080
+    WindowMinimized              = 0x00000200
+    WindowMaximized              = 0x00000400
+    WindowUnfocused              = 0x00000800
+    WindowTopmost                = 0x00001000
+    WindowAlwaysRun              = 0x00000100
+    WindowTransparent            = 0x00000010
+    WindowHighdpi                = 0x00002000
+    WindowMousePassthrough       = 0x00004000
+    WindowBorderlessWindowedMode = 0x00008000
+    MSAA4xHint                   = 0x00000020
+    InterlacedHint               = 0x00010000
   end
 
   enum TraceLogLevel
@@ -284,16 +285,19 @@ lib Raylib
     UncompressedR32          =  8
     UncompressedR32g32b32    =  9
     UncompressedR32g32b32a32 = 10
-    CompressedDxt1Rgb        = 11
-    CompressedDxt1Rgba       = 12
-    CompressedDxt3Rgba       = 13
-    CompressedDxt5Rgba       = 14
-    CompressedEtc1Rgb        = 15
-    CompressedEtc2Rgb        = 16
-    CompressedEtc2EacRgba    = 17
-    CompressedPvrtRgb        = 18
-    CompressedPvrtRgba       = 19
-    CompressedAstc4x4Rgba    = 20
+    UncompressedR16          = 11
+    UncompressedR16G16B16    = 12
+    UncompressedR16G16B16A16 = 13
+    CompressedDxt1Rgb        = 14
+    CompressedDxt1Rgba       = 15
+    CompressedDxt3Rgba       = 16
+    CompressedDxt5Rgba       = 17
+    CompressedEtc1Rgb        = 18
+    CompressedEtc2Rgb        = 19
+    CompressedEtc2EacRgba    = 20
+    CompressedPvrtRgb        = 21
+    CompressedPvrtRgba       = 22
+    CompressedAstc4x4Rgba    = 23
   end
 
   enum TextureFilter
@@ -477,13 +481,12 @@ lib Raylib
     format : LibC::Int
   end
 
-
   struct RenderTexture2D
     id : LibC::UInt
     texture : Texture2D
     depth : Texture2D
   end
-  
+
   alias RenderTexture = RenderTexture2D
 
   struct NPatchInfo
@@ -656,6 +659,8 @@ lib Raylib
   fun set_window_state = SetWindowState(flag : ConfigFlags)
   fun clear_window_state = ClearWindowState(flag : ConfigFlags)
   fun toggle_fullscreen = ToggleFullscreen
+  fun toggle_borderless_windowed = ToggleBorderlessWindowed
+
   fun maximize_window = MaximizeWindow
   fun minimize_window = MinimizeWindow
   fun restore_window = RestoreWindow
@@ -668,6 +673,8 @@ lib Raylib
   fun set_window_min_size = SetWindowMinSize(width : LibC::Int, height : LibC::Int)
   fun set_window_size = SetWindowSize(width : LibC::Int, height : LibC::Int)
   fun set_window_opacity = SetWindowOpacity(opacity : LibC::Float)
+  fun set_window_focused = SetWindowFocused
+
   fun get_window_handle = GetWindowHandle : Void*
   fun get_screen_width = GetScreenWidth : LibC::Int
   fun get_screen_height = GetScreenHeight : LibC::Int
@@ -785,6 +792,7 @@ lib Raylib
   fun encode_data_base64 = EncodeDataBase64(data : LibC::UChar*, data_length : LibC::Int, output_length : LibC::Int*) : LibC::Char*
   fun decode_data_base64 = DecodeDataBase64(data : LibC::UChar*, output_length : LibC::Int*) : LibC::UChar*
   fun key_pressed? = IsKeyPressed(key : LibC::Int) : Bool
+  fun key_pressed_repeat? = IsKeyPressedRepeat(key : LibC::Int) : Bool
   fun key_down? = IsKeyDown(key : LibC::Int) : Bool
   fun key_released? = IsKeyReleased(key : LibC::Int) : Bool
   fun key_up? = IsKeyUp(key : LibC::Int) : Bool
@@ -840,6 +848,8 @@ lib Raylib
   fun draw_line_bezier = DrawLineBezier(start_pos : Vector2, end_pos : Vector2, thick : LibC::Float, color : Color)
   fun draw_line_bezier_quad = DrawLineBezierQuad(start_pos : Vector2, end_pos : Vector2, control_pos : Vector2, thick : LibC::Float, color : Color)
   fun draw_line_bezier_cubic = DrawLineBezierCubic(start_pos : Vector2, end_pos : Vector2, start_control_pos : Vector2, end_control_pos : Vector2, thick : LibC::Float, color : Color)
+  fun draw_line_b_spline = DrawLineBSpline(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+  fun draw_line_catmull_rom = DrawLineCatmullRom(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
   fun draw_line_strip = DrawLineStrip(points : Vector2*, point_count : LibC::Int, color : Color)
   fun draw_circle = DrawCircle(center_x : LibC::Int, center_y : LibC::Int, radius : LibC::Float, color : Color)
   fun draw_circle_sector = DrawCircleSector(center : Vector2, radius : LibC::Float, start_angle : LibC::Float, end_angle : LibC::Float, segments : LibC::Int, color : Color)
@@ -1004,6 +1014,7 @@ lib Raylib
   fun draw_text_codepoint = DrawTextCodepoint(font : Font, codepoint : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
   fun draw_text_codepoints = DrawTextCodepoints(font : Font, codepoints : LibC::Int*, count : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
 
+  fun set_text_line_spacing = SetTextLineSpacing(spacing : LibC::Int)
   fun measure_text = MeasureText(text : LibC::Char*, font_size : LibC::Int) : LibC::Int
   fun measure_text_ex = MeasureTextEx(font : Font, text : LibC::Char*, font_size : LibC::Float, spacing : LibC::Float) : Vector2
   fun get_glyph_index = GetGlyphIndex(font : Font, codepoint : LibC::Int) : LibC::Int

@@ -1,4 +1,5 @@
 require "raylib-cr"
+require "raylib-cr/audio"
 
 alias Rl = Raylib
 alias Ra = RAudio
