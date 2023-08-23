@@ -88,6 +88,13 @@ $env:PATH="${env:PATH};C:\raylib\lib"
 ```
  4. `shards run`
 
+# RLGL, Audio, and Lights
+If you need to extra functionality, RLGL, RAudio and Lights can be included with the following.
+```crystal
+require "raylib-cr/rlgl"
+require "raylib-cr/audio"
+require "raylib-cr/lights"
+```
 # Contributing
 
 1. Fork it (https://github.com/sol-vin/raylib-cr)
