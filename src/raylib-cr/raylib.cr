@@ -954,7 +954,6 @@ lib Raylib
   fun image_draw_circle_v = ImageDrawCircleV(dst : Image*, center : Vector2, radius : LibC::Int, color : Color)
   fun image_draw_circle_lines = ImageDrawCircle(dst : Image*, center_X : LibC::Int, center_y : LibC::Int, radius : LibC::Int, color : Color)
   fun image_draw_circle_lines_v = ImageDrawCircleV(dst : Image*, center : Vector2, radius : LibC::Int, color : Color)
-
   fun image_draw_rectangle = ImageDrawRectangle(dst : Image*, pos_x : LibC::Int, pos_y : LibC::Int, width : LibC::Int, height : LibC::Int, color : Color)
   fun image_draw_rectangle_v = ImageDrawRectangleV(dst : Image*, position : Vector2, size : Vector2, color : Color)
   fun image_draw_rectangle_rec = ImageDrawRectangleRec(dst : Image*, rec : Rectangle, color : Color)

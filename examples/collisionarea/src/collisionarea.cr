@@ -4,7 +4,6 @@ screen_height = 450
 
 Raylib.init_window(screen_width, screen_height, "Hello World")
 
-
 box_a = Raylib::Rectangle.new
 box_a.x = 10
 box_a.y = screen_height/2.0 - 50
@@ -32,7 +31,6 @@ until Raylib.close_window?
   box_b.x = Raylib.get_mouse_x - (box_b.width / 2.0)
   box_b.y = Raylib.get_mouse_y - (box_b.height / 2.0)
 
-
   if ((box_b.x + box_b.width) >= screen_width)
     box_b.x = screen_width - box_b.width
   elsif box_b.x <= 0
@@ -59,7 +57,7 @@ until Raylib.close_window?
   if collision
     Raylib.draw_rectangle_rec(box_collision, Raylib::GREEN)
     Raylib.draw_text("COLLISION!", screen_width/2.0 - Raylib.measure_text("COLLISION!", 20)/2.0, screen_upper_limit/2.0 - 10, 20, Raylib::BLACK)
-    Raylib.draw_text("Collision Area: #{ (box_collision.width *  box_collision.height).to_i}", screen_width/2.0 - 100, screen_upper_limit + 10, 20, Raylib::BLACK)
+    Raylib.draw_text("Collision Area: #{(box_collision.width * box_collision.height).to_i}", screen_width/2.0 - 100, screen_upper_limit + 10, 20, Raylib::BLACK)
   end
 
   Raylib.draw_fps(10, 10)

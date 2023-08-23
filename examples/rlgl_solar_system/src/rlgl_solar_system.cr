@@ -11,27 +11,27 @@ def draw_sphere_basic(color : Rl::Color)
 
   RLGL.begin(RLGL::TRIANGLES)
   RLGL.color_4ub(color.r, color.g, color.b, color.a)
-  (rings+2).times do |i|
-    (slices+2).times do |j|
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*i)),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))* Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)))
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
+  (rings + 2).times do |i|
+    (slices + 2).times do |j|
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*i)),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.sin(Rl::DEG2RAD*((j + 1)*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1))),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.cos(Rl::DEG2RAD*((j + 1)*360/slices)))
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1))),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
 
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*i)),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i))),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)))
-      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.sin(Rl::DEG2RAD*((j+1)*360/slices)),
-        Math.sin(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1))),
-        Math.cos(Rl::DEG2RAD*(270+(180/(rings + 1))*(i+1)))*Math.cos(Rl::DEG2RAD*((j+1)*360/slices)));
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*i))*Math.sin(Rl::DEG2RAD*(j*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*i)),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*i))*Math.cos(Rl::DEG2RAD*(j*360/slices)))
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i)))*Math.sin(Rl::DEG2RAD*((j + 1)*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i))),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i)))*Math.cos(Rl::DEG2RAD*((j + 1)*360/slices)))
+      RLGL.vertex_3f(Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.sin(Rl::DEG2RAD*((j + 1)*360/slices)),
+        Math.sin(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1))),
+        Math.cos(Rl::DEG2RAD*(270 + (180/(rings + 1))*(i + 1)))*Math.cos(Rl::DEG2RAD*((j + 1)*360/slices)))
     end
   end
   RLGL.end
@@ -46,7 +46,6 @@ earth_orbit_radius = 8.0_f32
 moon_radius = 0.16_f32
 moon_orbit_radius = 1.5_f32
 
-
 Rl.init_window(screen_width, screen_height, "RLGL Solar System")
 
 camera = Rl::Camera.new
@@ -56,7 +55,7 @@ camera.up = Rl::Vector3.new(x: 0.0_f32, y: 1.0_f32, z: 0.0_f32)
 camera.fovy = 45.0_f32
 camera.projection = Rl::CameraProjection::Perspective
 
-rotation_speed = 0.2_f32 
+rotation_speed = 0.2_f32
 
 earth_rotation = 0.0_f32
 earth_orbit_rotation = 0.0_f32
@@ -70,8 +69,7 @@ until Rl.close_window?
   earth_rotation += (5.0_f32 * rotation_speed)
   earth_orbit_rotation += (365/360.0_f32*(5.0_f32*rotation_speed)*rotation_speed)
   moon_rotation += (2.0_f32*rotation_speed)
-  moon_orbit_rotation += (8.0_f32*rotation_speed);
-
+  moon_orbit_rotation += (8.0_f32*rotation_speed)
   Rl.begin_drawing
   Rl.clear_background(Rl::RAYWHITE)
   Rl.begin_mode_3d(camera)
