@@ -61,6 +61,8 @@ dependencies:
 
 # Usage Example
 
+`main.cr`
+
 ```crystal
 require "raylib-cr"
 
@@ -77,8 +79,14 @@ end
 
 Raylib.close_window
 ```
-
-TODO: WRITE BUILD EXAMPLE DOCS
+ 1. Add `raylib-cr` to `shard.yml` dependencies.
+ 2. `shards install`
+ 3. Run in powershell (only needs to be run once per new console window opened)
+```powershell
+$env:LIB="${env:LIB};C:\raylib\lib"
+$env:PATH="${env:PATH};C:\raylib\lib"
+```
+ 4. `shards run`
 
 # Contributing
 
