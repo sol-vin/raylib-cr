@@ -1,4 +1,5 @@
 require "raylib-cr"
+require "raylib-cr/rlgl"
 
 alias Rl = Raylib
 

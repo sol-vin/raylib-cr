@@ -1,4 +1,5 @@
 require "raylib-cr"
+require "raylib-cr/rlgl"
 
 alias R = Raylib
 alias V2 = Raylib::Vector2
