@@ -21,7 +21,8 @@ Hopefully soon
 ### Linux
 1. Install raylib from [github](https://github.com/raysan5/raylib/releases)
 2. Run `make install` in raylib
-3. Add `raylib-cr` to your `shard.yml` dependencies like so:
+3. Install `miniaudiohelpers.so`
+4. Add `raylib-cr` to your `shard.yml` dependencies like so:
 ```yml
 dependencies:
   raylib-cr:
