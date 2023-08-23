@@ -17,7 +17,6 @@ cube_position = Raylib::Vector3.new(x: 0, y: 0, z: 0)
 Raylib.set_target_fps(60)
 
 until Raylib.close_window?
-
   Raylib.begin_drawing
   Raylib.clear_background(Raylib::RAYWHITE)
   Raylib.begin_mode_3d(camera)
@@ -27,7 +26,6 @@ until Raylib.close_window?
   Raylib.end_mode_3d
 
   Raylib.end_drawing
-
 end
 
 Raylib.close_window

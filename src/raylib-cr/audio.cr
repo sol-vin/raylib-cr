@@ -1,12 +1,10 @@
 @[Link("raylib")]
 lib RAudio
   alias AudioCallback = Proc(Void*, LibC::UInt)
-
-
+  
   {% begin %}
   {{ run "./miniaudio_fix/ma_sizes" }}
   {% end %}
-
 
   struct Wave
     frame_count : LibC::UInt

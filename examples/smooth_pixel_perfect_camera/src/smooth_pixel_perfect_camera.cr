@@ -42,7 +42,7 @@ until Rl.close_window?
   camera_y = Math.cos(Rl.get_time).to_f * 30.0_f32
 
   world_space_camera.target = Rl::Vector2.new(x: camera_x, y: camera_y)
-  
+
   # world_space_camera.target.x = screen_space_camera.target.x.to_i
   # # screen_space_camera.target.x -= world_space_camera.target.x
   # # screen_space_camera.target.x *= virtual_width_ratio

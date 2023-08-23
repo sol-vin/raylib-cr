@@ -4,7 +4,6 @@ require "raylib-cr/rlgl"
 alias R = Raylib
 alias V2 = Raylib::Vector2
 
-
 module C
   SCREEN_WIDTH  = 800
   SCREEN_HEIGHT = 450
@@ -174,13 +173,11 @@ module Lights
   end
 end
 
-
-
 R.init_window(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, "raylib [shapes] example - top down lights")
 
 # Boxes.setup
 
-img = R.gen_image_checked(64,64,32,32,R::DARKBROWN, R::DARKGRAY)
+img = R.gen_image_checked(64, 64, 32, 32, R::DARKBROWN, R::DARKGRAY)
 bg_texture = R.load_texture_from_image(img)
 R.unload_image img
 
@@ -212,7 +209,6 @@ until R.close_window?
 
   dirty_lights = false
 
-
   Lights.lights.each do |l|
     dirty_lights = true if l.update
   end
@@ -225,7 +221,7 @@ until R.close_window?
     R.clear_background(R::BLACK)
     RLGL.set_blend_factors(C::SRC_ALPHA, C::SRC_ALPHA, C::MIN)
     RLGL.set_blend_mode(R::BlendMode::Custom)
-    
+
     Lights.lights.each do |l|
       R.draw_texture_rec(l.mask.texture, screen_texture_rect_flipped, V2.zero, R::WHITE) if l.active?
     end
@@ -234,13 +230,12 @@ until R.close_window?
     R.end_texture_mode
   end
 
-  
   R.clear_background(R::BLACK)
   R.draw_texture_rec(bg_texture, screen_texture_rect, V2.zero, R::WHITE)
   R.draw_texture_rec(light_mask.texture, screen_texture_rect_flipped, V2.zero, R.color_alpha(R::WHITE, show_lines ? 0.75_f32 : 1.0_f32))
 
   Lights.lights.each do |l|
-    R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW  : R::WHITE) if l.active?
+    R.draw_circle(l.position.x, l.position.y, 10, (l == 0) ? R::YELLOW : R::WHITE) if l.active?
   end
 
   if show_lines
@@ -258,7 +253,6 @@ until R.close_window?
   end
 
   R.end_drawing
-
 end
 
 R.unload_texture(bg_texture)
