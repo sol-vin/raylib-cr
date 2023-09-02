@@ -1,0 +1,42 @@
+name: "pre-release"
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  pre-release:
+    name: "Pre Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+      - name: Install Crystal libs
+        run: shards install
+      - name: raylib-cr post-install
+        run: ./lib/raylib-cr/rsrc/install.sh
+      - name: Build project
+        run: shards build --release
+      - name: git lfs fetch
+        run: git lfs fetch
+      - name: git lfs checkout
+        run: git lfs checkout
+      - name: Copy rsrc
+        run: cp -r rsrc bin
+      - name: Cleanup rsrc
+        run: rm -rf bin/rsrc/_dev
+      - name: Zip files
+        run: zip -r prerelease.zip bin/**
+        
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Nightly"
+          files: |
+            ubuntu-prerelease.zip
