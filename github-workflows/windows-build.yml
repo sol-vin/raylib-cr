@@ -1,0 +1,29 @@
+name: Windows - Build
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install scoop 1
+        run: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+      - name: Install scoop 2
+        run: irm get.scoop.sh -outfile 'install.ps1'
+      - name: Install scoop 3
+        run: .\install.ps1 -RunAsAdmin
+      - name: Install scoop 4
+        run: iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+      - name: Install crystal 1
+        run: scoop bucket add crystal-preview https://github.com/neatorobito/scoop-crystal
+      - name: Install crystal 2
+        run: scoop install vs_2022_cpp_build_tools
+      - name: Install crystal 3
+        run: scoop install crystal
+      - name: shards install
+        run: shards install
+      - name: raylib-cr post-install
+        run: powershell lib/raylib-cr/rsrc/install.ps1
+      - name: raylib-cr post-install
+        run: shards build

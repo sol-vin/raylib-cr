@@ -1,4 +1,4 @@
-name: "release"
+name: Ubuntu - Release(v*)
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: raylib-cr post-install
-        run: ./lib/raylib-cr/rsrc/install.sh
+        run: sh ./lib/raylib-cr/rsrc/install.sh
       - name: Build project
         run: shards build --release
       - name: git lfs fetch

@@ -11,4 +11,3 @@ sudo make install -C raylib/build
 sudo cp /usr/local/lib/libraylib.so.4.5.0 /usr/lib/libraylib.so.450
 sudo ln -s /usr/lib/libraylib.so.450 /lib/raylib.so
 rm -r raylib
-rm -r rsrc/miniaudio-tests/miniaudiohelpers.o
