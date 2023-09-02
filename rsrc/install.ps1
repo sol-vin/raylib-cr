@@ -16,6 +16,5 @@ copy raylib\Debug\raylib.dll C:\raylib\raylib.dll
 cd ..\..
 del raylib
 
-
-$env:PATH="${env:PATH};C:\raylib\lib"
-$env:LIB="${env:LIB};C:\raylib\lib"
+set PATH=%PATH%;C:\raylib\lib
+set LIB=%LIB%;C:\raylib\lib
