@@ -24,7 +24,7 @@ jobs:
       - name: Setup VS Dev Environment
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
-        run: powershell lib/raylib-cr/rsrc/install-lib.ps1
+        run: powershell rsrc/install-ga.ps1
       - name: set env
         run: | 
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
