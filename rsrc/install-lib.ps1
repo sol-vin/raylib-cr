@@ -1,5 +1,5 @@
-cl /c lib\raylib-cr\rsrc\miniaudio-tests\miniaudiohelpers.c
-lib miniaudiohelpers.obj
+.\lib\raylib-cr\rsrc\native\windows\cl.exe /c .\lib\raylib-cr\rsrc\miniaudio-tests\miniaudiohelpers.c
+.\lib\raylib-cr\rsrc\native\windows\lib.exe miniaudiohelpers.obj
 copy miniaudiohelpers.lib C:\raylib\miniaudiohelpers.lib
 del miniaudiohelpers.obj
 del miniaudiohelpers.lib
