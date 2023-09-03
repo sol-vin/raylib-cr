@@ -28,7 +28,7 @@ jobs:
       - name: set env
         run: | 
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
-          echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
+          echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs;C:\Users\runneradmin\scoop\shims\scoop") >> $env:GITHUB_ENV
       - name: check env
         run: |
           echo $env:LIB
