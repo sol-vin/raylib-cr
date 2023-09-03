@@ -34,4 +34,4 @@ jobs:
           echo $env:LIB
           echo $env:PATH
       - name: Build examples
-        run: crystal run rsrc/build-examples/build.cr
+        run: C:\Users\runneradmin\scoop\shims\crystal run rsrc/build-examples/build.cr
