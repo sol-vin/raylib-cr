@@ -1,4 +1,4 @@
-cl /c .\lib\raylib-cr\rsrc\miniaudio-tests\miniaudiohelpers.c
+cl /c lib\raylib-cr\rsrc\miniaudio-tests\miniaudiohelpers.c
 lib miniaudiohelpers.obj
 mkdir libs
 copy miniaudiohelpers.lib libs\miniaudiohelpers.lib
@@ -12,6 +12,6 @@ cd build
 cmake .. -DBUILD_SHARED_LIBS=ON
 cmake --build .
 copy raylib\Debug\raylib.lib ..\..\libs\raylib.lib
-copy raylib\Debug\raylib.dll ..\..libs\raylib.dll
+copy raylib\Debug\raylib.dll ..\..\libs\raylib.dll
 cd ..\..
 del raylib
