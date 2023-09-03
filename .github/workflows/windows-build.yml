@@ -1,8 +1,8 @@
-name: Windows - Build
+name: Windows - Build Examples
 on: [push, pull_request]
 jobs:
   build:
-    name: Windows - Build
+    name: Windows - Build Examples
     runs-on: windows-latest
     steps:
       - name: Download source
@@ -33,6 +33,5 @@ jobs:
         run: |
           echo $env:LIB
           echo $env:PATH
-      - name: shards build
-        run: |
-          C:\Users\runneradmin\scoop\shims\shards build
+      - name: Build examples
+        run: crystal run rsrc/build-examples/build.cr
