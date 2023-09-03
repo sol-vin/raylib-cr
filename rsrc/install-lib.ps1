@@ -1,5 +1,6 @@
 cl /c .\lib\raylib-cr\rsrc\miniaudio-tests\miniaudiohelpers.c
 lib miniaudiohelpers.obj
+mkdir C:\raylib\
 copy miniaudiohelpers.lib C:\raylib\miniaudiohelpers.lib
 del miniaudiohelpers.obj
 del miniaudiohelpers.lib
