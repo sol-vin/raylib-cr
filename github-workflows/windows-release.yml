@@ -1,12 +1,15 @@
-name: Windows - Build Examples
-on: [push, pull_request]
+name: Windows - Release
+on:
+  push:
+    tags:
+      - "v*"
 jobs:
   build:
-    name: Windows - Build Examples
+    name: Windows - Release
     runs-on: windows-latest
     steps:
       - name: Download source
-        uses: actions/checkout@v2\
+        uses: actions/checkout@v2
       - name: Install scoop 1
         run: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
       - name: Install scoop 2
@@ -23,14 +26,38 @@ jobs:
       - name: Install crystal 3
         run: scoop install crystal
       - name: shards install
-        run: shards install
+        run: scoop install
       - name: Setup VS Dev Environment
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
-        run: powershell rsrc/install-ga.ps1
+        run: powershell lib/raylib-cr/rsrc/install-lib.ps1
       - name: set env
         run: | 
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
-      - name: Build examples
-        run: crystal run rsrc/build-examples/build.cr
+      - name: check env
+        run: |
+          echo $env:LIB
+          echo $env:PATH
+      - name: shards build
+        run: |
+          shards build --release
+      - name: git lfs fetch
+        run: git lfs fetch
+      - name: git lfs checkout
+        run: git lfs checkout
+      - name: Copy rsrc
+        run: |
+          $ErrorActionPreference= 'silentlycontinue'
+          mkdir bin/rsrc
+          copy rsrc/* bin/rsrc
+          del bin/rsrc/_dev
+      - name: Zip
+        run: Compress-Archive -Path "bin/*" -DestinationPath windows-prerelease.zip
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            windows-release.zip

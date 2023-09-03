@@ -1,12 +1,12 @@
-name: Windows - Build Examples
+name: Windows - Deploy Docs
 on: [push, pull_request]
 jobs:
   build:
-    name: Windows - Build Examples
+    name: Windows - Deploy Docs
     runs-on: windows-latest
     steps:
       - name: Download source
-        uses: actions/checkout@v2\
+        uses: actions/checkout@v2
       - name: Install scoop 1
         run: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
       - name: Install scoop 2
@@ -27,10 +27,22 @@ jobs:
       - name: Setup VS Dev Environment
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
-        run: powershell rsrc/install-ga.ps1
+        run: powershell lib/raylib-cr/rsrc/install-lib.ps1
       - name: set env
         run: | 
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
-      - name: Build examples
-        run: crystal run rsrc/build-examples/build.cr
+      - name: check env
+        run: |
+          echo $env:LIB
+          echo $env:PATH
+      - name: make site
+        run: |
+          crystal docs
+      - name: Deploy docs
+        uses: crazy-max/ghaction-github-pages@v1.2.5
+        with:
+          target_branch: gh-pages
+          build_dir: docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

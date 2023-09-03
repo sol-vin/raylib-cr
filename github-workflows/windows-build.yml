@@ -13,14 +13,17 @@ jobs:
         run: irm get.scoop.sh -outfile 'install.ps1'
       - name: Install scoop 3
         run: .\install.ps1 -RunAsAdmin
+      - name: set scoop env
+        run: |
+          echo ("PATH=" + $env:PATH + ";" + $home + "\scoop\shims") >> $env:GITHUB_ENV
       - name: Install crystal 1
-        run: C:\Users\runneradmin\scoop\shims\scoop.cmd bucket add crystal-preview https://github.com/neatorobito/scoop-crystal
+        run: scoop bucket add crystal-preview https://github.com/neatorobito/scoop-crystal
       - name: Install crystal 2
-        run: C:\Users\runneradmin\scoop\shims\scoop.cmd install vs_2022_cpp_build_tools
+        run: scoop install vs_2022_cpp_build_tools
       - name: Install crystal 3
-        run: C:\Users\runneradmin\scoop\shims\scoop.cmd install crystal
+        run: scoop install crystal
       - name: shards install
-        run: C:\Users\runneradmin\scoop\shims\shards install
+        run: shards install
       - name: Setup VS Dev Environment
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
@@ -35,4 +38,4 @@ jobs:
           echo $env:PATH
       - name: shards build
         run: |
-          C:\Users\runneradmin\scoop\shims\shards build
+          shards build

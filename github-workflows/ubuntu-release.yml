@@ -30,7 +30,7 @@ jobs:
       - name: Cleanup rsrc
         run: rm -rf bin/rsrc/_dev
       - name: Zip files
-        run: zip -r release.zip bin/**
+        run: zip -r ubuntu-release.zip bin/**
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
