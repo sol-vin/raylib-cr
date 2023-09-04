@@ -7,6 +7,8 @@ jobs:
   build:
     name: Windows - Release
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - name: Download source
         uses: actions/checkout@v2
@@ -53,11 +55,9 @@ jobs:
           copy rsrc/* bin/rsrc
           del bin/rsrc/_dev
       - name: Zip
-        run: Compress-Archive -Path "bin/*" -DestinationPath windows-prerelease.zip
+        run: Compress-Archive -Path "bin/*" -DestinationPath windows-release.zip
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            windows-release.zip
+          allowUpdates: true
+          artifacts: "windows-release.zip"

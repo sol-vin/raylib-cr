@@ -9,7 +9,8 @@ jobs:
   release:
     name: "Release"
     runs-on: "ubuntu-latest"
-
+    permissions:
+      contents: write
     steps:
       - name: Download source
         uses: actions/checkout@v2
@@ -18,7 +19,7 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: raylib-cr post-install
-        run: sh ./lib/raylib-cr/rsrc/install.sh
+        run: sh ./lib/raylib-cr/rsrc/install-lib.sh
       - name: Build project
         run: shards build --release
       - name: git lfs fetch
@@ -32,9 +33,7 @@ jobs:
       - name: Zip files
         run: zip -r ubuntu-release.zip bin/**
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            ubuntu-release.zip
+          allowUpdates: true
+          artifacts: "ubuntu-release.zip"
