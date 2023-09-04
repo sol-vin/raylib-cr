@@ -1,8 +1,8 @@
-name: Windows - Pre Release
-on: [push, pull_request]
+name: Windows - Pre Release(latest)
+on: [push]
 jobs:
-  build:
-    name: Windows - Pre Release
+  windows-prerelease:
+    name: Windows - Pre Release(latest)
     runs-on: windows-latest
     permissions:
       contents: write

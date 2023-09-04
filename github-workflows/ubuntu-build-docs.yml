@@ -1,8 +1,9 @@
-name: Ubuntu - Build
+name: Ubuntu - Build docs
 on: [push, pull_request]
+      
 jobs:
-  ubuntu-build:
-    name: Ubuntu - Build
+  ubuntu-build-docs:
+    name: Ubuntu - Build docs
     runs-on: ubuntu-latest
     steps:
       - name: Download source
@@ -12,6 +13,6 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: raylib-cr post-install
-        run: sh ./lib/raylib-cr/rsrc/install-lib.sh
-      - name: Build project
-        run: shards build
+        run: sh ./lib/raylib-cr/rsrc/install.sh
+      - name: Build site
+        run: crystal docs

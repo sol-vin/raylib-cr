@@ -6,8 +6,8 @@ on:
       - "master"
 
 jobs:
-  pre-release:
-    name: "Pre Release"
+  ubuntu-pre-release:
+    name: "Ubuntu - Pre Release(latest)"
     runs-on: "ubuntu-latest"
     permissions:
       contents: write

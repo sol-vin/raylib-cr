@@ -6,8 +6,8 @@ on:
       - "v*"
 
 jobs:
-  release:
-    name: "Release"
+  ubuntu-release:
+    name: "Ubuntu - Release(v*)"
     runs-on: "ubuntu-latest"
     permissions:
       contents: write

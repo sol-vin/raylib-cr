@@ -1,7 +1,12 @@
 name: Windows - Deploy Docs
-on: [push, pull_request]
+on: 
+  push:
+    branches: 
+      - main
+      - master
+
 jobs:
-  build:
+  windows-deploy-docs:
     name: Windows - Deploy Docs
     runs-on: windows-latest
     steps:

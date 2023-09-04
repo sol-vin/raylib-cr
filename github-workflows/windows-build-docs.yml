@@ -1,9 +1,10 @@
-name: Windows - Build
+name: Windows - Build docs
+
 on: [push, pull_request]
 
 jobs:
-  windows-build:
-    name: Windows - Build
+  windows-build-docs:
+    name: Windows - Build Docs
     runs-on: windows-latest
     steps:
       - name: Download source
@@ -26,6 +27,6 @@ jobs:
           powershell lib/raylib-cr/rsrc/install-lib.ps1
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
-      - name: shards build
+      - name: make site
         run: |
-          shards build
+          crystal docs

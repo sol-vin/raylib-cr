@@ -1,11 +1,12 @@
-name: Windows - Release
+name: Windows - Release(v*)
+
 on:
   push:
     tags:
       - "v*"
 jobs:
-  build:
-    name: Windows - Release
+  windows-release:
+    name: Windows - Release(v*)
     runs-on: windows-latest
     permissions:
       contents: write
