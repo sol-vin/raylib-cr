@@ -22,14 +22,12 @@ jobs:
         run: sh ./lib/raylib-cr/rsrc/install-lib.sh
       - name: Build project
         run: shards build --release
-      - name: git lfs fetch
-        run: git lfs fetch
-      - name: git lfs checkout
-        run: git lfs checkout
-      - name: Copy rsrc
-        run: cp -r rsrc bin
-      - name: Cleanup rsrc
-        run: rm -rf bin/rsrc/_dev
+      - name: Copy Rsrc
+        run: |
+          git lfs fetch
+          git lfs checkout
+          cp -r rsrc bin
+          rm -rf bin/rsrc/_dev
       - name: Zip files
         run: zip -r ubuntu-release.zip bin/**
 
