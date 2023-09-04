@@ -30,32 +30,27 @@ jobs:
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
         run: powershell lib/raylib-cr/rsrc/install-lib.ps1
-      - name: set env
+      - name: set libs env
         run: | 
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
-      - name: check env
-        run: |
-          echo $env:LIB
-          echo $env:PATH
       - name: shards build
-        run: |
-          shards build --release
-      - name: git lfs fetch
-        run: git lfs fetch
-      - name: git lfs checkout
-        run: git lfs checkout
+        run: shards build --release
       - name: Copy rsrc
         run: |
           $ErrorActionPreference= 'silentlycontinue'
-          mkdir bin/rsrc
-          copy rsrc/* bin/rsrc
-          del bin/rsrc/_dev
+          git lfs fetch
+          git lfs checkout
+          Remove-Item "bin\*.pdb" -Recurse -Force
+          New-Item -Path "bin\rsrc" -ItemType Directory -Force
+          Remove-Item -Path "bin\rsrc" -Recurse -Force
+          Copy-Item -Path "rsrc" -Destination "bin\rsrc" -Recurse -Force 
+          Remove-Item -Path "bin\rsrc\_dev" -Recurse -Force
       - name: Zip
         run: Compress-Archive -Path "bin/*" -DestinationPath windows-prerelease.zip
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          title: "Nightly"
+          tag: "latest"
           prerelease: true
           artifacts: "windows-prerelease.zip"
