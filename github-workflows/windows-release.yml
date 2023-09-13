@@ -39,7 +39,6 @@ jobs:
           git lfs fetch
           git lfs checkout
           Remove-Item "bin\*.pdb" -Recurse -Force
-          New-Item -Path "bin\rsrc" -ItemType Directory -Force
           Remove-Item -Path "bin\rsrc" -Recurse -Force
           Copy-Item -Path "rsrc" -Destination "bin\rsrc" -Recurse -Force 
           Remove-Item -Path "bin\rsrc\_dev" -Recurse -Force
