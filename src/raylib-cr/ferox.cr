@@ -284,8 +284,8 @@ lib Ferox
   fun query_world_spatial_hash = frQueryWorldSpatialHash(world : World*, bounds : Raylib::Rectangle, bodies : Body**) : LibC::Int
   fun compute_world_raycast = frComputeWorldRaycast(world : World*, ray : Ray, hits : RaycastHit*) : LibC::Int
 
-  fun number_pixels_to_meters = frNumberPixelsToMeters(value : LibC::Float) : LibC::Float
-  fun number_meters_to_pixels = frNumberMetersToPixels(value : LibC::Float) : LibC::Float
+  fun number_pixels_to_units = frNumberPixelsToUnits(value : LibC::Float) : LibC::Float
+  fun number_units_to_pixels = frNumberUnitsToPixels(value : LibC::Float) : LibC::Float
   fun rec_pixels_to_meters = frRecPixelsToMeters(rec : Raylib::Rectangle) : Raylib::Rectangle
   fun rec_meters_to_pixels = frRecMetersToPixels(rec : Raylib::Rectangle) : Raylib::Rectangle
 
