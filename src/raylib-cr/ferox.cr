@@ -79,7 +79,7 @@ lib Ferox
     inverse_inertia : LibC::Float
     velocity : Raylib::Vector2
     angular_velocity : LibC::Float
-    gravity_Scale : LibC::Float
+    gravity_scale : LibC::Float
     force : Raylib::Vector2
     torque : LibC::Float
   end
