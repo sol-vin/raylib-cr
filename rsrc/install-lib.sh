@@ -10,4 +10,13 @@ cmake --build raylib/build
 sudo make install -C raylib/build
 sudo cp /usr/local/lib/libraylib.so.4.5.0 /usr/lib/libraylib.so.450
 sudo ln -s /usr/lib/libraylib.so.450 /lib/raylib.so
+
+git clone https://github.com/raysan5/raygui
+mv raygui/src/raygui.h raygui/src/raygui.c
+gcc -o raygui/raygui.so raygui/src/raygui.c -shared -fpic -DRAYGUI_IMPLEMENTATION -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+sudo cp raygui/raygui.so /usr/local/lib/libraygui.so
+sudo cp /usr/local/lib/libraygui.so /usr/lib/libraygui.so
+sudo ln -s /usr/lib/libraygui.so /lib/raygui.so
+
+rm -r raygui
 rm -r raylib
