@@ -146,7 +146,7 @@ lib RayGUI
   fun lock = GuiLock
   fun unlock = GuiUnlock
   fun locked? = GuiIsLocked : Bool
-  fun set_aplha = GuiSetAlpha(alpha : LibC::Float)
+  fun set_alpha = GuiSetAlpha(alpha : LibC::Float)
   fun set_state = GuiSetState(state : LibC::Int)
   fun get_state = GuiGetState : LibC::Int
 
