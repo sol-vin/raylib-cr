@@ -175,13 +175,13 @@ lib Ferox
   fun compute_shape_collision = frComputeShapeCollision(s1 : Shape*, tx1 : Transform, s2 : Shape*, tx2 : Transform) : Collision
   fun compute_body_collision = frComputeBodyCollision(b1 : Body*, b2 : Body*) : Collision
   fun compute_shape_raycast = frComputeBodyRaycast(s : Shape*, tx : Transform, ray : Ray) : RaycastHit
-  fun draw_arrow = frDrawArrow(p1 : Raylib::Vector2, p2 : Raylib::Vector2, thick : LibC::Float, color : Color)
-  fun draw_body = frDrawBody(b : Body*, color : Color)
-  fun draw_body_lines = frDrawBodyLines(b : Body*, thick : LibC::Float, color : Color)
-  fun draw_body_aabb = frDrawBodyAABB(b : Body*, thick : LibC::Float, color : Color)
-  fun draw_body_properties = frDrawBodyProperties(b : Body*, color : Color)
-  fun draw_spatial_hash = frDrawSpatialHash(hm : SpatialHash*, thick : LibC::Float, color : Color)
-  fun get_random_color = frGetRandomColor : Color
+  fun draw_arrow = frDrawArrow(p1 : Raylib::Vector2, p2 : Raylib::Vector2, thick : LibC::Float, color : Raylib::Color)
+  fun draw_body = frDrawBody(b : Body*, color : Raylib::Color)
+  fun draw_body_lines = frDrawBodyLines(b : Body*, thick : LibC::Float, color : Raylib::Color)
+  fun draw_body_aabb = frDrawBodyAABB(b : Body*, thick : LibC::Float, color : Raylib::Color)
+  fun draw_body_properties = frDrawBodyProperties(b : Body*, color : Raylib::Color)
+  fun draw_spatial_hash = frDrawSpatialHash(hm : SpatialHash*, thick : LibC::Float, color : Raylib::Color)
+  fun get_random_color = frGetRandomColor : Raylib::Color
 
   # Dynamics
   fun create_body = frCreateBody(type : BodyType, flags : BodyFlags, p : Raylib::Vector2) : Body*
