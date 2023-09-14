@@ -242,14 +242,14 @@ lib Ferox
   fun get_shape_intertia = frGetShapeInertia(s : Shape*) : LibC::Float
   fun get_shape_aabb = frGetShapeAABB(s : Shape*, tx : Transform) : Raylib::Rectangle
   fun get_circle_radius = frGetCircleRadius(s : Shape*) : LibC::Float
-  fun get_rectangle_dimensions = frGetRaylib::RectangleDimensions(s : Shape*) : Raylib::Vector2
+  fun get_rectangle_dimensions = frGetRectangleDimensions(s : Shape*) : Raylib::Vector2
   fun get_polygon_vertex = frGetPolygonVertex(s : Shape*, index : LibC::Int) : Raylib::Vector2
   fun get_polygon_normal = frGetPolygonNormal(s : Shape*, index : LibC::Int) : Raylib::Vector2
   fun get_polygon_vertices = frGetPolygonVertices(s : Shape*, index : LibC::Int) : Vertices
   fun get_polygon_normals = frGetPolygonNormals(s : Shape*) : Vertices
-  fun is_shape_rectangle? = frIsShapeRaylib::Rectangle(s : Shape*) : Bool
+  fun is_shape_rectangle? = frIsShapeRectangle(s : Shape*) : Bool
   fun set_circle_radius = frSetCircleRadius(s : Shape*, radius : LibC::Float)
-  fun set_rectangle_dimensions = frSetRaylib::RectangleDimensions(s : Shape*, wh : Raylib::Vector2)
+  fun set_rectangle_dimensions = frSetRectangleDimensions(s : Shape*, wh : Raylib::Vector2)
   fun set_polygon_vertices = frSetPolygonVertices(s : Shape*, vertices : Vertices)
   fun set_shape_material = frSetShapeMaterial(s : Shape*, material : Material)
   fun set_shape_type = frSetShapeType(s : Shape*, type : ShapeType)
