@@ -129,7 +129,7 @@ lib RayGUI
 
   fun load_style_from_memory = GuiLoadStyleFromMemory(file_data : LibC::UChar*, data_size : LibC::Int)
   fun get_text_width = GetTextWidth(text : LibC::Char*) : LibC::Int
-  fun get_text_bounds = GetTextWidth(control : LibC::Int, bounds : Raylib::Rectangle) : Raylib::Rectangle
+  fun get_text_bounds = GetTextBounds(control : LibC::Int, bounds : Raylib::Rectangle) : Raylib::Rectangle
   fun get_text_icon = GetTextIcon(text : LibC::Char*, icon_id : LibC::Int*) : LibC::Char*
   fun draw_text = GuiDrawText(text : LibC::Char*, text_bounds : Raylib::Rectangle, alignment : LibC::Int, tint : Raylib::Color)
   fun draw_rectangle = GuiDrawRectangle(rec : Raylib::Rectangle, border_width : LibC::Int, border_color : Raylib::Color, color : Raylib::Color)
