@@ -1,4 +1,4 @@
-@[Link("raylib")]
+@[Link("raygui")]
 lib RayGUI
   struct GUIStyleProp
     control_id : LibC::UShort
