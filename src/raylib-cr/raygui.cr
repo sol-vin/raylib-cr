@@ -52,18 +52,19 @@ lib Raygui
 
   enum ControlProperty
     BorderColorNormal   = 0
-    BorderColorFocused
-    BorderColorPressed
-    BorderColorDisabled
-
     BaseColorNormal
-    BaseColorFocused
-    BaseColorPressed
-    BaseColorDisabled
-
     TextColorNormal
+
+    BorderColorFocused
+    BaseColorFocused
     TextColorFocused
+
+    BorderColorPressed
+    BaseColorPressed
     TextColorPressed
+
+    BorderColorDisabled
+    BaseColorDisabled
     TextColorDisabled
 
     BorderWidth
