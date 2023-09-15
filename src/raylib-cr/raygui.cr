@@ -421,7 +421,6 @@ lib Raygui
 
   fun load_style = GuiLoadStyle(filename : LibC::Char*)
   fun load_style_default = GuiLoadStyleDefault
-  fun load_style_from_memory = GuiLoadStyleFromMemory(file_data : LibC::UChar*, data_size : LibC::Int)
 
   fun enable_tooltip = GuiEnableTooltip
   fun disable_tooltip = GuiDisableTooltip
@@ -433,19 +432,6 @@ lib Raygui
   fun load_icons = GuiLoadIcons(filename : LibC::Char*, load_icons_name : Bool) : LibC::Char**
   fun draw_icon = GuiDrawIcon(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int, pixel_size : LibC::Int, color : Raylib::Color)
 
-  fun get_text_width = GetTextWidth(text : LibC::Char*) : LibC::Int
-  fun get_text_bounds = GetTextBounds(control : LibC::Int, bounds : Raylib::Rectangle) : Raylib::Rectangle
-  fun get_text_icon = GetTextIcon(text : LibC::Char*, icon_id : LibC::Int*) : LibC::Char*
-  fun draw_text = GuiDrawText(text : LibC::Char*, text_bounds : Raylib::Rectangle, alignment : LibC::Int, tint : Raylib::Color)
-
-  fun fade = GuiFade(color : Raylib::Color, alpha : LibC::Float) : Raylib::Color
-  fun text_split = GuiTextSplit(text : LibC::Char*, delimiter : LibC::Char, count : LibC::Int*, text_row : LibC::Int*) : LibC::Char**
-  fun hsv_to_rgb = ConvertHSVtoRGB(hsv : Raylib::Vector3) : Raylib::Vector3
-  fun rgb_to_hsv = ConvertRGBtoHSV(rgb : Raylib::Vector3) : Raylib::Vector3
-
-  fun draw_rectangle = GuiDrawRectangle(rec : Raylib::Rectangle, border_width : LibC::Int, border_color : Raylib::Color, color : Raylib::Color)
-
-  fun tooltip = GuiTooltip(control_rec : Raylib::Rectangle)
   fun window_box = GuiWindowBox(bounds : Raylib::Rectangle, title : LibC::Char*) : LibC::Int
   fun group_box = GuiGroupBox(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
   fun line = GuiLine(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
@@ -482,6 +468,4 @@ lib Raygui
   fun color_bar_hue = GuiColorBarHue(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Float*) : LibC::Int
   fun color_picker_hsv = GuiColorPickerHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
   fun color_panel_hsv = GuiColorPanelHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
-
-  fun scroll_bar = GuiScrollBar(bounds : Raylib::Rectangle, value : LibC::Int, min_value : LibC::Int, max_value : LibC::Int) : LibC::Int
 end
