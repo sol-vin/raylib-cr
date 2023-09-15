@@ -50,7 +50,7 @@ lib Raygui
     StatusBar
   end
 
-  enum ControlProperty
+  enum Control
     BorderColorNormal   = 0
     BorderColorFocused
     BorderColorPressed
@@ -71,7 +71,7 @@ lib Raygui
     TextAlignment
   end
 
-  enum DefaultProperty
+  enum Default
     TextSize              = 16
     TextSpacing
     LineColor
@@ -81,20 +81,20 @@ lib Raygui
     TextWrapMode
   end
 
-  enum ToggleProperty
+  enum Toggle
     Padding = 16
   end
 
-  enum SliderProperty
+  enum Slider
     Width   = 16
     Padding
   end
 
-  enum ProgressBarProperty
+  enum ProgressBar
     Padding = 16
   end
 
-  enum ScrollBarProperty
+  enum ScrollBar
     ArrowsSize    = 16
     ArrowsVisible
     SliderPadding
@@ -103,37 +103,37 @@ lib Raygui
     Speed
   end
 
-  enum CheckBoxProperty
+  enum CheckBox
     Padding = 16
   end
 
-  enum ComboBoxProperty
+  enum ComboBox
     ButtonWidth   = 16
     ButtonSpacing
   end
 
-  enum DropdownBoxProperty
+  enum DropdownBox
     ArrowPadding = 16
     ItemsSpacing
   end
 
-  enum TextBoxProperty
+  enum TextBox
     ReadOnly = 16
   end
 
-  enum SpinnerProperty
+  enum Spinner
     ButtonWidth   = 16
     ButtonSpacing
   end
 
-  enum ListViewProperty
+  enum ListView
     ItemsHeight    = 16
     ItemsSpacing
     ScrollBarWidth
     ScrollBarSide
   end
 
-  enum ColorPickerProperty
+  enum ColorPicker
     SelectorSize           = 16
     HueBarWidth
     HueBarPadding
