@@ -26,7 +26,7 @@ until Raylib.close_window?
          height: button_height
        ),
        "Click This Button"
-     ) == 1
+     )
     show_text = !show_text
   end
 
