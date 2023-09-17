@@ -1,0 +1,25 @@
+name: Ubuntu - Build Examples
+on: push
+jobs:
+  build:
+    name: Ubuntu - Build Examples
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+      - name: Install Crystal libs
+        run: shards Install
+      - name: run install script
+        run: sh ./rsrc/install.sh
+      - name: build examples
+        run: crystal run rsrc/build-examples/build.cr
+      - name: Zip files
+        run: zip -r ubuntu-examples.zip examples/_build/**
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          prerelease: true
+          tag: "latest"
+          artifacts: "ubuntu-examples.zip"

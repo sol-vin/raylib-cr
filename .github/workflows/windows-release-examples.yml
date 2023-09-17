@@ -1,0 +1,44 @@
+name: Windows - Release Examples
+on: push
+jobs:
+  build:
+    name: Windows - Release Examples
+    runs-on: windows-latest
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install scoop 1
+        run: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+      - name: Install scoop 2
+        run: irm get.scoop.sh -outfile 'install.ps1'
+      - name: Install scoop 3
+        run: .\install.ps1 -RunAsAdmin
+      - name: set scoop env
+        run: |
+          echo ("PATH=" + $env:PATH + ";" + $home + "\scoop\shims") >> $env:GITHUB_ENV
+      - name: Install crystal 1
+        run: scoop bucket add crystal-preview https://github.com/neatorobito/scoop-crystal
+      - name: Install crystal 2
+        run: scoop install vs_2022_cpp_build_tools
+      - name: Install crystal 3
+        run: scoop install crystal
+      - name: shards install
+        run: shards install
+      - name: Setup VS Dev Environment
+        uses: seanmiddleditch/gha-setup-vsdevenv@v4
+      - name: raylib-cr post-install
+        run: powershell rsrc/install-ga.ps1
+      - name: set env
+        run: | 
+          echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
+          echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
+      - name: Build examples
+        run: crystal run rsrc/build-examples/build.cr
+      - name: Zip
+        run: Compress-Archive -Path "examples/_build/*" -DestinationPath windows-examples.zip
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: "latest"
+          prerelease: true
+          artifacts: "windows-examples.zip"
