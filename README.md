@@ -1,5 +1,8 @@
 ![logo](logo/raylib-cr_256x256.png)
 
+[![Windows - Build Examples](https://github.com/sol-vin/raylib-cr/actions/workflows/windows-build.yml/badge.svg)](https://github.com/sol-vin/raylib-cr/actions/workflows/windows-build.yml)
+[![Ubuntu - Build Examples](https://github.com/sol-vin/raylib-cr/actions/workflows/ubuntu-build.yml/badge.svg)](https://github.com/sol-vin/raylib-cr/actions/workflows/ubuntu-build.yml)
+
 # raylib-cr
 
 Crystal Bindings for `raylib`, a small and easy to use game development library.  
