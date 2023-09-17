@@ -52,18 +52,20 @@ lib Raygui
 
   enum ControlProperty
     BorderColorNormal   = 0
-    BorderColorFocused
-    BorderColorPressed
-    BorderColorDisabled
 
     BaseColorNormal
-    BaseColorFocused
-    BaseColorPressed
-    BaseColorDisabled
-
     TextColorNormal
+
+    BorderColorFocused
+    BaseColorFocused
     TextColorFocused
+
+    BorderColorPressed
+    BaseColorPressed
     TextColorPressed
+
+    BorderColorDisabled
+    BaseColorDisabled
     TextColorDisabled
 
     BorderWidth
@@ -432,40 +434,41 @@ lib Raygui
   fun load_icons = GuiLoadIcons(filename : LibC::Char*, load_icons_name : Bool) : LibC::Char**
   fun draw_icon = GuiDrawIcon(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int, pixel_size : LibC::Int, color : Raylib::Color)
 
-  fun window_box = GuiWindowBox(bounds : Raylib::Rectangle, title : LibC::Char*) : LibC::Int
-  fun group_box = GuiGroupBox(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun line = GuiLine(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun panel = GuiPanel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, active : LibC::Int*) : LibC::Int
-  fun scroll_panel = GuiScrollPanel(bounds : Raylib::Rectangle, text : LibC::Char*, content : Raylib::Rectangle, scroll : Raylib::Vector2*, view : Raylib::Rectangle*) : LibC::Int
+  fun window_box = GuiWindowBox(bounds : Raylib::Rectangle, title : LibC::Char*) : Bool
+  fun group_box = GuiGroupBox(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun line = GuiLine(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun panel = GuiPanel(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, active : LibC::Int*) : Bool
+  fun scroll_panel = GuiScrollPanel(bounds : Raylib::Rectangle, text : LibC::Char*, content : Raylib::Rectangle, scroll : Raylib::Vector2*, view : Raylib::Rectangle*) : Bool
 
-  fun label = GuiLabel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun button = GuiButton(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun label_button = GuiLabelButton(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun toggle = GuiToggle(bounds : Raylib::Rectangle, text : LibC::Char*, active : Bool*) : LibC::Int
-  fun toggle_group = GuiToggleGroup(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
-  fun toggle_slider = GuiToggleSlider(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
-  fun check_box = GuiCheckBox(bounds : Raylib::Rectangle, text : LibC::Char*, checked : Bool*) : LibC::Int
-  fun combo_box = GuiComboBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
-  fun dropdown_box = GuiDropdownBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*, edit_mode : Bool) : LibC::Int
-  fun spinner = GuiSpinner(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
-  fun value_box = GuiValueBox(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
-  fun text_box = GuiTextBox(bounds : Raylib::Rectangle, text : LibC::Char*, text_size : LibC::Int, edit_mode : Bool) : LibC::Int
-  fun slider = GuiSlider(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
-  fun slider_bar = GuiSliderBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
-  fun progress_bar = GuiProgressBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
-  fun status_bar = GuiStatusBar(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun dummy_rec = GuiDummyRec(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun grid = GuiGrid(bounds : Raylib::Rectangle, text : LibC::Char*, spacing : LibC::Float, subdivs : LibC::Int, mouse_cell : Raylib::Vector2*) : LibC::Int
+  fun label = GuiLabel(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun button = GuiButton(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun label_button = GuiLabelButton(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun toggle = GuiToggle(bounds : Raylib::Rectangle, text : LibC::Char*, active : Bool*) : Bool
+  fun toggle_group = GuiToggleGroup(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : Bool
+  fun toggle_slider = GuiToggleSlider(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : Bool
+  fun check_box = GuiCheckBox(bounds : Raylib::Rectangle, text : LibC::Char*, checked : Bool*) : Bool
+  fun combo_box = GuiComboBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : Bool
+  fun dropdown_box = GuiDropdownBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*, edit_mode : Bool) : Bool
+  fun spinner = GuiSpinner(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : Bool
+  fun value_box = GuiValueBox(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : Bool
+  fun text_box = GuiTextBox(bounds : Raylib::Rectangle, text : LibC::Char*, text_size : LibC::Int, edit_mode : Bool) : Bool
+  fun slider = GuiSlider(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : Bool
+  fun slider_bar = GuiSliderBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : Bool
+  fun progress_bar = GuiProgressBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : Bool
+  fun status_bar = GuiStatusBar(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun dummy_rec = GuiDummyRec(bounds : Raylib::Rectangle, text : LibC::Char*) : Bool
+  fun grid = GuiGrid(bounds : Raylib::Rectangle, text : LibC::Char*, spacing : LibC::Float, subdivs : LibC::Int, mouse_cell : Raylib::Vector2*) : Bool
 
-  fun list_view = GuiListView(bounds : Raylib::Rectangle, text : LibC::Char*, scroll_index : LibC::Int*, active : LibC::Int*) : LibC::Int
-  fun list_view_ex = GuiListViewEx(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, scroll_index : LibC::Int*, active : LibC::Int*, focus : LibC::Int*) : LibC::Int
-  fun message_box = GuiMessageBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*) : LibC::Int
-  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*, text_max_size : LibC::Int, secret_view_active : Bool*) : LibC::Int
-  fun color_picker = GuiColorPicker(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : LibC::Int
-  fun color_panel = GuiColorPanel(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : LibC::Int
-  fun color_bar_alpha = GuiColorBarAlpha(bounds : Raylib::Rectangle, text : LibC::Char*, alpha : LibC::Float*) : LibC::Int
-  fun color_bar_hue = GuiColorBarHue(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Float*) : LibC::Int
-  fun color_picker_hsv = GuiColorPickerHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
-  fun color_panel_hsv = GuiColorPanelHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
+  fun list_view = GuiListView(bounds : Raylib::Rectangle, text : LibC::Char*, scroll_index : LibC::Int*, active : LibC::Int*) : Bool
+  fun list_view_ex = GuiListViewEx(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, scroll_index : LibC::Int*, active : LibC::Int*, focus : LibC::Int*) : Bool
+  fun message_box = GuiMessageBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*) : Bool
+  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*, text_max_size : LibC::Int, secret_view_active : Bool*) : Bool
+  fun color_picker = GuiColorPicker(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : Bool
+  fun color_panel = GuiColorPanel(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : Bool
+  fun color_bar_alpha = GuiColorBarAlpha(bounds : Raylib::Rectangle, text : LibC::Char*, alpha : LibC::Float*) : Bool
+  fun color_bar_hue = GuiColorBarHue(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Float*) : Bool
+  fun color_picker_hsv = GuiColorPickerHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : Bool
+  fun color_panel_hsv = GuiColorPanelHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : Bool
+
 end

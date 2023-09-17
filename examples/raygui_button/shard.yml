@@ -1,0 +1,17 @@
+name: raygui_button
+version: 0.1.0
+
+authors:
+  - D. Shwagginz <dshwagbusiness@gmail.com>
+
+targets:
+  raygui_button:
+    main: src/raygui_button.cr
+
+dependencies:
+  raylib-cr:
+    path: ../../
+
+crystal: 1.9.2
+
+license: MIT
