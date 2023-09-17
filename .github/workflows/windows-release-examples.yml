@@ -33,9 +33,11 @@ jobs:
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
       - name: Build examples
-        run: crystal run rsrc/build-examples/build.cr
+        run: |
+          crystal run rsrc/build-examples/build.cr
+          Copy-Item -Path "libs\*.dll" -Destination "examples\_build" -Recurse -Force
       - name: Zip
-        run: Compress-Archive -Path "examples/_build/*" -DestinationPath windows-examples.zip
+        run: Compress-Archive -Path "examples\_build\*" -DestinationPath windows-examples.zip
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true

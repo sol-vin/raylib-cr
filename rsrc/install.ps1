@@ -23,8 +23,5 @@ copy raygui.lib C:\raylib\raygui.lib
 copy raygui.dll C:\raylib\raygui.dll
 cd ..
 
-del raygui
-del raylib
-
-set PATH=%PATH%;C:\raylib
-set LIB=%LIB%;C:\raylib
+Remove-Item "raylib" -Recurse -Force
+Remove-Item "raygui" -Recurse -Force
