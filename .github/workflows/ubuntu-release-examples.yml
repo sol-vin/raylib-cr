@@ -1,8 +1,8 @@
-name: Ubuntu - Build Examples
+name: Ubuntu - Release Examples
 on: push
 jobs:
   build:
-    name: Ubuntu - Build Examples
+    name: Ubuntu - Release Examples
     runs-on: ubuntu-latest
     steps:
       - name: Download source
