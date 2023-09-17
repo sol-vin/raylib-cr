@@ -13,8 +13,8 @@ sudo ln -s /usr/lib/libraylib.so.450 /lib/raylib.so
 
 git clone https://github.com/raysan5/raygui
 mv raygui/src/raygui.h raygui/src/raygui.c
-gcc -o raygui/raygui.so raygui/src/raygui.c -shared -fpic -DRAYGUI_IMPLEMENTATION -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-sudo cp raygui/raygui.so /usr/local/lib/libraygui.so
+gcc -c -fPIC raygui/src/raygui.c -o raygui/raygui.o -DRAYGUI_IMPLEMENTATION
+sudo gcc raygui/raygui.o -shared -o /usr/local/lib/libraygui.so -DRAYGUI_IMPLEMENTATION -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 sudo cp /usr/local/lib/libraygui.so /usr/lib/libraygui.so
 sudo ln -s /usr/lib/libraygui.so /lib/raygui.so
 

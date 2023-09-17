@@ -21,10 +21,10 @@ copy src\raygui.h src\raygui.c
 cl /O2 /I../raylib/src/ /D_USRDLL /D_WINDLL /DRAYGUI_IMPLEMENTATION /DBUILD_LIBTYPE_SHARED src/raygui.c /LD /Feraygui.dll /link /LIBPATH ../raylib/build/raylib/Debug/raylib.lib /subsystem:windows /machine:x64
 copy raygui.lib C:\raylib\raygui.lib
 copy raygui.dll C:\raylib\raygui.dll
-cd ..\..
+cd ..
 
 del raygui
 del raylib
 
-set PATH=%PATH%;C:\raylib\lib
-set LIB=%LIB%;C:\raylib\lib
+set PATH=%PATH%;C:\raylib
+set LIB=%LIB%;C:\raylib

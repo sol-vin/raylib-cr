@@ -19,8 +19,8 @@ git clone https://github.com/raysan5/raygui
 cd raygui
 copy src\raygui.h src\raygui.c
 cl /O2 /I../raylib/src/ /D_USRDLL /D_WINDLL /DRAYGUI_IMPLEMENTATION /DBUILD_LIBTYPE_SHARED src/raygui.c /LD /Feraygui.dll /link /LIBPATH ../raylib/build/raylib/Debug/raylib.lib /subsystem:windows /machine:x64
-copy raygui.lib ..\..\libs\raygui.lib
-copy raygui.dll ..\..\libs\raygui.dll
-cd ..\..
+copy raygui.lib ..\libs\raygui.lib
+copy raygui.dll ..\libs\raygui.dll
+cd ..
 del raygui
 del raylib
