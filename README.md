@@ -42,16 +42,16 @@ dependencies:
 3. Copy `./rsrc/native/windows/raylib` to `C:\raylib`
 4. Run in powershell
 ```powershell
-$env:LIB="${env:LIB};C:\raylib\lib"
-$env:PATH="${env:PATH};C:\raylib\lib"
+$env:LIB="${env:LIB};C:\raylib"
+$env:PATH="${env:PATH};C:\raylib"
 ```
 
 OR
 
 Run in cmd
 ```cmd
-set PATH=%PATH%;C:\raylib\lib
-set LIB=%LIB%;C:\raylib\lib
+set PATH=%PATH%;C:\raylib
+set LIB=%LIB%;C:\raylib
 ```
 5. Go back to your project directory. Add `raylib-cr` to your `shard.yml`:
 ```yml
