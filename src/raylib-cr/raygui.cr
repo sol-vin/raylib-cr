@@ -448,7 +448,7 @@ lib Raygui
   fun toggle_group = GuiToggleGroup(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
   fun toggle_slider = GuiToggleSlider(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
   fun check_box = GuiCheckBox(bounds : Raylib::Rectangle, text : LibC::Char*, checked : Bool*) : LibC::Int
-  fun combo_box = GuiComboBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : Bool
+  fun combo_box = GuiComboBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*) : LibC::Int
   fun dropdown_box = GuiDropdownBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*, edit_mode : Bool) : LibC::Int
   fun spinner = GuiSpinner(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
   fun value_box = GuiValueBox(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
