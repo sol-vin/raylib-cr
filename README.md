@@ -111,7 +111,8 @@ require "raylib-cr/lights"
 
 # Major Contributors
 - [rightbrace](https://github.com/b1tlet) - Raymath & Wrapper
-
+- [D. Shwagginz](https://github.com/D-Shwagginz) - RayGUI
+- 
 # Minor Contributors
 - [b1tlet](https://github.com/b1tlet) - Fog Shader
 
