@@ -463,7 +463,7 @@ lib Raygui
   fun list_view = GuiListView(bounds : Raylib::Rectangle, text : LibC::Char*, scroll_index : LibC::Int*, active : LibC::Int*) : Bool
   fun list_view_ex = GuiListViewEx(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, scroll_index : LibC::Int*, active : LibC::Int*, focus : LibC::Int*) : Bool
   fun message_box = GuiMessageBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*) : Bool
-  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*, text_max_size : LibC::Int, secret_view_active : Bool*) : Bool
+  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*, text_max_size : LibC::Int, secret_view_active : Bool*) : Int32
   fun color_picker = GuiColorPicker(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : Bool
   fun color_panel = GuiColorPanel(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : Bool
   fun color_bar_alpha = GuiColorBarAlpha(bounds : Raylib::Rectangle, text : LibC::Char*, alpha : LibC::Float*) : Bool
