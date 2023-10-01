@@ -438,7 +438,7 @@ lib Raygui
   fun group_box = GuiGroupBox(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
   fun line = GuiLine(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
   fun panel = GuiPanel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, active : LibC::Int*) : Bool
+  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, active : LibC::Int*) : LibC::Int
   fun scroll_panel = GuiScrollPanel(bounds : Raylib::Rectangle, text : LibC::Char*, content : Raylib::Rectangle, scroll : Raylib::Vector2*, view : Raylib::Rectangle*) : LibC::Int
 
   fun label = GuiLabel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
