@@ -8,7 +8,7 @@ git clone https://github.com/raysan5/raylib
 cd raylib
 mkdir build
 cd build 
-cmake .. -DBUILD_SHARED_LIBS=ON
+cmake .. -DBUILD_SHARED_LIBS=ON -DRAYLIB_BUILD_MODE=RELEASE
 cmake --build .
 mkdir C:\raylib
 copy raylib\Release\raylib.lib C:\raylib\raylib.lib
