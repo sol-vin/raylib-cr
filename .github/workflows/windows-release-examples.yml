@@ -1,8 +1,8 @@
-name: Windows - Pre Release(latest)
+name: Windows - Release Examples
 on: [push]
 jobs:
   windows-prerelease:
-    name: Windows - Pre Release(latest)
+    name: Windows - Release Examples
     runs-on: windows-latest
     permissions:
       contents: write
