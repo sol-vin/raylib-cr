@@ -1,5 +1,5 @@
-gcc -c -fPIC rsrc/miniaudio-tests/miniaudiohelpers.c -o rsrc/miniaudio-tests/miniaudiohelpers.o
-sudo gcc rsrc/miniaudio-tests/miniaudiohelpers.o -shared -o /usr/local/lib/libminiaudiohelpers.so -lm
+gcc -c -fPIC rsrc/miniaudiohelpers/miniaudiohelpers.c -o rsrc/miniaudiohelpers/miniaudiohelpers.o
+sudo gcc rsrc/miniaudiohelpers/miniaudiohelpers.o -shared -o /usr/local/lib/libminiaudiohelpers.so -lm
 sudo cp /usr/local/lib/libminiaudiohelpers.so /usr/lib/libminiaudiohelpers.so
 sudo ln -s /usr/lib/libminiaudiohelpers.so /lib/miniaudiohelpers.so
 git clone https://github.com/raysan5/raylib

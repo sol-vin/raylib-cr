@@ -1,4 +1,4 @@
-cl /c rsrc\miniaudio-tests\miniaudiohelpers.c
+cl /c rsrc\miniaudiohelpers\miniaudiohelpers.c
 lib miniaudiohelpers.obj
 copy miniaudiohelpers.lib C:\raylib\miniaudiohelpers.lib
 del miniaudiohelpers.obj
@@ -11,8 +11,8 @@ cd build
 cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 mkdir C:\raylib
-copy raylib\Release\raylib.lib C:\raylib\raylib.lib
-copy raylib\Release\raylib.dll C:\raylib\raylib.dll
+copy raylib\Debug\raylib.lib C:\raylib\raylib.lib
+copy raylib\Debug\raylib.dll C:\raylib\raylib.dll
 cd ..\..
 
 git clone https://github.com/raysan5/raygui
