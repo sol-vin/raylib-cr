@@ -8,11 +8,11 @@ git clone https://github.com/raysan5/raylib
 cd raylib
 mkdir build
 cd build 
-cmake .. -DBUILD_SHARED_LIBS=ON
+cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 mkdir C:\raylib
-copy raylib\Debug\raylib.lib C:\raylib\raylib.lib
-copy raylib\Debug\raylib.dll C:\raylib\raylib.dll
+copy raylib\Release\raylib.lib C:\raylib\raylib.lib
+copy raylib\Release\raylib.dll C:\raylib\raylib.dll
 cd ..\..
 
 git clone https://github.com/raysan5/raygui
