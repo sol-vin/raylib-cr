@@ -23,7 +23,7 @@ jobs:
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
         run: |
-          powershell lib/raylib-cr/rsrc/install-ga.ps1
+          powershell rsrc/install-ga.ps1
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
       - name: Build examples
