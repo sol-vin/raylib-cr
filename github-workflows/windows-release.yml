@@ -28,7 +28,7 @@ jobs:
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
       - name: raylib-cr post-install
         run: |
-          powershell lib/raylib-cr/rsrc/install-lib.ps1
+          powershell lib/raylib-cr/rsrc/native/windows/install-lib.ps1
           echo ("LIB=" + $env:LIB + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
           echo ("PATH=" + $env:PATH + ";" + $pwd + "\libs") >> $env:GITHUB_ENV
       - name: shards build

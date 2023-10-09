@@ -24,22 +24,22 @@ Hopefully soon
 ### Linux
 1. Run
 ```sh
-sh rsrc/install.sh
+sh rsrc/native/ubuntu/install.sh
 ```
-2. Add `raylib-cr` to your `shard.yml` dependencies like so:
+2. Add `raylib-cr` to your `shard.yml`:
 ```yml
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
 ```
-1. Run `shards install`
-2. Get programming!
+3. Run `shards install`
+4. Get programming!
 
 ### Windows
 
 1. Follow the instructions at https://github.com/neatorobito/scoop-crystal to add the crystal-preview bucket to scoop
 2. Install crystal with `scoop install crystal`
-3. Copy `./rsrc/native/windows/raylib` to `C:\raylib`
+3. `powershell ./rsrc/native/windows/install.ps1`
 4. Run in powershell
 ```powershell
 $env:LIB="${env:LIB};C:\raylib"
@@ -53,13 +53,13 @@ Run in cmd
 set PATH=%PATH%;C:\raylib
 set LIB=%LIB%;C:\raylib
 ```
-5. Go back to your project directory. Add `raylib-cr` to your `shard.yml`:
+5. Add `raylib-cr` to your `shard.yml`:
 ```yml
 dependencies:
   raylib-cr:
     github: sol-vin/raylib-cr
 ```
-6. Run `mkdir lib && cd lib && git clone https://github.com/sol-vin/raylib-cr`
+6. Run `shards install`
 7. Get programming!
 
 # Usage Example
@@ -86,14 +86,15 @@ Raylib.close_window
  2. `shards install`
  3. Run in powershell (only needs to be run once per new console window opened)
 ```powershell
-$env:LIB="${env:LIB};C:\raylib\lib"
-$env:PATH="${env:PATH};C:\raylib\lib"
+$env:LIB="${env:LIB};C:\raylib"
+$env:PATH="${env:PATH};C:\raylib"
 ```
  4. `shards run`
 
-# RLGL, Audio, and Lights
+# RayGUI, RLGL, Audio, and Lights
 If you need to extra functionality, RLGL, RAudio and Lights can be included with the following.
 ```crystal
+require "raylib-cr/raygui"
 require "raylib-cr/rlgl"
 require "raylib-cr/audio"
 require "raylib-cr/lights"

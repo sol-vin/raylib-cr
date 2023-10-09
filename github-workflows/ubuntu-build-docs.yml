@@ -13,6 +13,6 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: raylib-cr post-install
-        run: sh ./lib/raylib-cr/rsrc/install.sh
+        run: sh ./lib/raylib-cr/rsrc/native/ubuntu/install.sh
       - name: Build site
         run: crystal docs

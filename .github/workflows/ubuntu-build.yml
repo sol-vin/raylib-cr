@@ -12,6 +12,6 @@ jobs:
       - name: Install Crystal libs
         run: shards Install
       - name: run install script
-        run: sh ./rsrc/install.sh
+        run: sh ./rsrc/native/ubuntu/install.sh
       - name: build examples
         run: crystal run rsrc/build-examples/build.cr
