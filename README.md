@@ -16,8 +16,8 @@ These platforms are supported out of the box and are linked statically
 2. 64-bit Windows
 3. Mac OS
 
-Hopefully soon\
-4. Raspberry PI
+Hopefully soon
+ [ ] Raspberry PI
 
 # Installation
 
