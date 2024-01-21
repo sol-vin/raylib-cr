@@ -1,9 +1,9 @@
 name: raylib-cr
-version: 4.6
-raylib_version: 4.6-dev (5ed83dfa2928bae7e7f53076a6edca789e513173)
+version: 5.0
+raylib_version: 5.0 (5ed83dfa2928bae7e7f53076a6edca789e513173)
 authors:
   - sol-vin <ian@sol.vin>
 
-crystal: 1.6.0
+crystal: 1.11.2
 
 license: MIT

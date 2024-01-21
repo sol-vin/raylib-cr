@@ -645,6 +645,18 @@ lib Raylib
     paths : LibC::Char**
   end
 
+  struct AutomationEvent
+    frame : LibC::UInt
+    type : LibC::UInt
+    params : StaticArray(LibC::Int, 4)
+  end
+
+  struct AutomationEventList
+    capacity : LibC::UInt
+    count : LibC::UInt
+    events : AutomationEvent*
+  end
+
   fun init_window = InitWindow(width : LibC::Int, height : LibC::Int, title : LibC::Char*)
   fun close_window? = WindowShouldClose : Bool
   fun close_window = CloseWindow
@@ -671,6 +683,7 @@ lib Raylib
   fun set_window_position = SetWindowPosition(x : LibC::Int, y : LibC::Int)
   fun set_window_monitor = SetWindowMonitor(monitor : LibC::Int)
   fun set_window_min_size = SetWindowMinSize(width : LibC::Int, height : LibC::Int)
+  fun set_window_max_size = SetWindowMaxSize(width : LibC::Int, height : LibC::Int)
   fun set_window_size = SetWindowSize(width : LibC::Int, height : LibC::Int)
   fun set_window_opacity = SetWindowOpacity(opacity : LibC::Float)
   fun set_window_focused = SetWindowFocused
@@ -750,6 +763,9 @@ lib Raylib
   fun get_time = GetTime : LibC::Double
   fun get_random_value = GetRandomValue(min : LibC::Int, max : LibC::Int) : LibC::Int
   fun set_random_seed = SetRandomSeed(seed : LibC::UInt)
+  fun load_random_sequence = LoadRandomSequence(count : LibC::UInt, min : LibC::Int, max : LibC::Int) : LibC::Int*
+  fun unload_random_sequence = UnloadRandomSequence(sequence : LibC::Int*)
+  
   fun take_screenshot = TakeScreenshot(file_name : LibC::Char*)
   fun set_config_flags = SetConfigFlags(flags : LibC::UInt)
   fun trace_log = TraceLog(log_level : LibC::Int, text : LibC::Char*, ...)
@@ -760,10 +776,10 @@ lib Raylib
   fun mem_free = MemFree(ptr : Void*)
 
   fun open_url = OpenUrl(url : LibC::Char*)
-  fun load_file_data = LoadFileData(file_name : LibC::Char*, bytes_read : LibC::UInt*) : LibC::UChar*
+  fun load_file_data = LoadFileData(file_name : LibC::Char*, data_size : LibC::UInt*) : LibC::UChar*
   fun unload_file_data = UnloadFileData(data : LibC::UChar*)
-  fun save_file_data? = SaveFileData(file_name : LibC::Char*, data : Void*, bytes_to_write : LibC::UInt) : Bool
-  fun export_data_as_code = ExportDataAsCode(data : LibC::Char*, size : LibC::UInt, filename : LibC::Char*) : Bool
+  fun save_file_data? = SaveFileData(file_name : LibC::Char*, data : Void*, data_size : LibC::UInt) : Bool
+  fun export_data_as_code = ExportDataAsCode(data : LibC::Char*, data_size : LibC::UInt, filename : LibC::Char*) : Bool
   fun load_file_text = LoadFileText(file_name : LibC::Char*) : LibC::Char*
   fun unload_file_text = UnloadFileText(text : LibC::Char*)
   fun save_file_text? = SaveFileText(file_name : LibC::Char*, text : LibC::Char*) : Bool
@@ -791,6 +807,19 @@ lib Raylib
   fun decompress_data = DecompressData(comp_data : LibC::UChar*, comp_data_length : LibC::Int, data_length : LibC::Int*) : LibC::UChar*
   fun encode_data_base64 = EncodeDataBase64(data : LibC::UChar*, data_length : LibC::Int, output_length : LibC::Int*) : LibC::Char*
   fun decode_data_base64 = DecodeDataBase64(data : LibC::UChar*, output_length : LibC::Int*) : LibC::UChar*
+  
+  fun load_automation_event_list = LoadAutomationEventList(filename : LibC::Char*) : AutomationEventList
+  fun unload_automation_event_list = UnloadAutomationEventList(list : AutomationEventList*)
+  fun export_automation_event_list = ExportAutomationEventList(list : AutomationEventList, filename : LibC::Char*) : Bool
+  fun set_automation_event_list = SetAutomationEventList(list : AutomationEventList*)
+  fun set_automation_event_base_frame = SetAutomationEventList(frame : LibC::Int)
+  fun start_automation_event_recording = StartAutomationEventRecording()
+  fun stop_automation_event_recording = StopAutomationEventRecording()
+  fun play_automation_event_recording = PlayAutomationEventRecording(event : AutomationEvent)
+
+
+
+
   fun key_pressed? = IsKeyPressed(key : LibC::Int) : Bool
   fun key_pressed_repeat? = IsKeyPressedRepeat(key : LibC::Int) : Bool
   fun key_down? = IsKeyDown(key : LibC::Int) : Bool
@@ -829,7 +858,7 @@ lib Raylib
   fun get_touch_point_id = GetTouchPointId(index : LibC::Int) : LibC::Int
   fun get_touch_point_count = GetTouchPointCount : LibC::Int
   fun set_gestures_enabled = SetGesturesEnabled(flags : LibC::UInt)
-  fun gesture_detected? = IsGestureDetected(gesture : LibC::Int) : Bool
+  fun gesture_detected? = IsGestureDetected(gesture : LibC::UInt) : Bool
   fun get_gesture_detected = GetGestureDetected : LibC::Int
   fun get_gesture_hold_duration = GetGestureHoldDuration : LibC::Float
   fun get_gesture_drag_vector = GetGestureDragVector : Vector2
@@ -846,11 +875,27 @@ lib Raylib
   fun draw_line_v = DrawLineV(start_pos : Vector2, end_pos : Vector2, color : Color)
   fun draw_line_ex = DrawLineEx(start_pos : Vector2, end_pos : Vector2, thick : LibC::Float, color : Color)
   fun draw_line_bezier = DrawLineBezier(start_pos : Vector2, end_pos : Vector2, thick : LibC::Float, color : Color)
-  fun draw_line_bezier_quad = DrawLineBezierQuad(start_pos : Vector2, end_pos : Vector2, control_pos : Vector2, thick : LibC::Float, color : Color)
-  fun draw_line_bezier_cubic = DrawLineBezierCubic(start_pos : Vector2, end_pos : Vector2, start_control_pos : Vector2, end_control_pos : Vector2, thick : LibC::Float, color : Color)
-  fun draw_line_b_spline = DrawLineBSpline(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
-  fun draw_line_catmull_rom = DrawLineCatmullRom(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
   fun draw_line_strip = DrawLineStrip(points : Vector2*, point_count : LibC::Int, color : Color)
+
+  fun draw_spline_linear = DrawSplineLinear(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+  fun draw_spline_basis = DrawSplineBasis(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+  fun draw_spline_catmull_rom = DrawSplineCatmullRom(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+  fun draw_spline_bezier_quadratic = DrawSplineBezierQuadratic(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+  fun draw_spline_bezier_cubic = DrawSplineBezierCubic(points : Vector2*, point_count : LibC::Int, thick : LibC::Float, color : Color)
+
+  fun draw_spline_segment_linear = DrawSplineSegmentLinear(p1 : Vector2, p2 : Vector2, thick : LibC::Float, color : Color)
+  fun draw_spline_segment_basis = DrawSplineSegmentBasis(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
+  fun draw_spline_segment_catmull_rom = DrawSplineCatmullRom(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
+  fun draw_spline_segment_bezier_quadratic = DrawSplineSegmentBezierQuadratic(p1 : Vector2, c2 : Vector2, p3 : Vector2, thick : LibC::Float, color : Color)
+  fun draw_spline_segment_bezier_cubic = DrawSplineSegmentBezierCubic(p1 : Vector2, c2 : Vector2, c3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
+
+  fun get_spline_point_linear = GetSplinePointLinear(start_pos : Vector2, end_pos : Vector2, t : LibC::Float) : Vector2
+  fun get_spline_point_basis = GetSplinePointBasis(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, t : LibC::Float) : Vector2
+  fun get_spline_point_catmull_rom = GetSplinePointCatmullRom(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, t : LibC::Float) : Vector2
+  fun get_spline_point_bezier_quad = GetSplinePointBezierQuad(p1 : Vector2, c2 : Vector2, p3 : Vector2, t : LibC::Float) : Vector2
+  fun get_spline_point_bezier_cubic = GetSplinePointBezierCubic(p1 : Vector2, c2 : Vector2, c3 : Vector2, p4 : Vector2, t : LibC::Float) : Vector2
+
+  
   fun draw_circle = DrawCircle(center_x : LibC::Int, center_y : LibC::Int, radius : LibC::Float, color : Color)
   fun draw_circle_sector = DrawCircleSector(center : Vector2, radius : LibC::Float, start_angle : LibC::Float, end_angle : LibC::Float, segments : LibC::Int, color : Color)
   fun draw_circle_sector_lines = DrawCircleSectorLines(center : Vector2, radius : LibC::Float, start_angle : LibC::Float, end_angle : LibC::Float, segments : LibC::Int, color : Color)
@@ -891,6 +936,7 @@ lib Raylib
   fun get_collision_rec = GetCollisionRec(rec1 : Rectangle, rec2 : Rectangle) : Rectangle
   fun load_image = LoadImage(file_name : LibC::Char*) : Image
   fun load_image_raw = LoadImageRaw(file_name : LibC::Char*, width : LibC::Int, height : LibC::Int, format : LibC::Int, header_size : LibC::Int) : Image
+  fun load_image_svg = LoadImageSvg(file_name_or_string : LibC::Char*, width : LibC::Int, height : LibC::Int) : Image
   fun load_image_anim = LoadImageAnim(file_name : LibC::Char*, frames : LibC::Int*) : Image
   fun load_image_from_memory = LoadImageFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int) : Image
   fun load_image_from_texture = LoadImageFromTexture(texture : Texture2D) : Image
@@ -997,13 +1043,13 @@ lib Raylib
   fun get_pixel_data_size = GetPixelDataSize(width : LibC::Int, height : LibC::Int, format : LibC::Int) : LibC::Int
   fun get_font_default = GetFontDefault : Font
   fun load_font = LoadFont(file_name : LibC::Char*) : Font
-  fun load_font_ex = LoadFontEx(file_name : LibC::Char*, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int) : Font
+  fun load_font_ex = LoadFontEx(file_name : LibC::Char*, font_size : LibC::Int, codepoints : LibC::Int*, codepoint_count : LibC::Int) : Font
   fun load_font_from_image = LoadFontFromImage(image : Image, key : Color, first_char : LibC::Int) : Font
-  fun load_font_from_memory = LoadFontFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int) : Font
+  fun load_font_from_memory = LoadFontFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, codepoints : LibC::Int*, codepoint_count : LibC::Int) : Font
   fun font_ready? = IsFontReady(font : Font) : Bool
-  fun load_font_data = LoadFontData(file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, font_chars : LibC::Int*, glyph_count : LibC::Int, type : LibC::Int) : GlyphInfo*
-  fun gen_image_font_atlas = GenImageFontAtlas(chars : GlyphInfo*, recs : Rectangle**, glyph_count : LibC::Int, font_size : LibC::Int, padding : LibC::Int, pack_method : LibC::Int) : Image
-  fun unload_font_data = UnloadFontData(chars : GlyphInfo*, glyph_count : LibC::Int)
+  fun load_font_data = LoadFontData(file_data : LibC::UChar*, data_size : LibC::Int, font_size : LibC::Int, codepoints : LibC::Int*, codepoint_count : LibC::Int, type : LibC::Int) : GlyphInfo*
+  fun gen_image_font_atlas = GenImageFontAtlas(glyphs : GlyphInfo*, glyph_recs : Rectangle**, glyph_count : LibC::Int, font_size : LibC::Int, padding : LibC::Int, pack_method : LibC::Int) : Image
+  fun unload_font_data = UnloadFontData(glyphs : GlyphInfo*, glyph_count : LibC::Int)
   fun unload_font = UnloadFont(font : Font)
   fun export_font_as_code = ExportFontAsCode(font : Font, filename : LibC::Char*) : Bool
   fun draw_fps = DrawFPS(pos_x : LibC::Int, pos_y : LibC::Int)
@@ -1011,7 +1057,7 @@ lib Raylib
   fun draw_text_ex = DrawTextEx(font : Font, text : LibC::Char*, position : Vector2, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_pro = DrawTextPro(font : Font, text : LibC::Char*, position : Vector2, origin : Vector2, rotation : LibC::Float, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
   fun draw_text_codepoint = DrawTextCodepoint(font : Font, codepoint : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
-  fun draw_text_codepoints = DrawTextCodepoints(font : Font, codepoints : LibC::Int*, count : LibC::Int, position : Vector2, font_size : LibC::Float, tint : Color)
+  fun draw_text_codepoints = DrawTextCodepoints(font : Font, codepoints : LibC::Int*, codepoint_count : LibC::Int, position : Vector2, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
 
   fun set_text_line_spacing = SetTextLineSpacing(spacing : LibC::Int)
   fun measure_text = MeasureText(text : LibC::Char*, font_size : LibC::Int) : LibC::Int
