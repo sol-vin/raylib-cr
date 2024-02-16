@@ -14,6 +14,8 @@ jobs:
         uses: oprypin/install-crystal@v1
       - name: Install Crystal libs
         run: shards install
+      - name: sudo apt-get update
+        run: sudo apt-get update
       - name: run install script
         run: sh ./rsrc/native/ubuntu/install.sh
       - name: build examples
