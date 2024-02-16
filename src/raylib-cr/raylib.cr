@@ -812,7 +812,7 @@ lib Raylib
   fun unload_automation_event_list = UnloadAutomationEventList(list : AutomationEventList*)
   fun export_automation_event_list = ExportAutomationEventList(list : AutomationEventList, filename : LibC::Char*) : Bool
   fun set_automation_event_list = SetAutomationEventList(list : AutomationEventList*)
-  fun set_automation_event_base_frame = SetAutomationEventList(frame : LibC::Int)
+  fun set_automation_event_base_frame = SetAutomationEventBaseFrame(frame : LibC::Int)
   fun start_automation_event_recording = StartAutomationEventRecording()
   fun stop_automation_event_recording = StopAutomationEventRecording()
   fun play_automation_event_recording = PlayAutomationEventRecording(event : AutomationEvent)
