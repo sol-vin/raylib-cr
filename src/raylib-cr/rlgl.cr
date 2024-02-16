@@ -165,6 +165,7 @@ lib RLGL
 
   fun scissor = rlScissor(x : LibC::Int, y : LibC::Int, w : LibC::Int, h : LibC::Int)
   fun enable_wire_mode = rlEnableWireMode
+  fun enable_point_mode = rlEnablePointMode
   fun disable_wire_mode = rlDisableWireMode
   fun set_line_width = rlSetLineWidth(width : LibC::Float)
   fun get_line_width = rlGetLineWidth : LibC::Float
@@ -266,4 +267,6 @@ lib RLGL
 
   fun load_draw_cube = rlLoadDrawCube
   fun load_draw_quad = rlLoadDrawQuad
+
+  fun blit_framebuffer = rlBlitFramebuffer(src_x : LibC::Int, src_y : LibC::Int, src_width : LibC::Int, src_height : LibC::Int, dst_x : LibC::Int, dst_y : LibC::Int, dst_width : LibC::Int, dst_height : LibC::Int, buffer_mask : LibC::Int)
 end

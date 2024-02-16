@@ -3,8 +3,7 @@
 set -e
 
 cd $(dirname "$0")
-test -d raylib || git clone https://github.com/raysan5/raylib --recursive --depth 1
-cd raylib
+test -d raylib || git clone --depth 1 --branch 5.0 --recursive https://github.com/raysan5/raylib 
 test -d build || mkdir build
 cd build
 cmake ..

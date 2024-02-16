@@ -1,5 +1,5 @@
 1. Open raylib repo
-2. Go to last commit reviewed (5e1a81555ca130e2c6544add0e2391a8763e7e2a)
+2. Go to last commit reviewed (5.0)
 3. Right click -> Select for compare
 4. Go to HEAD
 5. Right click -> Compare with selected
