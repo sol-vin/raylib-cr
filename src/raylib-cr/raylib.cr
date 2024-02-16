@@ -885,7 +885,7 @@ lib Raylib
 
   fun draw_spline_segment_linear = DrawSplineSegmentLinear(p1 : Vector2, p2 : Vector2, thick : LibC::Float, color : Color)
   fun draw_spline_segment_basis = DrawSplineSegmentBasis(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
-  fun draw_spline_segment_catmull_rom = DrawSplineCatmullRom(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
+  fun draw_spline_segment_catmull_rom = DrawSplineSegmentCatmullRom(p1 : Vector2, p2 : Vector2, p3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
   fun draw_spline_segment_bezier_quadratic = DrawSplineSegmentBezierQuadratic(p1 : Vector2, c2 : Vector2, p3 : Vector2, thick : LibC::Float, color : Color)
   fun draw_spline_segment_bezier_cubic = DrawSplineSegmentBezierCubic(p1 : Vector2, c2 : Vector2, c3 : Vector2, p4 : Vector2, thick : LibC::Float, color : Color)
 
