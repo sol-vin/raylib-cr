@@ -12,7 +12,7 @@ jobs:
       - name: Install Crystal libs
         run: shards install
       - name: sudo apt-get update
-        run: apt-get update
+        run: sudo apt-get update
       - name: run install script
         run: sh ./rsrc/native/ubuntu/install.sh
       - name: build examples
