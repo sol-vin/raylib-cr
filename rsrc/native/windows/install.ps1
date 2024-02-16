@@ -4,7 +4,7 @@ copy miniaudiohelpers.lib C:\raylib\miniaudiohelpers.lib
 del miniaudiohelpers.obj
 del miniaudiohelpers.lib
 
-git clone --branch 5.0 https://github.com/raysan5/raylib
+git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib
 cd raylib
 mkdir build
 cd build 
@@ -15,7 +15,7 @@ copy raylib\Debug\raylib.lib C:\raylib\raylib.lib
 copy raylib\Debug\raylib.dll C:\raylib\raylib.dll
 cd ..\..
 
-git clone --branch 4.0 https://github.com/raysan5/raygui
+git clone --depth 1 --branch 4.0 https://github.com/raysan5/raygui
 cd raygui
 copy src\raygui.h src\raygui.c
 cl /O2 /I../raylib/src/ /D_USRDLL /D_WINDLL /DRAYGUI_IMPLEMENTATION /DBUILD_LIBTYPE_SHARED src/raygui.c /LD /Feraygui.dll /link /LIBPATH ../raylib/build/raylib/Debug/raylib.lib /subsystem:windows /machine:x64
