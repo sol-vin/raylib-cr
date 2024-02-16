@@ -10,7 +10,7 @@ jobs:
       - name: Install Crystal
         uses: oprypin/install-crystal@v1
       - name: Install Crystal libs
-        run: shards Install
+        run: shards install
       - name: run install script
         run: sh ./rsrc/native/ubuntu/install.sh
       - name: build examples
