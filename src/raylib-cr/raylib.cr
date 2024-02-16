@@ -7,7 +7,7 @@
 
 @[Link("raylib")]
 lib Raylib
-  VERSION = "4.6-dev"
+  VERSION = "5.0"
   PI      =    3.141592653589793
   DEG2RAD = 0.017453292519943295
   RAD2DEG =    57.29577951308232
