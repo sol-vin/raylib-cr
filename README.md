@@ -14,7 +14,9 @@ matricies, and quaternions.
 These platforms are supported out of the box and are linked statically
 1. 64-bit Linux
 2. 64-bit Windows
-3. Mac OS
+
+Weak/Broken support
+1. Mac OS
 
 Hopefully soon  
  - Raspberry PI
