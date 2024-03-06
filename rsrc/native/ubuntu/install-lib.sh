@@ -23,5 +23,5 @@ sudo gcc raygui/raygui.o -shared -o /usr/local/lib/libraygui.so -DRAYGUI_IMPLEME
 sudo cp /usr/local/lib/libraygui.so /usr/lib/libraygui.so
 sudo ln -s /usr/lib/libraygui.so /lib/raygui.so
 
-rm -r raygui
-rm -r raylib
+rm -rf raygui
+rm -rf raylib
