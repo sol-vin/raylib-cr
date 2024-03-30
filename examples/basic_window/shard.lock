@@ -1,0 +1,6 @@
+version: 2.0
+shards:
+  raylib-cr:
+    path: ../../
+    version: 5.0+git.commit.2dacd23685af0f55e89f7598e35a6a0117f081eb
+

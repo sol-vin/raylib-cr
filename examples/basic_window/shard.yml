@@ -1,0 +1,18 @@
+name: basic_window
+version: 0.1.0
+
+authors:
+  - Eugene Makarikhin <dnot@send.spam>
+
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+    tag: 5.0
+
+targets:
+  basic_window:
+    main: src/basic_window.cr
+
+crystal: '>= 1.11.2'
+
+license: MIT
