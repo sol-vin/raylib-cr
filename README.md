@@ -16,7 +16,7 @@ These platforms are supported out of the box and are linked statically
 2. 64-bit Windows
 
 Weak/Broken support
-1. Mac OS
+1. MacOS
 
 Hopefully soon  
  - Raspberry PI
@@ -63,6 +63,20 @@ dependencies:
 ```
 6. Run `shards install`
 7. Get programming!
+
+### MacOS
+1. Run
+```
+sudo sh rsrc/native/mac/mac-raylib-install.sh
+```
+2. Add `raylib-cr` to your `shard.yml`:
+```yml
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+```
+3. Run `shards install`
+4. Get programming!
 
 # Usage Example
 
