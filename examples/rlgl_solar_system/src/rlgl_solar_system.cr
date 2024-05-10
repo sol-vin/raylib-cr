@@ -65,7 +65,7 @@ moon_orbit_rotation = 0.0_f32
 Rl.set_target_fps(60)
 
 until Rl.close_window?
-  Rl.update_camera(pointerof(camera), Rl::CameraMode::Free)
+  # Rl.update_camera(pointerof(camera), Rl::CameraMode::Free)
   earth_rotation += (5.0_f32 * rotation_speed)
   earth_orbit_rotation += (365/360.0_f32*(5.0_f32*rotation_speed)*rotation_speed)
   moon_rotation += (2.0_f32*rotation_speed)

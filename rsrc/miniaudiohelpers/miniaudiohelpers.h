@@ -1,5 +1,3 @@
-#define MINIAUDIO_IMPLEMENTATION
-
 #include "miniaudio.h"
 
 size_t MADataConverterSize();

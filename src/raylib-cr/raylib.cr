@@ -374,15 +374,6 @@ lib Raylib
     ThreePatchHorizontal = 2
   end
 
-  enum MusicContextType
-    AudioNone = 0
-    AudioWav  = 1
-    AudioOGG  = 2
-    AudioFLAC = 3
-    AudioMP3  = 4
-    ModuleXM  = 5
-    ModuleMod = 6
-  end
 
   LIGHTGRAY  = Color.new r: 200, g: 200, b: 200, a: 255
   GRAY       = Color.new r: 130, g: 130, b: 130, a: 255

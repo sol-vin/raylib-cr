@@ -23,6 +23,8 @@ FileUtils.cd("examples") do
       file = "../_build/#{name}"
       {% if flag?(:windows) %}
         file = "../_build/#{name}.exe"
+        FileUtils.cp("../../rsrc/native/windows/raylib.dll", "../_build/raylib.dll")
+        FileUtils.cp("../../rsrc/native/windows/raygui.dll", "../_build/raygui.dll")
       {% end %}
 
       unless File.exists?(file)
@@ -37,7 +39,7 @@ FileUtils.cd("examples") do
       end
 
       begin
-        FileUtils.cp_r("./rsrc", "../_build/rsrc")
+        FileUtils.cp_r("./rsrc", "../_build/")
       rescue
       end
     end

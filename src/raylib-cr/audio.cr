@@ -93,6 +93,16 @@ lib RAudio
     ctx_type : LibC::Int
     ctx_data : Void*
   end
+  
+  enum MusicContextType
+    AudioNone = 0
+    AudioWav  = 1
+    AudioOGG  = 2
+    AudioFLAC = 3
+    AudioMP3  = 4
+    ModuleXM  = 5
+    ModuleMod = 6
+  end
 
   fun init_audio_device = InitAudioDevice
   fun close_audio_device = CloseAudioDevice
