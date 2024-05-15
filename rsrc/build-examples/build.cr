@@ -18,13 +18,11 @@ FileUtils.cd("examples") do
     FileUtils.cd(path) do
       `shards install`
 
-      output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr`
+      output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr --link-flags --subsystem,windows`
 
       file = "../_build/#{name}"
       {% if flag?(:windows) %}
         file = "../_build/#{name}.exe"
-        FileUtils.cp("../../rsrc/native/windows/raylib.dll", "../_build/raylib.dll")
-        FileUtils.cp("../../rsrc/native/windows/raygui.dll", "../_build/raygui.dll")
       {% end %}
 
       unless File.exists?(file)
@@ -33,6 +31,8 @@ FileUtils.cd("examples") do
         puts "Could not find #{FileUtils.pwd}/_build/#{name}.exe"
         exit(1)
       end
+
+
       begin
         FileUtils.rm("../_build/#{name}.pdb")
       rescue
@@ -43,5 +43,10 @@ FileUtils.cd("examples") do
       rescue
       end
     end
+
+    {% if flag?(:windows) %}
+      FileUtils.cp("../rsrc/native/windows/raylib.dll", "_build/raylib.dll")
+      FileUtils.cp("../rsrc/native/windows/raygui.dll", "_build/raygui.dll")
+    {% end %}
   end
 end
