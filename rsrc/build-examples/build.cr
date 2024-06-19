@@ -18,7 +18,13 @@ FileUtils.cd("examples") do
     FileUtils.cd(path) do
       `shards install`
 
-      output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr --link-flags --subsystem,windows`
+      windows = ""
+
+      {% if flag?(:windows) %}
+        windows = "--subsystem:windows"
+      {% end %}
+
+      output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr --link-flags #{windows}`
 
       file = "../_build/#{name}"
       {% if flag?(:windows) %}
