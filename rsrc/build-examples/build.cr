@@ -21,7 +21,7 @@ FileUtils.cd("examples") do
       windows = ""
 
       {% if flag?(:windows) %}
-        windows = "--link-flags subsystem:windows"
+        windows = "--link-flags --subsystem:windows"
       {% end %}
 
       output = `crystal build --release -s -p -t -o ../_build/#{path.basename} ./src/#{path.basename}.cr #{windows}`
