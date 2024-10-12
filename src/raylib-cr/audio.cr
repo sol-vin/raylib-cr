@@ -1,9 +1,30 @@
+{% if flag?(:docs) %}
+  require "./miniaudio_fix/miniaudiohelpers"
+{% end %}
+
 @[Link("raylib")]
 lib RAudio
   alias AudioCallback = Proc(Void*, LibC::UInt)
-  
-  {% begin %}
+
+  {% if !flag?(:docs) %}
   {{ run "./miniaudio_fix/ma_sizes" }}
+  {% else %}
+    # Copy of `miniaudio_fix/ma_sizes.cr` for docs gen, StaticArray sizes are not correct
+    struct MADataConverter
+      data : StaticArray(UInt8, 255)
+    end
+
+    struct MAContext
+      data : StaticArray(UInt8, 255)
+    end
+
+    struct MADevice
+      data : StaticArray(UInt8, 255)
+    end
+
+    struct MAMutex
+      data : StaticArray(UInt8, 255)
+    end
   {% end %}
 
   struct Wave
