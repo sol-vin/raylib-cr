@@ -114,7 +114,7 @@ lib RAudio
     ctx_type : LibC::Int
     ctx_data : Void*
   end
-  
+
   enum MusicContextType
     AudioNone = 0
     AudioWav  = 1
@@ -129,7 +129,7 @@ lib RAudio
   fun close_audio_device = CloseAudioDevice
   fun audio_device_ready? = IsAudioDeviceReady : Bool
   fun set_master_volume = SetMasterVolume(volume : LibC::Float)
-  fun get_master_volume = GetMasterVolume() : LibC::Float
+  fun get_master_volume = GetMasterVolume : LibC::Float
   fun load_wave = LoadWave(file_name : LibC::Char*) : Wave
   fun wave_ready? = IsWaveReady(wave : Wave) : Bool
   fun load_wave_from_memory = LoadWaveFromMemory(file_type : LibC::Char*, file_data : LibC::UChar*, data_size : LibC::Int) : Wave
