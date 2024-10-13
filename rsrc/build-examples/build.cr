@@ -1,7 +1,5 @@
 require "file_utils"
 
-
-
 FileUtils.cd("examples") do
   puts "BUILDING EXAMPLE FROM #{FileUtils.pwd}"
   begin
@@ -37,7 +35,6 @@ FileUtils.cd("examples") do
         puts "Could not find #{FileUtils.pwd}/_build/#{name}.exe"
         exit(1)
       end
-
 
       begin
         FileUtils.rm("../_build/#{name}.pdb")

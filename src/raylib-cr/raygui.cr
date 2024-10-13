@@ -51,7 +51,7 @@ lib Raygui
   end
 
   enum ControlProperty
-    BorderColorNormal   = 0
+    BorderColorNormal = 0
 
     BaseColorNormal
     TextColorNormal
@@ -470,5 +470,4 @@ lib Raygui
   fun color_bar_hue = GuiColorBarHue(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Float*) : LibC::Int
   fun color_picker_hsv = GuiColorPickerHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
   fun color_panel_hsv = GuiColorPanelHSV(bounds : Raylib::Rectangle, text : LibC::Char*, color_hsv : Raylib::Vector3*) : LibC::Int
-
 end

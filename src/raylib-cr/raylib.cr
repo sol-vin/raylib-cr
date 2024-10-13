@@ -374,7 +374,6 @@ lib Raylib
     ThreePatchHorizontal = 2
   end
 
-
   LIGHTGRAY  = Color.new r: 200, g: 200, b: 200, a: 255
   GRAY       = Color.new r: 130, g: 130, b: 130, a: 255
   DARKGRAY   = Color.new r: 80, g: 80, b: 80, a: 255
@@ -756,7 +755,7 @@ lib Raylib
   fun set_random_seed = SetRandomSeed(seed : LibC::UInt)
   fun load_random_sequence = LoadRandomSequence(count : LibC::UInt, min : LibC::Int, max : LibC::Int) : LibC::Int*
   fun unload_random_sequence = UnloadRandomSequence(sequence : LibC::Int*)
-  
+
   fun take_screenshot = TakeScreenshot(file_name : LibC::Char*)
   fun set_config_flags = SetConfigFlags(flags : LibC::UInt)
   fun trace_log = TraceLog(log_level : LibC::Int, text : LibC::Char*, ...)
@@ -798,18 +797,15 @@ lib Raylib
   fun decompress_data = DecompressData(comp_data : LibC::UChar*, comp_data_length : LibC::Int, data_length : LibC::Int*) : LibC::UChar*
   fun encode_data_base64 = EncodeDataBase64(data : LibC::UChar*, data_length : LibC::Int, output_length : LibC::Int*) : LibC::Char*
   fun decode_data_base64 = DecodeDataBase64(data : LibC::UChar*, output_length : LibC::Int*) : LibC::UChar*
-  
+
   fun load_automation_event_list = LoadAutomationEventList(filename : LibC::Char*) : AutomationEventList
   fun unload_automation_event_list = UnloadAutomationEventList(list : AutomationEventList*)
   fun export_automation_event_list = ExportAutomationEventList(list : AutomationEventList, filename : LibC::Char*) : Bool
   fun set_automation_event_list = SetAutomationEventList(list : AutomationEventList*)
   fun set_automation_event_base_frame = SetAutomationEventBaseFrame(frame : LibC::Int)
-  fun start_automation_event_recording = StartAutomationEventRecording()
-  fun stop_automation_event_recording = StopAutomationEventRecording()
+  fun start_automation_event_recording = StartAutomationEventRecording
+  fun stop_automation_event_recording = StopAutomationEventRecording
   fun play_automation_event_recording = PlayAutomationEventRecording(event : AutomationEvent)
-
-
-
 
   fun key_pressed? = IsKeyPressed(key : LibC::Int) : Bool
   fun key_pressed_repeat? = IsKeyPressedRepeat(key : LibC::Int) : Bool
@@ -886,7 +882,6 @@ lib Raylib
   fun get_spline_point_bezier_quad = GetSplinePointBezierQuad(p1 : Vector2, c2 : Vector2, p3 : Vector2, t : LibC::Float) : Vector2
   fun get_spline_point_bezier_cubic = GetSplinePointBezierCubic(p1 : Vector2, c2 : Vector2, c3 : Vector2, p4 : Vector2, t : LibC::Float) : Vector2
 
-  
   fun draw_circle = DrawCircle(center_x : LibC::Int, center_y : LibC::Int, radius : LibC::Float, color : Color)
   fun draw_circle_sector = DrawCircleSector(center : Vector2, radius : LibC::Float, start_angle : LibC::Float, end_angle : LibC::Float, segments : LibC::Int, color : Color)
   fun draw_circle_sector_lines = DrawCircleSectorLines(center : Vector2, radius : LibC::Float, start_angle : LibC::Float, end_angle : LibC::Float, segments : LibC::Int, color : Color)
@@ -1153,7 +1148,7 @@ lib Raylib
   fun get_ray_collision_box = GetRayCollisionBox(ray : Ray, box : BoundingBox) : RayCollision
   fun get_ray_collision_mesh = GetRayCollisionMesh(ray : Ray, mesh : Mesh, transform : Matrix) : RayCollision
   fun get_ray_collision_triangle = GetRayCollisionTriangle(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3) : RayCollision
-  fun get_ray_collision_quad = GetRayCollisionQuad(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3, p4 : Vector3) : RayCollision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+  fun get_ray_collision_quad = GetRayCollisionQuad(ray : Ray, p1 : Vector3, p2 : Vector3, p3 : Vector3, p4 : Vector3) : RayCollision
   fun get_camera_forward = GetCameraForward(camera : Raylib::Camera3D*) : Raylib::Vector3
   fun get_camera_up = GetCameraUp(camera : Raylib::Camera3D*) : Raylib::Vector3
   fun get_camera_right = GetCameraRight(camera : Raylib::Camera3D*) : Raylib::Vector3
@@ -1163,5 +1158,5 @@ lib Raylib
   fun camera_move_target = CameraMoveToTarget(camera : Raylib::Camera3D*, delta : LibC::Float)
   fun camera_yaw = CameraYaw(camera : Raylib::Camera3D*, angle : LibC::Float, rotateAroundTarget : Bool)
   fun camera_pitch = CameraPitch(camera : Raylib::Camera3D*, angle : LibC::Float, lockView : Bool, rotateAroundTarget : Bool, rotateUp : Bool)
-  fun camera_roll = CameraRoll(camera : Raylib::Camera3D*, angle : LibC::Float)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+  fun camera_roll = CameraRoll(camera : Raylib::Camera3D*, angle : LibC::Float)
 end
