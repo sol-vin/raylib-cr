@@ -156,6 +156,22 @@ lib Raylib
     Menu         =  82
     VolumeUp     =  24
     VolumeDown   =  25
+
+    def up?
+      Raylib.key_up?(self.to_i)
+    end
+
+    def down?
+      Raylib.key_down?(self.to_i)
+    end
+
+    def pressed?
+      Raylib.key_pressed?(self.to_i)
+    end
+
+    def released?
+      Raylib.key_released?(self.to_i)
+    end
   end
 
   enum MouseButton
@@ -166,6 +182,22 @@ lib Raylib
     Extra   = 4
     Forward = 5
     Back    = 6
+
+    def up?
+      Raylib.mouse_button_up?(self.to_i)
+    end
+
+    def released?
+      Raylib.mouse_button_released?(self.to_i)
+    end
+
+    def down?
+      Raylib.mouse_button_down?(self.to_i)
+    end
+
+    def pressed?
+      Raylib.mouse_button_pressed?(self.to_i)
+    end
   end
 
   enum MouseCursor
@@ -180,6 +212,17 @@ lib Raylib
     ResizeNesw   =  8
     ResizeAll    =  9
     NotAllowed   = 10
+  end
+
+  enum Crixel::Gamepad::Player
+    One   = 0
+    Two   = 1
+    Three = 2
+    Four  = 3
+  
+    def available?
+      Raylib.gamepad_available?(self.value)
+    end
   end
 
   enum GamepadButton
@@ -201,6 +244,22 @@ lib Raylib
     MiddleRight    = 15
     LeftThumb      = 16
     RightThumb     = 17
+
+    def up?(player : Player)
+      Raylib.gamepad_button_up?(player.to_i, self.to_i)
+    end
+
+    def down?(player : Player)
+      Raylib.gamepad_button_down?(player.to_i, self.to_i)
+    end
+
+    def pressed?(player : Player)
+      Raylib.gamepad_button_pressed?(player.to_i, self.to_i)
+    end
+
+    def released?(player : Player)
+      Raylib.gamepad_button_released?(player.to_i, self.to_i)
+    end
   end
 
   enum GamepadAxis
