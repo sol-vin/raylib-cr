@@ -269,6 +269,10 @@ lib Raylib
     RightY       = 3
     LeftTrigger  = 4
     RightTrigger = 5
+
+    def get(player : Player)
+      Raylib.get_gamepad_axis_movement(player.to_i, self.to_i)
+    end
   end
 
   enum MaterialMapIndex
