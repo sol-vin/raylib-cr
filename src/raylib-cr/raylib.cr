@@ -6,6 +6,7 @@
 {% end %}
 
 @[Link("raylib")]
+# :showdoc:
 lib Raylib
   VERSION = "5.0"
   PI      =    3.141592653589793
@@ -219,7 +220,7 @@ lib Raylib
     Two   = 1
     Three = 2
     Four  = 3
-  
+
     def available?
       Raylib.gamepad_available?(self.value)
     end

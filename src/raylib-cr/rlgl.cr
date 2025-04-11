@@ -1,4 +1,5 @@
 @[Link("raylib")]
+# :showdoc:
 lib RLGL
   # RLGL
   TEXTURE_WRAP_S                    = 0x2802

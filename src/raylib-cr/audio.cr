@@ -3,6 +3,7 @@
 {% end %}
 
 @[Link("raylib")]
+# :showdoc:
 lib RAudio
   alias AudioCallback = Proc(Void*, LibC::UInt)
 
