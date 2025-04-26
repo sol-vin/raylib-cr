@@ -1,4 +1,5 @@
 @[Link("raygui")]
+# :showdoc:
 lib Raygui
   VERSION = "4.0"
 

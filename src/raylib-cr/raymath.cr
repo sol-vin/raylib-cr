@@ -1,4 +1,5 @@
 @[Link("raylib")]
+# :showdoc:
 lib Raymath
   struct Float3
     v : LibC::Float[3]
@@ -38,9 +39,9 @@ lib Raymath
   fun vector2_reflect = Vector2Reflect(v : Raylib::Vector2, normal : Raylib::Vector2) : Raylib::Vector2
   fun vector2_rotate = Vector2Rotate(v : Raylib::Vector2, angle : LibC::Float) : Raylib::Vector2
   fun vector2_move_towards = Vector2MoveTowards(v : Raylib::Vector2, target : Raylib::Vector2, max_distance : LibC::Float) : Raylib::Vector2
-  fun vector2_invert =  Vector2Invert(v : Raylib::Vector2) : Raylib::Vector2
-  fun vector2_clamp =  Vector2Clamp(v : Raylib::Vector2, min : Raylib::Vector2, max : Raylib::Vector2) : Raylib::Vector2
-  fun vector2_clamp_value =  Vector2ClampValue(v : Raylib::Vector2, min : LibC::Float, max : LibC::Float) : Raylib::Vector2
+  fun vector2_invert = Vector2Invert(v : Raylib::Vector2) : Raylib::Vector2
+  fun vector2_clamp = Vector2Clamp(v : Raylib::Vector2, min : Raylib::Vector2, max : Raylib::Vector2) : Raylib::Vector2
+  fun vector2_clamp_value = Vector2ClampValue(v : Raylib::Vector2, min : LibC::Float, max : LibC::Float) : Raylib::Vector2
   fun vector2_equals = Vector2Equals(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : Bool
 
   fun vector3_zero = Vector3Zero : Raylib::Vector3
@@ -75,10 +76,10 @@ lib Raymath
   fun vector3_barycenter = Vector3Barycenter(p : Raylib::Vector3, a : Raylib::Vector3, b : Raylib::Vector3, c : Raylib::Vector3) : Raylib::Vector3
   fun vector3_unproject = Vector3Unproject(source : Raylib::Vector3, projection : Raylib::Matrix, view : Raylib::Matrix) : Raylib::Vector3
   fun vector3_to_float_v = Vector3ToFloatV(v : Raylib::Vector3) : Float3
-  fun vector3_invert =  Vector3Invert(v : Raylib::Vector3) : Raylib::Vector3
-  fun vector3_clamp =  Vector3Clamp(v : Raylib::Vector3, min : Raylib::Vector3, max : Raylib::Vector3) : Raylib::Vector3
-  fun vector3_clamp_value =  Vector3ClampValue(v : Raylib::Vector3, min : LibC::Float, max : LibC::Float) : Raylib::Vector3
-  fun vector3_equals =  Vector3Equals(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : Bool
+  fun vector3_invert = Vector3Invert(v : Raylib::Vector3) : Raylib::Vector3
+  fun vector3_clamp = Vector3Clamp(v : Raylib::Vector3, min : Raylib::Vector3, max : Raylib::Vector3) : Raylib::Vector3
+  fun vector3_clamp_value = Vector3ClampValue(v : Raylib::Vector3, min : LibC::Float, max : LibC::Float) : Raylib::Vector3
+  fun vector3_equals = Vector3Equals(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : Bool
   fun vector3_refract = Vector3Refract(v1 : Raylib::Vector3, v2 : Raylib::Vector3, r : LibC::Float) : Raylib::Vector3
 
   fun matrix_determinant = MatrixDeterminant(mat : Raylib::Matrix) : LibC::Float
@@ -122,9 +123,9 @@ lib Raymath
   fun quaternion_to_matrix = QuaternionToMatrix(q : Raylib::Quaternion) : Raylib::Matrix
   fun quaternion_from_axis_angle = QuaternionFromAxisAngle(axis : Raylib::Vector3, angle : LibC::Float) : Raylib::Quaternion
   fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*) \
-  fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Raylib::Quaternion
-  fun quaternion_to_euler = QuaternionToEuler(q : Raylib::Quaternion) : Raylib::Vector3
-  fun quaternion_transform = QuaternionTransform(q : Raylib::Quaternion, mat : Raylib::Matrix) : Raylib::Quaternion
+        fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Raylib::Quaternion
+    fun quaternion_to_euler = QuaternionToEuler(q : Raylib::Quaternion) : Raylib::Vector3
+    fun quaternion_transform = QuaternionTransform(q : Raylib::Quaternion, mat : Raylib::Matrix) : Raylib::Quaternion
 end
 
 struct Raylib::Vector2
