@@ -37,7 +37,7 @@ dependencies:
 3. Run `shards install`
 4. Get programming!
 
-### Windows
+### Windows MSVC
 
 1. Follow the instructions at https://github.com/neatorobito/scoop-crystal to add the crystal-preview bucket to scoop
 2. Install crystal with `scoop install crystal`
@@ -63,6 +63,21 @@ dependencies:
 ```
 6. Run `shards install`
 7. Get programming!
+
+### Windows MSYS2
+
+1. Run
+```sh
+sh rsrc/native/msys2/install.sh
+```
+2. Add `raylib-cr` to your `shard.yml`:
+```yml
+dependencies:
+  raylib-cr:
+    github: sol-vin/raylib-cr
+```
+3. Run `shards install`
+4. Get programming!
 
 ### MacOS
 1. Run
