@@ -7,7 +7,7 @@ sudo ln -s /usr/lib/libminiaudiohelpers.so /lib/miniaudiohelpers.so
 # Compile raylib
 git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib
 mkdir raylib/build
-sudo apt-get install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
+sudo apt-get install cmake libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
 cmake raylib -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -B raylib/build 
 cmake --build raylib/build
 sudo make install -C raylib/build
@@ -24,3 +24,6 @@ sudo ln -s /usr/lib/libraygui.so /lib/raygui.so
 
 rm -rf raygui
 rm -rf raylib
+
+# Update shared libraries cache, making libraylib.so and libraygui.so available
+sudo ldconfig
