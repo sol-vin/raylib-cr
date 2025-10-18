@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include "miniaudio.h"
+#include <stdio.h>
 
-int main()
-{
+int main() {
   printf("UInt32: %zu\n", sizeof(unsigned int));
   printf("size_t: %zu\n", sizeof(size_t));
   printf("ma_data_converter: %zu\n", sizeof(ma_data_converter));
