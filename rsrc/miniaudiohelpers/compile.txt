@@ -1,2 +1,0 @@
-cl /c miniaudiohelpers.c
-lib miniaudiohelpers.obj

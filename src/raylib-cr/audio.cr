@@ -1,7 +1,3 @@
-{% if flag?(:docs) %}
-  require "./miniaudio_fix/miniaudiohelpers"
-{% end %}
-
 @[Link("raylib")]
 # :showdoc:
 lib RAudio
@@ -10,21 +6,22 @@ lib RAudio
   {% if !flag?(:docs) %}
   {{ run "./miniaudio_fix/ma_sizes" }}
   {% else %}
-    # Copy of `miniaudio_fix/ma_sizes.cr` for docs gen, StaticArray sizes are not correct
+    # Dummy structs for docs generation - sizes are platform-specific
+    # Real sizes are auto-detected at compile time via ma_sizes.cr
     struct MADataConverter
-      data : StaticArray(UInt8, 255)
+      data : StaticArray(UInt8, 512)
     end
 
     struct MAContext
-      data : StaticArray(UInt8, 255)
+      data : StaticArray(UInt8, 2048)
     end
 
     struct MADevice
-      data : StaticArray(UInt8, 255)
+      data : StaticArray(UInt8, 4096)
     end
 
     struct MAMutex
-      data : StaticArray(UInt8, 255)
+      data : StaticArray(UInt8, 128)
     end
   {% end %}
 
