@@ -41,6 +41,18 @@ def get_miniaudio_sizes
       sizes[key] = value
     end
 
+    required_keys = ["ma_data_converter", "ma_context", "ma_device", "ma_mutex"]
+    missing = required_keys.select { |k| !sizes.has_key?(k) }
+    if missing.any?
+      STDERR.puts "Warning: Missing miniaudio struct sizes for: #{missing.join(", ")}. Raw output: #{lines.inspect}"
+      return {
+        "ma_data_converter" => 4096,
+        "ma_context"        => 8192,
+        "ma_device"         => 8192,
+        "ma_mutex"          => 256,
+      }
+    end
+
     sizes
   rescue ex
     # Fallback to conservative sizes if compilation fails
