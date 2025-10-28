@@ -14,33 +14,57 @@ def get_miniaudio_sizes
   # Path to the size-check C program
   c_file = "#{__DIR__}/../../../rsrc/miniaudiohelpers/miniaudio-size-check.c"
 
-  # Compile and run it, using a PID-specific temp file to avoid conflicts
-  compile_cmd = "gcc -o /tmp/ma_check_$$ #{c_file} 2>/dev/null && /tmp/ma_check_$$ && rm -f /tmp/ma_check_$$"
+  begin
+    # Platform-specific compilation and execution
+    lines = {% if flag?(:win32) %}
+              # Windows: use cl (MSVC) and %TEMP%
+              temp_dir = ENV["TEMP"]? || ENV["TMP"]? || "C:\\Windows\\Temp"
+              temp_exe = "#{temp_dir}\\ma_check_#{Process.pid}.exe"
+              compile_cmd = "cl /nologo /Fe:#{temp_exe} #{c_file} >nul 2>&1 && #{temp_exe} && del #{temp_exe} >nul 2>&1"
+              `cmd /c #{compile_cmd}`.strip.split("\n")
+            {% else %}
+              # Unix-like: use gcc and /tmp
+              compile_cmd = "gcc -o /tmp/ma_check_$$ #{c_file} 2>/dev/null && /tmp/ma_check_$$ && rm -f /tmp/ma_check_$$"
+              `sh -c '#{compile_cmd}'`.strip.split("\n")
+            {% end %}
 
-  result = `sh -c '#{compile_cmd}'`.strip
-  lines = result.split("\n")
+    # Parse the output: "key: value" format
+    # Only parse lines that contain miniaudio struct names
+    sizes = {} of String => Int32
+    lines.each do |line|
+      parts = line.split(":")
+      next unless parts.size == 2
+      key = parts[0].strip
+      # Only include ma_* keys, skip UInt32 and size_t
+      next unless key.starts_with?("ma_")
+      value = parts[1].strip.to_i
+      sizes[key] = value
+    end
 
-  # Parse the output: "key: value" format
-  sizes = {} of String => Int32
-  lines.each do |line|
-    parts = line.split(":")
-    next unless parts.size == 2
-    key = parts[0].strip
-    value = parts[1].strip.to_i
-    sizes[key] = value
+    required_keys = ["ma_data_converter", "ma_context", "ma_device", "ma_mutex"]
+    missing = required_keys.select { |k| !sizes.has_key?(k) }
+    if missing.any?
+      STDERR.puts "Warning: Missing miniaudio struct sizes for: #{missing.join(", ")}. Raw output: #{lines.inspect}"
+      return {
+        "ma_data_converter" => 4096,
+        "ma_context"        => 8192,
+        "ma_device"         => 8192,
+        "ma_mutex"          => 256,
+      }
+    end
+
+    sizes
+  rescue ex
+    # Fallback to conservative sizes if compilation fails
+    # This ensures builds don't break on unusual platforms
+    STDERR.puts "Warning: Could not detect miniaudio struct sizes, using defaults: #{ex.message}"
+    {
+      "ma_data_converter" => 4096,
+      "ma_context"        => 8192,
+      "ma_device"         => 8192,
+      "ma_mutex"          => 256,
+    }
   end
-
-  sizes
-rescue ex
-  # Fallback to conservative sizes if compilation fails
-  # This ensures builds don't break on unusual platforms
-  STDERR.puts "Warning: Could not detect miniaudio struct sizes, using defaults"
-  {
-    "ma_data_converter" => 4096,
-    "ma_context"        => 8192,
-    "ma_device"         => 8192,
-    "ma_mutex"          => 256,
-  }
 end
 
 sizes = get_miniaudio_sizes
