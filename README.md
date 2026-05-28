@@ -15,7 +15,7 @@ These platforms are supported out of the box and are linked statically
 1. 64-bit Linux
 2. 64-bit Windows
 
-Weak/Broken support
+Working but lacks RayGUI install script
 1. MacOS
 
 Hopefully soon  
