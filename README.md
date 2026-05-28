@@ -16,7 +16,7 @@ These platforms are supported out of the box and are linked statically
 2. 64-bit Windows
 
 Working but lacks RayGUI install script
-1. MacOS
+1. MacOS - Raylib installs with either install script or using homebrew `brew install raylib` (homebrew may cause bugs)
 
 Hopefully soon  
  - Raspberry PI
