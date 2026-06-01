@@ -6,7 +6,7 @@ authors:
 
 targets:
   main:
-    main: src/rlglsoloarsystem.cr
+    main: src/rlgl_solar_system.cr
 dependencies:
   raylib-cr:
     path: ../../
