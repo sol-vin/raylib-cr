@@ -9,7 +9,7 @@ git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib
 cd raylib
 mkdir build
 cd build 
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 cmake --build . --config Release
 copy raylib\Release\raylib.lib ..\..\libs\raylib.lib
 copy raylib\Release\raylib.dll ..\..\libs\raylib.dll
