@@ -824,7 +824,8 @@ lib Raylib
   fun unload_shader = UnloadShader(shader : Shader)
 
   fun get_screen_to_world_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
-  alias get_mouse_ray = get_screen_to_world_ray
+  fun get_mouse_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
+    
   fun get_screen_to_world_ray_ex = GetScreenToWorldRayEx(position : Vector2, camera : Camera, width : LibC::Int, height : LibC::Int) : Ray
   fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera) : Vector2
   fun get_world_to_screen_ex = GetWorldToScreenEx(position : Vector3, camera : Camera, width : LibC::Int, height : LibC::Int) : Vector2
