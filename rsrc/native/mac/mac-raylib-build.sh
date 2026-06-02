@@ -2,7 +2,7 @@
 
 set -e
 
-test -d raylib || git clone --depth 1 --branch 5.0 --recursive https://github.com/raysan5/raylib 
+test -d raylib || git clone --depth 1 --branch 6.0 --recursive https://github.com/raysan5/raylib 
 cd raylib
 test -d build || mkdir build
 cd build

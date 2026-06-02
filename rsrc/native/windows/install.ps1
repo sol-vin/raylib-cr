@@ -4,7 +4,7 @@ copy miniaudiohelpers.lib C:\raylib\miniaudiohelpers.lib
 del miniaudiohelpers.obj
 del miniaudiohelpers.lib
 
-git clone --depth 1 --branch 5.0 https://github.com/raysan5/raylib
+git clone --depth 1 --branch 6.0 https://github.com/raysan5/raylib
 cd raylib
 mkdir build
 cd build 
