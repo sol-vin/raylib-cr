@@ -5,6 +5,10 @@
   @[Link(framework: "IOKit")]
 {% end %}
 
+macro get_mouse_ray
+  get_screen_to_world_ray
+end
+
 @[Link("raylib")]
 # :showdoc:
 lib Raylib
@@ -824,8 +828,6 @@ lib Raylib
   fun unload_shader = UnloadShader(shader : Shader)
 
   fun get_screen_to_world_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
-  fun get_mouse_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
-
   fun get_screen_to_world_ray_ex = GetScreenToWorldRayEx(position : Vector2, camera : Camera, width : LibC::Int, height : LibC::Int) : Ray
   fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera) : Vector2
   fun get_world_to_screen_ex = GetWorldToScreenEx(position : Vector3, camera : Camera, width : LibC::Int, height : LibC::Int) : Vector2
@@ -1027,7 +1029,7 @@ lib Raylib
   fun check_collision_recs? = CheckCollisionRecs(rec1 : Rectangle, rec2 : Rectangle) : Bool
   fun check_collision_circles? = CheckCollisionCircles(center1 : Vector2, radius1 : LibC::Float, center2 : Vector2, radius2 : LibC::Float) : Bool
   fun check_collision_circle_rec? = CheckCollisionCircleRec(center : Vector2, radius : LibC::Float, rec : Rectangle) : Bool
-  fun check_collision_circle_line? = CheckCollisionCircleRec(center : Vector2, radius : LibC::Float, p1 : Vector2, p2 : Vector2) : Bool
+  fun check_collision_circle_line? = CheckCollisionCircleLine(center : Vector2, radius : LibC::Float, p1 : Vector2, p2 : Vector2) : Bool
   fun check_collision_point_rec? = CheckCollisionPointRec(point : Vector2, rec : Rectangle) : Bool
   fun check_collision_point_circle? = CheckCollisionPointCircle(point : Vector2, center : Vector2, radius : LibC::Float) : Bool
   fun check_collision_point_triangle? = CheckCollisionPointTriangle(point : Vector2, p1 : Vector2, p2 : Vector2, p3 : Vector2) : Bool
