@@ -154,7 +154,7 @@ lib Raylib
     KpEnter      = 335
     KpEqual      = 336
     Back         =   4
-    Menu         =  5
+    Menu         =   5
     VolumeUp     =  24
     VolumeDown   =  25
 
@@ -291,51 +291,51 @@ lib Raylib
   end
 
   enum ShaderLocationIndex
-    VertexPosition   =  0
-    VertexTexcoord01 =  1
-    VertexTexcoord02 =  2
-    VertexNormal     =  3
-    VertexTangent    =  4
-    VertexColor      =  5
-    MatrixMvp        =  6
-    MatrixView       =  7
-    MatrixProjection =  8
-    MatrixModel      =  9
-    MatrixNormal     = 10
-    VectorView       = 11
-    ColorDiffuse     = 12
-    ColorSpecular    = 13
-    ColorAmbient     = 14
-    MapAlbedo        = 15
-    MapMetalness     = 16
-    MapNormal        = 17
-    MapRoughness     = 18
-    MapOcclusion     = 19
-    MapEmission      = 20
-    MapHeight        = 21
-    MapCubemap       = 22
-    MapIrradiance    = 23
-    MapPrefilter     = 24
-    MapBrdf          = 25
-    VertexBoneIDs = 26
-    VertexBoneWeights = 27
-    MatrixBoneTransforms = 28
+    VertexPosition          =  0
+    VertexTexcoord01        =  1
+    VertexTexcoord02        =  2
+    VertexNormal            =  3
+    VertexTangent           =  4
+    VertexColor             =  5
+    MatrixMvp               =  6
+    MatrixView              =  7
+    MatrixProjection        =  8
+    MatrixModel             =  9
+    MatrixNormal            = 10
+    VectorView              = 11
+    ColorDiffuse            = 12
+    ColorSpecular           = 13
+    ColorAmbient            = 14
+    MapAlbedo               = 15
+    MapMetalness            = 16
+    MapNormal               = 17
+    MapRoughness            = 18
+    MapOcclusion            = 19
+    MapEmission             = 20
+    MapHeight               = 21
+    MapCubemap              = 22
+    MapIrradiance           = 23
+    MapPrefilter            = 24
+    MapBrdf                 = 25
+    VertexBoneIDs           = 26
+    VertexBoneWeights       = 27
+    MatrixBoneTransforms    = 28
     VertexInstanceTransform = 29
   end
 
   enum ShaderUniformDataType
-    Float     = 0
-    Vec2      = 1
-    Vec3      = 2
-    Vec4      = 3
-    Int       = 4
-    Ivec2     = 5
-    Ivec3     = 6
-    Ivec4     = 7
-    Uint = 8
-    Ivec2 = 9
-    Ivec3 = 10
-    Ivec4 = 11
+    Float     =  0
+    Vec2      =  1
+    Vec3      =  2
+    Vec4      =  3
+    Int       =  4
+    Ivec2     =  5
+    Ivec3     =  6
+    Ivec4     =  7
+    Uint      =  8
+    UIvec2    =  9
+    UIvec3    = 10
+    UIvec4    = 11
     Sampler2d = 12
   end
 
@@ -825,7 +825,7 @@ lib Raylib
 
   fun get_screen_to_world_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
   fun get_mouse_ray = GetScreenToWorldRay(position : Vector2, camera : Camera) : Ray
-    
+
   fun get_screen_to_world_ray_ex = GetScreenToWorldRayEx(position : Vector2, camera : Camera, width : LibC::Int, height : LibC::Int) : Ray
   fun get_world_to_screen = GetWorldToScreen(position : Vector3, camera : Camera) : Vector2
   fun get_world_to_screen_ex = GetWorldToScreenEx(position : Vector3, camera : Camera, width : LibC::Int, height : LibC::Int) : Vector2
@@ -878,8 +878,8 @@ lib Raylib
   fun get_file_name_without_ext = GetFileNameWithoutExt(file_path : LibC::Char*) : LibC::Char*
   fun get_directory_path = GetDirectoryPath(file_path : LibC::Char*) : LibC::Char*
   fun get_prev_directory_path = GetPrevDirectoryPath(dir_path : LibC::Char*) : LibC::Char*
-  fun get_working_directory = GetWorkingDirectory() : LibC::Char*
-  fun get_application_directory = GetApplicationDirectory() : LibC::Char*
+  fun get_working_directory = GetWorkingDirectory : LibC::Char*
+  fun get_application_directory = GetApplicationDirectory : LibC::Char*
   fun make_directory = MakeDirectory(dir_path : LibC::Char*) : LibC::Int
   fun change_directory = ChangeDirectory(dir_path : LibC::Char*) : Bool
   fun path_file? = IsPathFile(path : LibC::Char*) : Bool
@@ -888,8 +888,8 @@ lib Raylib
   fun load_directory_files_ex = LoadDirectoryFilesEx(base_path : LibC::Char*, filter : LibC::Char*, scan_subdirs : Bool) : FilePathList
 
   fun unload_directory_files = UnloadDirectoryFiles(files : FilePathList)
-  fun file_dropped? = IsFileDropped() : Bool
-  fun load_dropped_files = LoadDroppedFiles() : FilePathList
+  fun file_dropped? = IsFileDropped : Bool
+  fun load_dropped_files = LoadDroppedFiles : FilePathList
   fun unload_dropped_files = UnloadDroppedFiles(files : FilePathList)
   fun get_directory_file_count = GetDirectoryFileCount(dir_path : LibC::Char*) : LibC::UInt
   fun get_directory_file_count_ex = GetDirectoryFileCountEx(base_path : LibC::Char*, filter : LibC::Char*, scan_subdirs : Bool) : LibC::UInt
@@ -963,8 +963,8 @@ lib Raylib
   fun update_camera_pro = UpdateCameraPro(camera : Camera*, movement : Vector3, rotation : Vector3, zoom : LibC::Float)
 
   fun set_shapes_texture = SetShapesTexture(texture : Texture2D, source : Rectangle)
-  fun get_shapes_texture = GetShapesTexture() : Texture2D
-  fun get_shapes_texture_rectangle = GetShapesTextureRectangle() : Rectangle
+  fun get_shapes_texture = GetShapesTexture : Texture2D
+  fun get_shapes_texture_rectangle = GetShapesTextureRectangle : Rectangle
 
   fun draw_pixel = DrawPixel(pos_x : LibC::Int, pos_y : LibC::Int, color : Color)
   fun draw_pixel_v = DrawPixelV(position : Vector2, color : Color)
@@ -1072,7 +1072,7 @@ lib Raylib
   fun image_alpha_mask = ImageAlphaMask(image : Image*, alpha_mask : Image)
   fun image_alpha_premultiply = ImageAlphaPremultiply(image : Image*)
   fun image_blur_gaussian = ImageBlurGaussian(image : Image*, blur_size : LibC::Int)
-    fun image_kernel_convolution = ImageKernelConvolution(image : Image*, kernel : LibC::Float*, kernel_size : LibC::Int)
+  fun image_kernel_convolution = ImageKernelConvolution(image : Image*, kernel : LibC::Float*, kernel_size : LibC::Int)
   fun image_resize = ImageResize(image : Image*, new_width : LibC::Int, new_height : LibC::Int)
   fun image_resize_nn = ImageResizeNN(image : Image*, new_width : LibC::Int, new_height : LibC::Int)
   fun image_resize_canvas = ImageResizeCanvas(image : Image*, new_width : LibC::Int, new_height : LibC::Int, offset_x : LibC::Int, offset_y : LibC::Int, fill : Color)
@@ -1113,7 +1113,7 @@ lib Raylib
   fun image_draw_triangle_ex = ImageDrawTriangleEx(dst : Image*, v1 : Vector2, v2 : Vector2, v3 : Vector2, c1 : Color, c2 : Color, c3 : Color)
   fun image_draw_triangle_lines = ImageDrawTriangleLines(dst : Image*, v1 : Vector2, v2 : Vector2, v3 : Vector2, color : Color)
   fun image_draw_triangle_fan = ImageDrawTriangleFan(dst : Image*, points : Vector2*, point_count : LibC::Int, color : Color)
-  fun image_draw_triangle_strip = ImageDrawTriangleStrip(dst : Image*, points : Vector2*, point_count : LibC::Int, color : Color)    
+  fun image_draw_triangle_strip = ImageDrawTriangleStrip(dst : Image*, points : Vector2*, point_count : LibC::Int, color : Color)
   fun image_draw = ImageDraw(dst : Image*, src : Image, src_rec : Rectangle, dst_rec : Rectangle, tint : Color)
   fun image_draw_text = ImageDrawText(dst : Image*, text : LibC::Char*, pos_x : LibC::Int, pos_y : LibC::Int, font_size : LibC::Int, color : Color)
   fun image_draw_text_ex = ImageDrawTextEx(dst : Image*, font : Font, text : LibC::Char*, position : Vector2, font_size : LibC::Float, spacing : LibC::Float, tint : Color)
@@ -1283,7 +1283,7 @@ lib Raylib
 
   fun update_model_animation = UpdateModelAnimation(model : Model, anim : ModelAnimation, frame : LibC::Float)
   fun update_model_animation_ex = UpdateModelAnimationEx(model : Model, anim_a : ModelAnimation, anim_b : ModelAnimation, frame_b : LibC::Float, blend : LibC::Float)
-    
+
   fun unload_model_animations = UnloadModelAnimations(animations : ModelAnimation*, count : LibC::UInt)
   fun model_animation_valid? = IsModelAnimationValid(model : Model, anim : ModelAnimation) : Bool
   fun check_collision_spheres? = CheckCollisionSpheres(center1 : Vector3, radius1 : LibC::Float, center2 : Vector3, radius2 : LibC::Float) : Bool
