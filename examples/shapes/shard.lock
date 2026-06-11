@@ -2,5 +2,5 @@ version: 2.0
 shards:
   raylib-cr:
     path: ../../
-    version: 5.0
+    version: 6.0
 

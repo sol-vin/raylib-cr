@@ -1,14 +1,14 @@
+macro get_mouse_ray
+  get_screen_to_world_ray
+end
+
 {% if flag?(:darwin) %}
   @[Link(framework: "OpenGL")]
   @[Link(framework: "OpenAL")]
   @[Link(framework: "Cocoa")]
   @[Link(framework: "IOKit")]
+  @[Link(ldflags: "-L/opt/homebrew/lib")]
 {% end %}
-
-macro get_mouse_ray
-  get_screen_to_world_ray
-end
-
 @[Link("raylib")]
 # :showdoc:
 lib Raylib
