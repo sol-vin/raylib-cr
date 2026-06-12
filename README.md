@@ -141,9 +141,10 @@ require "raylib-cr/lights"
 - [sol-vin](https://github.com/sol-vin)
 
 # Major Contributors
+- [D.Shwagginz](https://github.com/D-Shwagginz) - Raylib/RayGUI for MAC OS.
 - [rightbrace](https://github.com/b1tlet) - Raymath & Wrapper
 # Minor Contributors
 - [b1tlet](https://github.com/b1tlet) - Fog Shader
 
 # Inactive Contributors
-- [AregevDev](https://github.com/AregevDev) - creator
+- [AregevDev](https://github.com/AregevDev) - original creator
