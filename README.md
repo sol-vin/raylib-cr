@@ -14,9 +14,7 @@ matricies, and quaternions.
 These platforms are supported out of the box and are linked statically
 1. 64-bit Linux
 2. 64-bit Windows
-
-Working but lacks RayGUI install script
-1. MacOS - Raylib installs with either install script or using homebrew `brew install raylib` (homebrew may cause bugs)
+3. MacOS
 
 Hopefully soon  
  - Raspberry PI
@@ -80,6 +78,7 @@ dependencies:
 4. Get programming!
 
 ### MacOS
+
 1. Run
 ```
 sudo sh rsrc/native/mac/mac-raylib-install.sh
