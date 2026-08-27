@@ -410,7 +410,7 @@ lib Raygui
   end
 
   fun enable = GuiEnable
-  fun disable = GuiEnable
+  fun disable = GuiDisable
   fun lock = GuiLock
   fun unlock = GuiUnlock
   fun is_locked? = GuiIsLocked : Bool
