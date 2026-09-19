@@ -30,7 +30,7 @@ sudo cp ./raylib/libraylib.dylib /usr/local/lib/libraylib.dylib
 cd ../../
 
 # Raygui
-test -d raygui || git clone --depth 1 --recursive https://github.com/raysan5/raygui
+test -d raygui || git clone --depth 1 --branch 5.0 --recursive https://github.com/raysan5/raygui
 cd raygui
 cp src/raygui.h src/raygui.c
 export PKG_CONFIG_PATH="../raylib/build/raylib"
