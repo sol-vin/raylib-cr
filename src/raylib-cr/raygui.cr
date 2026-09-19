@@ -1,10 +1,30 @@
+require "./raylib"
+
 @[Link("raygui")]
 # :showdoc:
 lib Raygui
-  VERSION = "4.0"
+  VERSION = "5.0"
+
+  MAX_CONTROLS       = 16
+  MAX_PROPS_BASE     = 16
+  MAX_PROPS_EXTENDED =  8
 
   SCROLLBAR_LEFT_SIDE  = 0
   SCROLLBAR_RIGHT_SIDE = 1
+
+  ICON_SIZE               =  16
+  ICON_MAX_ICONS          = 512
+  ICON_MAX_FONT_BACKED    = 257
+  ICON_MAX_NAME_LENGTH    =  32
+  ICON_FONT_ATLAS_PADDING =   1
+  ICON_DATA_ELEMENTS      =   8
+
+  enum Result
+    None     = 0
+    Pressed  = 1
+    Changed  = 2
+    TabClose = 4
+  end
 
   enum State
     Normal   = 0
@@ -44,7 +64,7 @@ lib Raygui
     DropdownBox
     TextBox
     ValueBox
-    Spinner
+    TabBar
     ListView
     ColorPicker
     ScrollBar
@@ -72,6 +92,7 @@ lib Raygui
     BorderWidth
     TextPadding
     TextAlignment
+    BaseProp16
   end
 
   enum DefaultProperty
@@ -82,10 +103,12 @@ lib Raygui
     TextLineSpacing
     TextAlignmentVertical
     TextWrapMode
+    ExtProp08
   end
 
   enum ToggleProperty
-    Padding = 16
+    GroupPadding   = 16
+    GroupWidthFull
   end
 
   enum SliderProperty
@@ -95,6 +118,7 @@ lib Raygui
 
   enum ProgressBarProperty
     Padding = 16
+    Side
   end
 
   enum ScrollBarProperty
@@ -118,22 +142,32 @@ lib Raygui
   enum DropdownBoxProperty
     ArrowPadding = 16
     ItemsSpacing
+    ArrowHidden
+    RollUp
   end
 
   enum TextBoxProperty
     ReadOnly = 16
   end
 
-  enum SpinnerProperty
+  enum ValueBoxProperty
     ButtonWidth   = 16
     ButtonSpacing
   end
 
+  enum TabBarProperty
+    ItemsWidth  = 16
+    CloseButton
+    LineSide
+  end
+
   enum ListViewProperty
-    ItemsHeight    = 16
+    ItemsHeight       = 16
     ItemsSpacing
     ScrollBarWidth
     ScrollBarSide
+    ItemsBorderNormal
+    ItemsBorderWidth
   end
 
   enum ColorPickerProperty
@@ -348,7 +382,7 @@ lib Raygui
     FiletypeBinary       = 200
     Hex                  = 201
     Shield               = 202
-    FileNew              = 293
+    FileNew              = 203
     FolderAdd            = 204
     Alarm                = 205
     Cpu                  = 206
@@ -365,42 +399,43 @@ lib Raygui
     Folder               = 217
     File                 = 218
     SandTimer            = 219
-    Icon_220             = 220
-    Icon_221             = 221
-    Icon_222             = 222
-    Icon_223             = 223
-    Icon_224             = 224
-    Icon_225             = 225
-    Icon_226             = 226
-    Icon_227             = 227
-    Icon_228             = 228
-    Icon_229             = 229
-    Icon_230             = 230
-    Icon_231             = 231
-    Icon_232             = 232
-    Icon_233             = 233
-    Icon_234             = 234
-    Icon_235             = 235
-    Icon_236             = 236
-    Icon_237             = 237
-    Icon_238             = 238
-    Icon_239             = 239
-    Icon_240             = 240
-    Icon_241             = 241
-    Icon_242             = 242
-    Icon_243             = 243
-    Icon_244             = 244
-    Icon_245             = 245
-    Icon_246             = 246
-    Icon_247             = 247
-    Icon_248             = 248
-    Icon_249             = 249
-    Icon_250             = 250
-    Icon_251             = 251
-    Icon_252             = 252
-    Icon_253             = 253
-    Icon_254             = 254
-    Icon_255             = 255
+    Warning              = 220
+    HelpBox              = 221
+    InfoBox              = 222
+    Priority             = 223
+    LayersIso            = 224
+    Layers2              = 225
+    Mlayers              = 226
+    Maps                 = 227
+    Hot                  = 228
+    Label                = 229
+    NameId               = 230
+    Slicing              = 231
+    ManualControl        = 232
+    Collision            = 233
+    CircleAdd            = 234
+    CircleAddFill        = 235
+    CircleWarning        = 236
+    CircleWarningFill    = 237
+    BoxMore              = 238
+    BoxMoreFill          = 239
+    BoxMinus             = 240
+    BoxMinusFill         = 241
+    Union                = 242
+    Intersection         = 243
+    Difference           = 244
+    Sphere               = 245
+    Cylinder             = 246
+    Cone                 = 247
+    Ellipsoid            = 248
+    Capsule              = 249
+    FiletypeFont         = 250
+    Filetype3D           = 251
+    FiletypeCodeXml      = 252
+    FiletypeCodeC        = 253
+    FiletypeCodePython   = 254
+    FiletypeCodeJs       = 255
+    FiletypeIcon         = 256
   end
 
   struct StyleProp
@@ -410,19 +445,22 @@ lib Raygui
   end
 
   fun enable = GuiEnable
-  fun disable = GuiEnable
+  fun disable = GuiDisable
   fun lock = GuiLock
   fun unlock = GuiUnlock
   fun is_locked? = GuiIsLocked : Bool
   fun set_alpha = GuiSetAlpha(alpha : LibC::Float)
   fun set_state = GuiSetState(state : LibC::Int)
-  fun set_font = GuiSetFont(font : Raylib::Font)
-  fun set_style = GuiSetStyle(control : LibC::Int, property : LibC::Int, value : LibC::Int)
   fun get_state = GuiGetState : LibC::Int
+
+  fun set_font = GuiSetFont(font : Raylib::Font)
   fun get_font = GuiGetFont : Raylib::Font
+
+  fun set_style = GuiSetStyle(control : LibC::Int, property : LibC::Int, value : LibC::Int)
   fun get_style = GuiGetStyle(control : LibC::Int, property : LibC::Int) : LibC::Int
 
   fun load_style = GuiLoadStyle(filename : LibC::Char*)
+  fun load_style_from_memory = GuiLoadStyleFromMemory(file_data : LibC::UChar*, data_size : LibC::Int)
   fun load_style_default = GuiLoadStyleDefault
 
   fun enable_tooltip = GuiEnableTooltip
@@ -433,13 +471,15 @@ lib Raygui
   fun set_icon_scale = GuiSetIconScale(scale : LibC::Int)
   fun get_icons = GuiGetIcons : LibC::UInt*
   fun load_icons = GuiLoadIcons(filename : LibC::Char*, load_icons_name : Bool) : LibC::Char**
+  fun load_icons_from_memory = GuiLoadIconsFromMemory(file_data : LibC::UChar*, data_size : LibC::Int, load_icons_name : Bool) : LibC::Char**
   fun draw_icon = GuiDrawIcon(icon_id : LibC::Int, x : LibC::Int, y : LibC::Int, pixel_size : LibC::Int, color : Raylib::Color)
+
+  fun get_text_width = GuiGetTextWidth(text : LibC::Char*) : LibC::Int
 
   fun window_box = GuiWindowBox(bounds : Raylib::Rectangle, title : LibC::Char*) : LibC::Int
   fun group_box = GuiGroupBox(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
   fun line = GuiLine(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
   fun panel = GuiPanel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
-  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, active : LibC::Int*) : LibC::Int
   fun scroll_panel = GuiScrollPanel(bounds : Raylib::Rectangle, text : LibC::Char*, content : Raylib::Rectangle, scroll : Raylib::Vector2*, view : Raylib::Rectangle*) : LibC::Int
 
   fun label = GuiLabel(bounds : Raylib::Rectangle, text : LibC::Char*) : LibC::Int
@@ -453,7 +493,9 @@ lib Raygui
   fun dropdown_box = GuiDropdownBox(bounds : Raylib::Rectangle, text : LibC::Char*, active : LibC::Int*, edit_mode : Bool) : LibC::Int
   fun spinner = GuiSpinner(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
   fun value_box = GuiValueBox(bounds : Raylib::Rectangle, text : LibC::Char*, value : LibC::Int*, min_value : LibC::Int, max_value : LibC::Int, edit_mode : Bool) : LibC::Int
+  fun value_box_float = GuiValueBoxFloat(bounds : Raylib::Rectangle, text : LibC::Char*, text_value : LibC::Char*, value : LibC::Float*, edit_mode : Bool) : LibC::Int
   fun text_box = GuiTextBox(bounds : Raylib::Rectangle, text : LibC::Char*, text_size : LibC::Int, edit_mode : Bool) : LibC::Int
+
   fun slider = GuiSlider(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
   fun slider_bar = GuiSliderBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
   fun progress_bar = GuiProgressBar(bounds : Raylib::Rectangle, text_left : LibC::Char*, text_right : LibC::Char*, value : LibC::Float*, min_value : LibC::Float, max_value : LibC::Float) : LibC::Int
@@ -463,8 +505,10 @@ lib Raygui
 
   fun list_view = GuiListView(bounds : Raylib::Rectangle, text : LibC::Char*, scroll_index : LibC::Int*, active : LibC::Int*) : LibC::Int
   fun list_view_ex = GuiListViewEx(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, scroll_index : LibC::Int*, active : LibC::Int*, focus : LibC::Int*) : LibC::Int
-  fun message_box = GuiMessageBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*) : LibC::Int
-  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, buttons : LibC::Char*, text : LibC::Char*, text_max_size : LibC::Int, secret_view_active : Bool*) : LibC::Int
+  fun tab_bar = GuiTabBar(bounds : Raylib::Rectangle, text : LibC::Char*, hscroll : LibC::Int*, active : LibC::Int*) : LibC::Int
+  fun tab_bar_ex = GuiTabBarEx(bounds : Raylib::Rectangle, text : LibC::Char**, count : LibC::Int, hscroll : LibC::Int*, active : LibC::Int*, focus : LibC::Int*) : LibC::Int
+  fun message_box = GuiMessageBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, button_text : LibC::Char*, button_active : LibC::Int*) : LibC::Int
+  fun text_input_box = GuiTextInputBox(bounds : Raylib::Rectangle, title : LibC::Char*, message : LibC::Char*, text : LibC::Char*, text_size : LibC::Int, button_text : LibC::Char*, button_active : LibC::Int*, secret_view_active : Bool*) : LibC::Int
   fun color_picker = GuiColorPicker(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : LibC::Int
   fun color_panel = GuiColorPanel(bounds : Raylib::Rectangle, text : LibC::Char*, color : Raylib::Color*) : LibC::Int
   fun color_bar_alpha = GuiColorBarAlpha(bounds : Raylib::Rectangle, text : LibC::Char*, alpha : LibC::Float*) : LibC::Int
