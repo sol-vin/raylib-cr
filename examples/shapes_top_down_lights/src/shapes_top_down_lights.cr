@@ -87,7 +87,7 @@ class Light
     RLGL.set_blend_mode(R::BlendMode::Custom)
 
     if @valid
-      R.draw_circle_gradient(@position.x.to_i, @position.y.to_i, @outer_radius, R.color_alpha(R::WHITE, 0), R::WHITE)
+      R.draw_circle_gradient(R::Vector2.new(x: @position.x, y: @position.y), @outer_radius, R.color_alpha(R::WHITE, 0), R::WHITE)
     end
 
     RLGL.draw_render_batch_active
