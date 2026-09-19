@@ -1,3 +1,5 @@
+require "./raylib"
+
 @[Link("raylib")]
 # :showdoc:
 lib Raymath
@@ -10,11 +12,11 @@ lib Raymath
   end
 
   fun clamp = Clamp(value : LibC::Float, min : LibC::Float, max : LibC::Float) : LibC::Float
-  fun lerp = Lerp(start : LibC::Float, finsh : LibC::Float, amount : LibC::Float) : LibC::Float
+  fun lerp = Lerp(start : LibC::Float, finish : LibC::Float, amount : LibC::Float) : LibC::Float
   fun normalize = Normalize(value : LibC::Float, start : LibC::Float, finish : LibC::Float) : LibC::Float
   fun remap = Remap(value : LibC::Float, input_start : LibC::Float, input_end : LibC::Float, output_start : LibC::Float, output_end : LibC::Float) : LibC::Float
   fun wrap = Wrap(value : LibC::Float, min : LibC::Float, max : LibC::Float) : LibC::Float
-  fun float_equals = FloatEquals(x : LibC::Float, y : LibC::Float) : Bool
+  fun float_equals = FloatEquals(x : LibC::Float, y : LibC::Float) : LibC::Int
 
   fun vector2_zero = Vector2Zero : Raylib::Vector2
   fun vector2_one = Vector2One : Raylib::Vector2
@@ -25,6 +27,7 @@ lib Raymath
   fun vector2_length = Vector2Length(v : Raylib::Vector2) : LibC::Float
   fun vector2_length_sqr = Vector2LengthSqr(v : Raylib::Vector2) : LibC::Float
   fun vector2_dot_product = Vector2DotProduct(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
+  fun vector2_cross_product = Vector2CrossProduct(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_distance = Vector2Distance(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_distance_sqr = Vector2DistanceSqr(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
   fun vector2_angle = Vector2Angle(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Float
@@ -37,12 +40,15 @@ lib Raymath
   fun vector2_transform = Vector2Transform(v : Raylib::Vector2, mat : Raylib::Matrix) : Raylib::Vector2
   fun vector2_lerp = Vector2Lerp(v1 : Raylib::Vector2, v2 : Raylib::Vector2, amount : LibC::Float) : Raylib::Vector2
   fun vector2_reflect = Vector2Reflect(v : Raylib::Vector2, normal : Raylib::Vector2) : Raylib::Vector2
+  fun vector2_min = Vector2Min(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : Raylib::Vector2
+  fun vector2_max = Vector2Max(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : Raylib::Vector2
   fun vector2_rotate = Vector2Rotate(v : Raylib::Vector2, angle : LibC::Float) : Raylib::Vector2
   fun vector2_move_towards = Vector2MoveTowards(v : Raylib::Vector2, target : Raylib::Vector2, max_distance : LibC::Float) : Raylib::Vector2
   fun vector2_invert = Vector2Invert(v : Raylib::Vector2) : Raylib::Vector2
   fun vector2_clamp = Vector2Clamp(v : Raylib::Vector2, min : Raylib::Vector2, max : Raylib::Vector2) : Raylib::Vector2
   fun vector2_clamp_value = Vector2ClampValue(v : Raylib::Vector2, min : LibC::Float, max : LibC::Float) : Raylib::Vector2
-  fun vector2_equals = Vector2Equals(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : Bool
+  fun vector2_equals = Vector2Equals(v1 : Raylib::Vector2, v2 : Raylib::Vector2) : LibC::Int
+  fun vector2_refract = Vector2Refract(v : Raylib::Vector2, n : Raylib::Vector2, r : LibC::Float) : Raylib::Vector2
 
   fun vector3_zero = Vector3Zero : Raylib::Vector3
   fun vector3_one = Vector3One : Raylib::Vector3
@@ -69,7 +75,9 @@ lib Raymath
   fun vector3_transform = Vector3Transform(v : Raylib::Vector3, mat : Raylib::Matrix) : Raylib::Vector3
   fun vector3_rotate_by_quaternion = Vector3RotateByQuaternion(v : Raylib::Vector3, q : Raylib::Quaternion) : Raylib::Vector3
   fun vector3_rotate_by_axis_angle = Vector3RotateByAxisAngle(v : Raylib::Vector3, axis : Raylib::Vector3, angle : LibC::Float) : Raylib::Vector3
+  fun vector3_move_towards = Vector3MoveTowards(v : Raylib::Vector3, target : Raylib::Vector3, max_distance : LibC::Float) : Raylib::Vector3
   fun vector3_lerp = Vector3Lerp(v1 : Raylib::Vector3, v2 : Raylib::Vector3, amount : LibC::Float) : Raylib::Vector3
+  fun vector3_cubic_hermite = Vector3CubicHermite(v1 : Raylib::Vector3, tangent1 : Raylib::Vector3, v2 : Raylib::Vector3, tangent2 : Raylib::Vector3, amount : LibC::Float) : Raylib::Vector3
   fun vector3_reflect = Vector3Reflect(v : Raylib::Vector3, normal : Raylib::Vector3) : Raylib::Vector3
   fun vector3_min = Vector3Min(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : Raylib::Vector3
   fun vector3_max = Vector3Max(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : Raylib::Vector3
@@ -79,8 +87,31 @@ lib Raymath
   fun vector3_invert = Vector3Invert(v : Raylib::Vector3) : Raylib::Vector3
   fun vector3_clamp = Vector3Clamp(v : Raylib::Vector3, min : Raylib::Vector3, max : Raylib::Vector3) : Raylib::Vector3
   fun vector3_clamp_value = Vector3ClampValue(v : Raylib::Vector3, min : LibC::Float, max : LibC::Float) : Raylib::Vector3
-  fun vector3_equals = Vector3Equals(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : Bool
+  fun vector3_equals = Vector3Equals(v1 : Raylib::Vector3, v2 : Raylib::Vector3) : LibC::Int
   fun vector3_refract = Vector3Refract(v1 : Raylib::Vector3, v2 : Raylib::Vector3, r : LibC::Float) : Raylib::Vector3
+
+  fun vector4_zero = Vector4Zero : Raylib::Vector4
+  fun vector4_one = Vector4One : Raylib::Vector4
+  fun vector4_add = Vector4Add(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_add_value = Vector4AddValue(v : Raylib::Vector4, add : LibC::Float) : Raylib::Vector4
+  fun vector4_subtract = Vector4Subtract(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_subtract_value = Vector4SubtractValue(v : Raylib::Vector4, sub : LibC::Float) : Raylib::Vector4
+  fun vector4_length = Vector4Length(v : Raylib::Vector4) : LibC::Float
+  fun vector4_length_sqr = Vector4LengthSqr(v : Raylib::Vector4) : LibC::Float
+  fun vector4_dot_product = Vector4DotProduct(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : LibC::Float
+  fun vector4_distance = Vector4Distance(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : LibC::Float
+  fun vector4_distance_sqr = Vector4DistanceSqr(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : LibC::Float
+  fun vector4_scale = Vector4Scale(v : Raylib::Vector4, scale : LibC::Float) : Raylib::Vector4
+  fun vector4_multiply = Vector4Multiply(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_negate = Vector4Negate(v : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_divide = Vector4Divide(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_normalize = Vector4Normalize(v : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_min = Vector4Min(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_max = Vector4Max(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_lerp = Vector4Lerp(v1 : Raylib::Vector4, v2 : Raylib::Vector4, amount : LibC::Float) : Raylib::Vector4
+  fun vector4_move_towards = Vector4MoveTowards(v : Raylib::Vector4, target : Raylib::Vector4, max_distance : LibC::Float) : Raylib::Vector4
+  fun vector4_invert = Vector4Invert(v : Raylib::Vector4) : Raylib::Vector4
+  fun vector4_equals = Vector4Equals(v1 : Raylib::Vector4, v2 : Raylib::Vector4) : LibC::Int
 
   fun matrix_determinant = MatrixDeterminant(mat : Raylib::Matrix) : LibC::Float
   fun matrix_trace = MatrixTrace(mat : Raylib::Matrix) : LibC::Float
@@ -90,6 +121,7 @@ lib Raymath
   fun matrix_add = MatrixAdd(left : Raylib::Matrix, right : Raylib::Matrix) : Raylib::Matrix
   fun matrix_subtract = MatrixSubtract(left : Raylib::Matrix, right : Raylib::Matrix) : Raylib::Matrix
   fun matrix_multiply = MatrixMultiply(left : Raylib::Matrix, right : Raylib::Matrix) : Raylib::Matrix
+  fun matrix_multiply_value = MatrixMultiplyValue(left : Raylib::Matrix, value : LibC::Float) : Raylib::Matrix
   fun matrix_translate = MatrixTranslate(x : LibC::Float, y : LibC::Float, z : LibC::Float) : Raylib::Matrix
   fun matrix_rotate = MatrixRotate(axis : Raylib::Vector3, angle : LibC::Float) : Raylib::Matrix
   fun matrix_rotate_x = MatrixRotateX(angle : LibC::Float) : Raylib::Matrix
@@ -118,14 +150,18 @@ lib Raymath
   fun quaternion_lerp = QuaternionLerp(q1 : Raylib::Quaternion, q2 : Raylib::Quaternion, amount : LibC::Float) : Raylib::Quaternion
   fun quaternion_nlerp = QuaternionNlerp(q1 : Raylib::Quaternion, q2 : Raylib::Quaternion, amount : LibC::Float) : Raylib::Quaternion
   fun quaternion_slerp = QuaternionSlerp(q1 : Raylib::Quaternion, q2 : Raylib::Quaternion, amount : LibC::Float) : Raylib::Quaternion
+  fun quaternion_cubic_hermite_spline = QuaternionCubicHermiteSpline(q1 : Raylib::Quaternion, out_tangent1 : Raylib::Quaternion, q2 : Raylib::Quaternion, in_tangent2 : Raylib::Quaternion, t : LibC::Float) : Raylib::Quaternion
   fun quaternion_from_vector3_to_vector3 = QuaternionFromVector3ToVector3(from : Raylib::Vector3, to : Raylib::Vector3) : Raylib::Quaternion
   fun quaternion_from_matrix = QuaternionFromMatrix(mat : Raylib::Matrix) : Raylib::Quaternion
   fun quaternion_to_matrix = QuaternionToMatrix(q : Raylib::Quaternion) : Raylib::Matrix
   fun quaternion_from_axis_angle = QuaternionFromAxisAngle(axis : Raylib::Vector3, angle : LibC::Float) : Raylib::Quaternion
-  fun quaternion_to_axis_angle = QuaterntionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*) \
-        fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Raylib::Quaternion
-    fun quaternion_to_euler = QuaternionToEuler(q : Raylib::Quaternion) : Raylib::Vector3
-    fun quaternion_transform = QuaternionTransform(q : Raylib::Quaternion, mat : Raylib::Matrix) : Raylib::Quaternion
+  fun quaternion_to_axis_angle = QuaternionToAxisAngle(q : Raylib::Quaternion, out_axis : Raylib::Vector3*, out_angle : LibC::Float*)
+  fun quaternion_from_euler = QuaternionFromEuler(pitch : LibC::Float, yaw : LibC::Float, roll : LibC::Float) : Raylib::Quaternion
+  fun quaternion_to_euler = QuaternionToEuler(q : Raylib::Quaternion) : Raylib::Vector3
+  fun quaternion_transform = QuaternionTransform(q : Raylib::Quaternion, mat : Raylib::Matrix) : Raylib::Quaternion
+  fun quaternion_equals = QuaternionEquals(q1 : Raylib::Quaternion, q2 : Raylib::Quaternion) : LibC::Int
+  fun matrix_compose = MatrixCompose(translation : Raylib::Vector3, rotation : Raylib::Quaternion, scale : Raylib::Vector3) : Raylib::Matrix
+  fun matrix_decompose = MatrixDecompose(mat : Raylib::Matrix, translation : Raylib::Vector3*, rotation : Raylib::Quaternion*, scale : Raylib::Vector3*)
 end
 
 struct Raylib::Vector2
@@ -181,6 +217,10 @@ struct Raylib::Vector2
     Raymath.vector2_dot_product(self, v2)
   end
 
+  def cross_product(v2 : Raylib::Vector2) : LibC::Float
+    Raymath.vector2_cross_product(self, v2)
+  end
+
   def distance(v2 : Raylib::Vector2) : LibC::Float
     Raymath.vector2_distance(self, v2)
   end
@@ -229,6 +269,14 @@ struct Raylib::Vector2
     Raymath.vector2_reflect(self, normal)
   end
 
+  def min(v2 : Raylib::Vector2) : Raylib::Vector2
+    Raymath.vector2_min(self, v2)
+  end
+
+  def max(v2 : Raylib::Vector2) : Raylib::Vector2
+    Raymath.vector2_max(self, v2)
+  end
+
   def rotate(angle : Number) : Raylib::Vector2
     Raymath.vector2_rotate(self, angle.to_f32)
   end
@@ -250,7 +298,11 @@ struct Raylib::Vector2
   end
 
   def equals?(v : Raylib::Vector2) : Bool
-    Raymath.vector2_equals(self, v)
+    Raymath.vector2_equals(self, v) != 0
+  end
+
+  def refract(normal : Raylib::Vector2, ratio : Number) : Raylib::Vector2
+    Raymath.vector2_refract(self, normal, ratio.to_f32)
   end
 
   # Operators for convenience
@@ -353,6 +405,14 @@ struct Raylib::Vector3
     Raymath.vector3_perpendicular(self)
   end
 
+  def length : LibC::Float
+    Raymath.vector3_length(self)
+  end
+
+  def length_sqr : LibC::Float
+    Raymath.vector3_length_sqr(self)
+  end
+
   def dot_product(v2 : Raylib::Vector3) : LibC::Float
     Raymath.vector3_dot_product(self, v2)
   end
@@ -362,7 +422,7 @@ struct Raylib::Vector3
   end
 
   def distance_sqr(v2 : Raylib::Vector3) : LibC::Float
-    Raymath.vector3_distance(self, v2)
+    Raymath.vector3_distance_sqr(self, v2)
   end
 
   def angle(v2 : Raylib::Vector3) : LibC::Float
@@ -401,8 +461,16 @@ struct Raylib::Vector3
     Raymath.vector3_rotate_by_axis_angle(self, axis, angle)
   end
 
+  def move_towards(target : Raylib::Vector3, max_distance : Number) : Raylib::Vector3
+    Raymath.vector3_move_towards(self, target, max_distance.to_f32)
+  end
+
   def lerp(v2 : Raylib::Vector3, amount : Number) : Raylib::Vector3
     Raymath.vector3_lerp(self, v2, amount.to_f32)
+  end
+
+  def cubic_hermite(tangent1 : Raylib::Vector3, v2 : Raylib::Vector3, tangent2 : Raylib::Vector3, amount : Number) : Raylib::Vector3
+    Raymath.vector3_cubic_hermite(self, tangent1, v2, tangent2, amount.to_f32)
   end
 
   def reflect(normal : Raylib::Vector3) : Raylib::Vector3
@@ -442,7 +510,7 @@ struct Raylib::Vector3
   end
 
   def equals?(v : Raylib::Vector3) : Bool
-    Raymath.vector3_equals(self, v)
+    Raymath.vector3_equals(self, v) != 0
   end
 
   def refract(v2 : Raylib::Vector3, r : LibC::Float) : Raylib::Vector3
@@ -501,10 +569,6 @@ struct Raylib::Matrix
     Raymath.matrix_invert(self)
   end
 
-  def normalize : Raylib::Matrix
-    Raymath.matrix_normalize(self)
-  end
-
   def self.identity : Raylib::Matrix
     Raymath.matrix_identity
   end
@@ -519,6 +583,10 @@ struct Raylib::Matrix
 
   def multiply(right : Raylib::Matrix) : Raylib::Matrix
     Raymath.matrix_multiply(self, right)
+  end
+
+  def multiply(value : Number) : Raylib::Matrix
+    Raymath.matrix_multiply_value(self, value.to_f32)
   end
 
   def self.translate(x : Number, y : Number, z : Number) : Raylib::Matrix
@@ -573,12 +641,12 @@ struct Raylib::Matrix
     Raymath.matrix_to_float_v(self)
   end
 
-  def self.from_matrix(mat : Raylib::Matrix) : Raylib::Quaternion
-    Raymath.quaternion_from_matrix(mat)
+  def self.compose(translation : Raylib::Vector3, rotation : Raylib::Quaternion, scale : Raylib::Vector3) : Raylib::Matrix
+    Raymath.matrix_compose(translation, rotation, scale)
   end
 
-  def to_matrix : Raylib::Matrix
-    Raymath.quaternion_to_matrix(self)
+  def decompose(translation : Raylib::Vector3*, rotation : Raylib::Quaternion*, scale : Raylib::Vector3*)
+    Raymath.matrix_decompose(self, translation, rotation, scale)
   end
 
   # Operators for convenience
@@ -592,6 +660,10 @@ struct Raylib::Matrix
   end
 
   def *(other : self) : Raylib::Matrix
+    self.multiply(other)
+  end
+
+  def *(other : Number) : Raylib::Matrix
     self.multiply(other)
   end
 end
@@ -653,6 +725,10 @@ struct Raylib::Quaternion
     Raymath.quaternion_slerp(self, q2, amount.to_f32)
   end
 
+  def cubic_hermite(out_tangent : Raylib::Quaternion, q2 : Raylib::Quaternion, in_tangent : Raylib::Quaternion, amount : Number) : Raylib::Quaternion
+    Raymath.quaternion_cubic_hermite_spline(self, out_tangent, q2, in_tangent, amount.to_f32)
+  end
+
   def self.from_vector3_to_vector3(from : Raylib::Vector3, to : Raylib::Vector3) : Raylib::Quaternion
     Raymath.quaternion_from_vector3_to_vector3(from, to)
   end
@@ -683,6 +759,10 @@ struct Raylib::Quaternion
 
   def transform(mat : Raylib::Matrix) : Raylib::Quaternion
     Raymath.quaternion_transform(self, mat)
+  end
+
+  def equals?(q2 : Raylib::Quaternion) : Bool
+    Raymath.quaternion_equals(self, q2) != 0
   end
 
   # Operators for convenience
