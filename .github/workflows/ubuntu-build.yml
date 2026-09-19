@@ -15,5 +15,7 @@ jobs:
         run: sudo apt-get update
       - name: run install script
         run: sh ./rsrc/native/ubuntu/install.sh
+      - name: run specs
+        run: crystal spec
       - name: build examples
         run: crystal run rsrc/build-examples/build.cr
