@@ -454,7 +454,7 @@ lib RLGL
   fun set_uniform_sampler = rlSetUniformSampler(loc_index : LibC::Int, texture_id : LibC::UInt)
   fun set_shader = rlSetShader(id : LibC::UInt, locs : LibC::Int*)
 
-  fun load_compute_shader_program = rlLoadShaderProgramCompute(shader_id : LibC::UInt) : LibC::UInt
+  fun load_shader_program_compute = rlLoadShaderProgramCompute(cs_id : LibC::UInt) : LibC::UInt
   fun compute_shader_dispatch = rlComputeShaderDispatch(group_x : LibC::UInt, group_y : LibC::UInt, group_z : LibC::UInt)
 
   fun load_shader_buffer = rlLoadShaderBuffer(size : LibC::UInt, data : Void*, usage_hint : LibC::Int) : LibC::UInt
