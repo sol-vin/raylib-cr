@@ -9,7 +9,7 @@ until Raylib.close_window?
   Raylib.clear_background(Raylib::RAYWHITE)
   Raylib.draw_text("Basic Shapes", 20, 20, 20, Raylib::DARKGRAY)
   Raylib.draw_circle(screen_width/5, 120, 35, Raylib::DARKBLUE)
-  Raylib.draw_circle_gradient(screen_width/5, 220, 60, Raylib::GREEN, Raylib::SKYBLUE)
+  Raylib.draw_circle_gradient(Raylib::Vector2.new(x: screen_width/5.0, y: 220.0), 60, Raylib::GREEN, Raylib::SKYBLUE)
   Raylib.draw_circle_lines(screen_width/5, 340, 80, Raylib::DARKBLUE)
   Raylib.draw_rectangle(screen_width/4*2 - 60, 100, 120, 60, Raylib::RED)
   Raylib.draw_rectangle_gradient_h(screen_width/4*2 - 90, 170, 180, 130, Raylib::MAROON, Raylib::GOLD)

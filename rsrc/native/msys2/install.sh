@@ -9,7 +9,7 @@ rm rsrc/miniaudiohelpers/miniaudiohelpers.o
 pacman -Sy "${MINGW_PACKAGE_PREFIX:+${MINGW_PACKAGE_PREFIX}-}raylib" --needed --noconfirm
 
 # Compile raygui
-git clone --depth 1 --branch 4.0 https://github.com/raysan5/raygui
+git clone --depth 1 --branch 5.0 https://github.com/raysan5/raygui
 mv raygui/src/raygui.h raygui/src/raygui.c
 cc -c -fPIC raygui/src/raygui.c -o raygui/raygui.o -DRAYGUI_IMPLEMENTATION
 cc raygui/raygui.o -shared -DRAYGUI_IMPLEMENTATION -lraylib -lm -lpthread \

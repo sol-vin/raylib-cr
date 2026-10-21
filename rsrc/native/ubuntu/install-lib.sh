@@ -16,7 +16,7 @@ sudo cp /usr/local/lib/libraylib.so.6.0.0 /usr/lib/libraylib.so.600
 sudo ln -s /usr/lib/libraylib.so.600 /lib/raylib.so
 
 # Compile raygui
-git clone --depth 1 --branch 4.0 https://github.com/raysan5/raygui
+git clone --depth 1 --branch 5.0 https://github.com/raysan5/raygui
 mv raygui/src/raygui.h raygui/src/raygui.c
 gcc -c -fPIC raygui/src/raygui.c -o raygui/raygui.o -DRAYGUI_IMPLEMENTATION
 sudo gcc raygui/raygui.o -shared -o /usr/local/lib/libraygui.so -DRAYGUI_IMPLEMENTATION -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
